@@ -14,3 +14,6 @@ __pycache__/
 .pytest_cache/
 .ruff_cache/
 .mypy_cache/
+
+# Benchmark fetch progress (resumable checkpoint, never committed)
+.processed.txt
