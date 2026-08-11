@@ -8,8 +8,8 @@ Dataset: 101 PDB entries (protein-only, resolution band 1.0-2.0 A, one non-polym
 
 | method | formula | graph | exact | AddHs | recovery |
 |---|---|---|---|---|---|
-| geometry | 76/101 (75%) | 75/101 (74%) | 75/101 (74%) | 94/101 (93%) | 75/101 (74%) |
-| openbabel | 82/101 (81%) | 22/101 (22%) | 22/101 (22%) | 96/101 (95%) | 22/101 (22%) |
+| geometry | 79/101 (78%) | 78/101 (77%) | 76/101 (75%) | 94/101 (93%) | 78/101 (77%) |
+| openbabel | 83/101 (82%) | 72/101 (71%) | 71/101 (70%) | 96/101 (95%) | 72/101 (71%) |
 | distance | 12/101 (12%) | 12/101 (12%) | 12/101 (12%) | 52/101 (51%) | 12/101 (12%) |
 
 ## Tautomer detection (geometry)
@@ -28,7 +28,6 @@ Every ligand the geometry tier failed to recover exactly.  This table is the inp
 |---|---|---|---|---|---|
 | 8HOT | HEM |  | C34H32FeN4O4 | None | santize: Can't kekulize mol.  Unkekulized atoms: 5 6 15 16 22 23 28 29 30 |
 | 2FR1 | NDP |  | C21H30N7O17P3 | wrong |  |
-| 3V1Y | NAD |  | C21H27N7O14P2 | wrong |  |
 | 7DMG | NAP |  | C21H28N7O17P3 | wrong |  |
 | 8TO5 | CYC |  | C33H40N4O6 | None | santize: Can't kekulize mol.  Unkekulized atoms: 3 4 5 |
 | 5STH | 8K2 |  | C4H4ClNO2S2 | wrong |  |
@@ -38,12 +37,10 @@ Every ligand the geometry tier failed to recover exactly.  This table is the inp
 | 8J38 | V2M |  | C24H34N4O6 | wrong |  |
 | 4G6I | RS3 |  | C18H23N5O6 | wrong |  |
 | 7BIU | HEC |  | C34H34FeN4O4 | None | santize: Can't kekulize mol.  Unkekulized atoms: 7 8 18 19 26 27 33 34 35 |
-| 5RT5 | 07L |  | C9H6O3 | wrong |  |
 | 5AEP | QUP |  | C18H14ClN5O | None | santize: Can't kekulize mol.  Unkekulized atoms: 16 17 18 19 21 |
 | 1DW6 | 0Q4 |  | C40H70N11O8+ | wrong |  |
 | 8PQF | 9KI |  | C28H29FN10O2 | None | santize: Can't kekulize mol.  Unkekulized atoms: 0 12 25 37 38 |
 | 5SSD | RNL |  | C13H15N5O4 | wrong |  |
-| 3B9Q | MLI |  | C3H2O4-2 | wrong |  |
 | 7Q3F | 8M6 |  | C24H23N5O4S2 | wrong |  |
 | 1UY7 | PU4 |  | C17H21N5O | wrong |  |
 | 4MXL | ZNH |  | C34H32N4O4Zn | wrong |  |
@@ -60,102 +57,102 @@ Every ligand the geometry tier failed to recover exactly.  This table is the inp
 | 8HOT | HEM |  | C34H32FeN4O4 | 1.96 | FAIL | FAIL | FAIL |
 | 2FR1 | NDP |  | C21H30N7O17P3 | 1.79 | FAIL | FAIL | FAIL |
 | 2HZQ | STR |  | C21H30O2 | 1.80 | OK | FAIL | OK |
-| 3V1Y | NAD |  | C21H27N7O14P2 | 1.86 | FAIL | FAIL | FAIL |
-| 7G1B | WNB |  | C19H16ClNO2 | 1.17 | OK | FAIL | FAIL |
+| 3V1Y | NAD |  | C21H27N7O14P2 | 1.86 | OK | FAIL | FAIL |
+| 7G1B | WNB |  | C19H16ClNO2 | 1.17 | OK | OK | FAIL |
 | 6SNN | BEZ |  | C7H6O2 | 1.82 | OK | OK | FAIL |
 | 7DMG | NAP |  | C21H28N7O17P3 | 1.79 | FAIL | FAIL | FAIL |
 | 7HSS | YDG |  | C7H11N3O | 1.95 | OK | OK | FAIL |
 | 8TO5 | CYC |  | C33H40N4O6 | 1.87 | FAIL | FAIL | FAIL |
 | 5STH | 8K2 |  | C4H4ClNO2S2 | 1.67 | FAIL | OK | FAIL |
-| 3M71 | BOG |  | C14H28O6 | 1.20 | OK | FAIL | OK |
+| 3M71 | BOG |  | C14H28O6 | 1.20 | OK | OK | OK |
 | 2XED | SIN |  | C4H6O4 | 1.95 | OK | OK | FAIL |
-| 9BF0 | UTP |  | C9H15N2O15P3 | 1.78 | FAIL | FAIL | FAIL |
+| 9BF0 | UTP |  | C9H15N2O15P3 | 1.78 | FAIL | OK | FAIL |
 | 1J1G | 5GP |  | C10H14N5O8P | 1.60 | OK | FAIL | FAIL |
-| 4I5P | 1D1 |  | C18H23N5O | 1.74 | OK | FAIL | FAIL |
+| 4I5P | 1D1 |  | C18H23N5O | 1.74 | OK | OK | FAIL |
 | 7FPH | VEX |  | C10H14O4 | 1.91 | OK | OK | FAIL |
-| 7OVU | ACO |  | C23H38N7O17P3S | 1.45 | OK | FAIL | FAIL |
-| 4QFH | G6P |  | C6H13O9P | 1.80 | OK | FAIL | FAIL |
+| 7OVU | ACO |  | C23H38N7O17P3S | 1.45 | OK | OK | FAIL |
+| 4QFH | G6P |  | C6H13O9P | 1.80 | OK | OK | FAIL |
 | 5NUL | FMN |  | C17H21N4O9P | 1.60 | FAIL | FAIL | FAIL |
 | 4IVB | 1J5 |  | C17H19N5O | 1.90 | OK | FAIL | FAIL |
 | 3VOG | EPE |  | C8H18N2O4S | 1.45 | OK | FAIL | FAIL |
-| 7BRP | U5G |  | C27H47N5O5 | 1.80 | OK | FAIL | OK |
+| 7BRP | U5G |  | C27H47N5O5 | 1.80 | OK | OK | OK |
 | 1YQC | GLV |  | C2H2O3 | 1.71 | OK | OK | OK |
 | 7FNN | WC6 |  | C10H8FN3O | 1.65 | OK | OK | FAIL |
 | 4WUK | NHE |  | C8H17NO3S | 1.70 | OK | FAIL | OK |
-| 3I7E | DJR |  | C28H38N2O8S | 1.70 | FAIL | FAIL | FAIL |
+| 3I7E | DJR |  | C28H38N2O8S | 1.70 | FAIL | OK | FAIL |
 | 3VHE | 42Q |  | C21H15F4N5O2 | 1.55 | OK | OK | FAIL |
-| 6V8V | CAZ |  | C17H19N5O7S2 | 1.80 | OK | FAIL | FAIL |
-| 7TGT | I4F |  | C41H51N7O8 | 1.06 | OK | FAIL | FAIL |
-| 6YX2 | PWW |  | C13H14N2O4 | 1.62 | OK | FAIL | FAIL |
-| 5AA8 | 5P8 |  | C21H19FN6O2 | 1.86 | OK | FAIL | FAIL |
+| 6V8V | CAZ |  | C17H19N5O7S2 | 1.80 | OK | OK | FAIL |
+| 7TGT | I4F |  | C41H51N7O8 | 1.06 | OK | OK | FAIL |
+| 6YX2 | PWW |  | C13H14N2O4 | 1.62 | OK | OK | FAIL |
+| 5AA8 | 5P8 |  | C21H19FN6O2 | 1.86 | OK | OK | FAIL |
 | 8EXL | 799 |  | C24H28N8O2 | 1.99 | OK | FAIL | FAIL |
-| 3W0J | T08 |  | C26H38O5 | 1.84 | OK | FAIL | FAIL |
-| 5H9R | TGZ |  | C20H26FN3O9S | 1.58 | OK | FAIL | FAIL |
-| 2BVD | ISX |  | C12H23NO8 | 1.60 | OK | FAIL | OK |
-| 2O7D | DHC |  | C9H8O4 | 1.90 | OK | FAIL | FAIL |
-| 8J38 | V2M |  | C24H34N4O6 | 1.72 | FAIL | FAIL | FAIL |
+| 3W0J | T08 |  | C26H38O5 | 1.84 | OK | OK | FAIL |
+| 5H9R | TGZ |  | C20H26FN3O9S | 1.58 | OK | OK | FAIL |
+| 2BVD | ISX |  | C12H23NO8 | 1.60 | OK | OK | OK |
+| 2O7D | DHC |  | C9H8O4 | 1.90 | OK | OK | FAIL |
+| 8J38 | V2M |  | C24H34N4O6 | 1.72 | FAIL | OK | FAIL |
 | 6HEX | G02 |  | C25H19F3N8O | 1.41 | OK | FAIL | FAIL |
 | 5RVQ | 4BY |  | C10H9NO2 | 1.08 | OK | FAIL | FAIL |
 | 4G6I | RS3 |  | C18H23N5O6 | 1.78 | FAIL | FAIL | FAIL |
-| 6ECW | SAH |  | C14H20N6O5S | 1.70 | OK | FAIL | FAIL |
+| 6ECW | SAH |  | C14H20N6O5S | 1.70 | OK | OK | FAIL |
 | 7BIU | HEC |  | C34H34FeN4O4 | 1.06 | FAIL | FAIL | FAIL |
-| 5ZXK | H6P |  | C5H12O8P2 | 1.96 | OK | FAIL | FAIL |
-| 1YON | A2R |  | C15H24N5O17P3 | 1.95 | OK | FAIL | FAIL |
+| 5ZXK | H6P |  | C5H12O8P2 | 1.96 | OK | OK | FAIL |
+| 1YON | A2R |  | C15H24N5O17P3 | 1.95 | OK | OK | FAIL |
 | 2ZSL | PMP |  | C8H13N2O5P | 1.70 | OK | OK | FAIL |
 | 1WOL | TBU |  | C4H10O | 1.62 | OK | OK | OK |
 | 5RJY | UV7 |  | C6H9N3O | 1.25 | OK | OK | FAIL |
-| 7FLL | VLI |  | C10H8F3NO2 | 1.48 | OK | FAIL | FAIL |
-| 5RT5 | 07L |  | C9H6O3 | 1.00 | FAIL | FAIL | FAIL |
+| 7FLL | VLI |  | C10H8F3NO2 | 1.48 | OK | OK | FAIL |
+| 5RT5 | 07L |  | C9H6O3 | 1.00 | OK | FAIL | FAIL |
 | 4YHY | M3L |  | C9H21N2O2+ | 1.90 | OK | FAIL | FAIL |
-| 5RKR | O0G |  | C8H10ClFN2O | 1.37 | OK | FAIL | FAIL |
+| 5RKR | O0G |  | C8H10ClFN2O | 1.37 | OK | OK | FAIL |
 | 5RUJ | 2SX |  | C10H8BrNO2 | 1.01 | OK | FAIL | FAIL |
 | 5AEP | QUP |  | C18H14ClN5O | 1.95 | FAIL | OK | FAIL |
 | 1DW6 | 0Q4 |  | C40H70N11O8+ | 1.88 | FAIL | FAIL | FAIL |
-| 4R0I | 3KM |  | C27H33N5O4S | 1.90 | OK | FAIL | FAIL |
+| 4R0I | 3KM |  | C27H33N5O4S | 1.90 | OK | OK | FAIL |
 | 5DN8 | GDP |  | C10H15N5O11P2 | 1.76 | OK | FAIL | FAIL |
-| 8W3C | AG7 |  | C31H41FN4O7 | 1.97 | OK | FAIL | FAIL |
-| 3RGG | AIR |  | C8H14N3O7P | 1.82 | OK | FAIL | FAIL |
+| 8W3C | AG7 |  | C31H41FN4O7 | 1.97 | OK | OK | FAIL |
+| 3RGG | AIR |  | C8H14N3O7P | 1.82 | OK | OK | FAIL |
 | 7VKD | FDA |  | C27H35N9O15P2 | 1.58 | OK | FAIL | FAIL |
-| 5MSC | AMP |  | C10H14N5O7P | 1.85 | OK | FAIL | FAIL |
+| 5MSC | AMP |  | C10H14N5O7P | 1.85 | OK | OK | FAIL |
 | 5M51 | NU6 |  | C19H22N6O2 | 1.90 | OK | FAIL | FAIL |
-| 8PQF | 9KI |  | C28H29FN10O2 | 1.90 | FAIL | FAIL | FAIL |
-| 6MS7 | V77 |  | C16H23ClO3 | 1.43 | OK | FAIL | FAIL |
-| 5SSD | RNL |  | C13H15N5O4 | 1.15 | FAIL | FAIL | FAIL |
-| 3B9Q | MLI |  | C3H2O4-2 | 1.75 | FAIL | FAIL | FAIL |
+| 8PQF | 9KI |  | C28H29FN10O2 | 1.90 | FAIL | OK | FAIL |
+| 6MS7 | V77 |  | C16H23ClO3 | 1.43 | OK | OK | FAIL |
+| 5SSD | RNL |  | C13H15N5O4 | 1.15 | FAIL | OK | FAIL |
+| 3B9Q | MLI |  | C3H2O4-2 | 1.75 | OK | OK | FAIL |
 | 6ENN | IAC |  | C10H9NO2 | 1.17 | OK | FAIL | FAIL |
 | 1O4N | OXD |  | C2H2O4 | 1.60 | OK | OK | FAIL |
-| 3I0D | UDP |  | C9H14N2O12P2 | 1.90 | OK | FAIL | FAIL |
-| 7SNE | 9XR |  | C22H29N7O14P2 | 1.00 | OK | FAIL | FAIL |
-| 9BKS | ADP |  | C10H15N5O10P2 | 1.17 | OK | FAIL | FAIL |
+| 3I0D | UDP |  | C9H14N2O12P2 | 1.90 | OK | OK | FAIL |
+| 7SNE | 9XR |  | C22H29N7O14P2 | 1.00 | OK | OK | FAIL |
+| 9BKS | ADP |  | C10H15N5O10P2 | 1.17 | OK | OK | FAIL |
 | 1YWR | LI9 |  | C27H29FN6O | 1.95 | OK | FAIL | FAIL |
 | 2XUA | SHF |  | C5H8O3 | 1.90 | OK | OK | OK |
 | 7Q3F | 8M6 |  | C24H23N5O4S2 | 1.21 | FAIL | OK | FAIL |
-| 4XTY | 44L |  | C20H28FN9O6S2 | 1.80 | OK | FAIL | FAIL |
-| 1YUK | NDG |  | C8H15NO6 | 1.80 | OK | FAIL | OK |
+| 4XTY | 44L |  | C20H28FN9O6S2 | 1.80 | OK | OK | FAIL |
+| 1YUK | NDG |  | C8H15NO6 | 1.80 | OK | OK | OK |
 | 1UY7 | PU4 |  | C17H21N5O | 1.90 | FAIL | OK | FAIL |
-| 7EFC | BTN |  | C10H16N2O3S | 1.70 | OK | FAIL | FAIL |
-| 6GR8 | F8Z |  | C32H38N4O7 | 1.75 | OK | FAIL | FAIL |
-| 4NBP | TLA |  | C4H6O6 | 1.32 | OK | FAIL | FAIL |
+| 7EFC | BTN |  | C10H16N2O3S | 1.70 | OK | OK | FAIL |
+| 6GR8 | F8Z |  | C32H38N4O7 | 1.75 | OK | OK | FAIL |
+| 4NBP | TLA |  | C4H6O6 | 1.32 | OK | OK | FAIL |
 | 4MXL | ZNH |  | C34H32N4O4Zn | 1.50 | FAIL | FAIL | FAIL |
-| 4RRQ | A3S |  | C13H19N7O5 | 1.79 | FAIL | FAIL | FAIL |
+| 4RRQ | A3S |  | C13H19N7O5 | 1.79 | FAIL | OK | FAIL |
 | 8UIV | FAD |  | C27H33N9O15P2 | 1.51 | FAIL | FAIL | FAIL |
-| 7JVY | VKV |  | C23H40O3 | 1.30 | OK | FAIL | OK |
+| 7JVY | VKV |  | C23H40O3 | 1.30 | OK | OK | OK |
 | 4MAS | PCQ |  | C12H6Cl4O2 | 1.22 | OK | OK | FAIL |
-| 5DIV | 5BH |  | C29H43N3O6 | 1.65 | OK | FAIL | FAIL |
+| 5DIV | 5BH |  | C29H43N3O6 | 1.65 | OK | OK | FAIL |
 | 1AI8 | T42 |  | C30H39BN4O7 | 1.85 | FAIL | FAIL | FAIL |
 | 4FRS | 0V6 |  | C18H17ClN4OS | 1.70 | OK | FAIL | FAIL |
-| 5TN5 | 7G0 |  | C16H22O2 | 1.89 | OK | FAIL | FAIL |
-| 3OLL | EST |  | C18H24O2 | 1.50 | OK | FAIL | FAIL |
-| 8UPW | X8F |  | C24H41FN4O6 | 1.44 | OK | FAIL | OK |
+| 5TN5 | 7G0 |  | C16H22O2 | 1.89 | OK | OK | FAIL |
+| 3OLL | EST |  | C18H24O2 | 1.50 | OK | OK | FAIL |
+| 8UPW | X8F |  | C24H41FN4O6 | 1.44 | OK | OK | OK |
 | 5RUM | 52F |  | C11H10N2O3 | 1.00 | FAIL | OK | FAIL |
 | 4DOL | PLM |  | C16H32O2 | 1.70 | OK | OK | FAIL |
 | 8II3 | PKK |  | C17H12I2O4 | 1.40 | FAIL | OK | FAIL |
-| 9MTO | COA |  | C21H36N7O16P3S | 1.69 | OK | FAIL | FAIL |
-| 8AV9 | VF8 |  | C33H41ClN2O5S | 1.99 | OK | FAIL | FAIL |
-| 7FKZ | VL8 |  | C11H13Cl2NO2 | 1.58 | OK | FAIL | FAIL |
+| 9MTO | COA |  | C21H36N7O16P3S | 1.69 | OK | OK | FAIL |
+| 8AV9 | VF8 |  | C33H41ClN2O5S | 1.99 | OK | OK | FAIL |
+| 7FKZ | VL8 |  | C11H13Cl2NO2 | 1.58 | OK | OK | FAIL |
 | 4YQK | 4GS |  | C8H13N5O2 | 1.83 | OK | OK | FAIL |
-| 3LLF | UP6 |  | C8H12N3O9P | 1.30 | OK | FAIL | FAIL |
-| 7DE7 | 2Q5 |  | C12H26O5 | 1.49 | OK | FAIL | OK |
-| 3GPO | APR |  | C15H23N5O14P2 | 1.90 | OK | FAIL | FAIL |
+| 3LLF | UP6 |  | C8H12N3O9P | 1.30 | OK | OK | FAIL |
+| 7DE7 | 2Q5 |  | C12H26O5 | 1.49 | OK | OK | OK |
+| 3GPO | APR |  | C15H23N5O14P2 | 1.90 | OK | OK | FAIL |
 | 6NPM | KVD |  | C14H9NO2 | 1.60 | OK | OK | FAIL |
 

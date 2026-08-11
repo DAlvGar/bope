@@ -91,5 +91,35 @@ _AROMATIC_ENVELOPE: dict[tuple[str, str], tuple[float, float]] = {
     ("C", "S"): (1.66, 1.80), ("N", "N"): (1.18, 1.44), ("N", "O"): (1.28, 1.44),
     ("C", "P"): (1.75, 1.87),
 }
+
+#: a C-O bond at or below this length is a carbonyl even in crystal
+#: structures, whose carbonyls often refine to 1.34-1.36 A (caffeine C2/C6
+#: in 3RFM).  The pi-count C=O test uses the stricter 1.30 (the length-rule
+#: double cutoff) so a phenol/enol C-O at 1.34-1.40 is not misread as a
+#: carbonyl; the N-pyridone/amide discriminator and the carbonyl rescue use
+#: this generous bound instead.
+_CRYSTAL_CARBONYL: float = 1.40
+
+#: a candidate aromatic ring may exceed its envelope upper bound by at most
+#: ``_AROMATIC_SLACK_BOND`` per bond and ``_AROMATIC_SLACK_RING`` in total.
+#: Low-resolution crystals elongate one or two aromatic bonds slightly (the
+#: 07L coumarin lactone ring at 1.0 A refines its two C-O to 1.444/1.462 vs
+#: the 1.44 upper, and one C-C to 1.514 vs 1.50), while a uniformly
+#: elongated saturated ring (several bonds at 1.52+) must stay rejected -
+#: the Huckel gate still decides the chemistry.  The per-bond cap is the
+#: tighter of the two bounds: a single bond far past its envelope (the 44L
+#: imidazolidinone C-C at 1.539, +0.039 over the 1.50 upper) is an sp3
+#: single, not an elongated aromatic bond - such excess must be spread over
+#: at least two bonds (07L's max single-bond excess is +0.022).
+_AROMATIC_SLACK_BOND: float = 0.03
+_AROMATIC_SLACK_RING: float = 0.06
+
+#: when the full aromatic set fails to kekulize, candidate rings admitted
+#: only through slack at or below this total excess are dropped and the
+#: perception retried.  Noise-level slack (1D1's pyridinone ring at +0.003)
+#: can admit a ring the chemistry rejects, and its fused neighbour makes the
+#: set unkekulizable; true low-resolution aromatics sit well above the line
+#: (NDP's pyridinium ring +0.012, 07L's coumarin +0.041) and survive.
+_AROMATIC_SLACK_DROP: float = 0.005
 _MAX_VALENCE: dict[str, int] = {"C": 4, "N": 3, "O": 2, "S": 6, "P": 5}
 _HUCKEL: set[int] = {2, 6, 10, 14, 18}

@@ -48,10 +48,12 @@ Metrics per ligand and method:
   identically)
 * ``graph`` - the perceived bond graph matches the reference up to
   isomorphism and bond orders (canonical SMILES equality, charges
-  neutralised): a tautomer difference moves the H to a different atom,
-  so it FAILS the graph check while keeping the formula
-* ``exact`` - full canonical SMILES equality, charges and tautomer
-  included
+  neutralised, stereo-insensitive - the CCD ground truth is
+  stereo-agnostic and stereo has its own benchmark): a tautomer
+  difference moves the H to a different atom, so it FAILS the graph
+  check while keeping the formula
+* ``exact`` - canonical SMILES equality, charges and tautomer included,
+  stereo-insensitive
 * ``AddHs`` - no over-valent atoms
 * ``recovery`` = formula AND graph AND AddHs
 
@@ -123,10 +125,22 @@ def _silence_stderr():
 
 
 def _neutral(mol: "Chem.Mol") -> "Chem.Mol":
-    """Copy with all formal charges zeroed (no change to the graph)."""
+    """Copy with all formal charges zeroed (no change to the graph).
+
+    Implicit hydrogens are recomputed for the neutral form: a carboxylate
+    [O-] must count as O-H (one implicit H), not an O keeping the stale
+    0-H count the charge left behind.  A quaternary N stays effectively
+    [N+] (valence 4, 0 H), a pyridinium N+ becomes a neutral pyridine N.
+    No re-parse: a zeroed pyridinium/quaternary state is chemically
+    impossible, so the SMILES writer would emit a string the parser
+    rejects.  UpdatePropertyCache alone refreshes the implicit-H counts.
+    """
     m = Chem.Mol(mol)
     for a in m.GetAtoms():
         a.SetFormalCharge(0)
+    for a in m.GetAtoms():
+        a.SetNoImplicit(False)
+    m.UpdatePropertyCache(strict=False)
     return m
 
 
@@ -146,11 +160,15 @@ def _metrics(mol: "Chem.Mol | None", ref: "Chem.Mol"):
     except Exception:  # noqa: BLE001
         formula = False
     try:
-        graph = Chem.MolToSmiles(_neutral(mol)) == Chem.MolToSmiles(_neutral(ref))
+        graph = Chem.MolToSmiles(_neutral(mol), isomericSmiles=False) == (
+            Chem.MolToSmiles(_neutral(ref), isomericSmiles=False)
+        )
     except Exception:  # noqa: BLE001
         graph = False
     try:
-        exact = Chem.MolToSmiles(mol) == Chem.MolToSmiles(ref)
+        exact = Chem.MolToSmiles(mol, isomericSmiles=False) == (
+            Chem.MolToSmiles(ref, isomericSmiles=False)
+        )
     except Exception:  # noqa: BLE001
         exact = False
     try:
