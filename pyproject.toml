@@ -1,0 +1,50 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "bope"
+version = "0.1.0"
+description = "Bond-order perception for 3-D ligand coordinates: plain (element, xyz) atoms in, RDKit molecule with bond orders out."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+authors = [{ name = "Daniel Alvarez" }]
+keywords = [
+    "chemistry",
+    "cheminformatics",
+    "rdkit",
+    "bond-order",
+    "perception",
+    "crystallography",
+    "pdb",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Topic :: Scientific/Engineering :: Chemistry",
+]
+dependencies = [
+    "numpy>=1.26",
+    # Upper bound: the corpus exclusions and committed benchmark numbers
+    # were measured on RDKit 2025.09.6 (ETKDG seed-42 geometries are
+    # version-specific).  Bumping to a new major RDKit requires
+    # re-measuring the exclusions with the benchmark harness (see
+    # src/bope/corpus.py).
+    "rdkit>=2025.9.6,<2026",
+]
+
+[project.optional-dependencies]
+# OpenBabel strategy (3rd of 4 in the pipeline); without it the pipeline
+# skips straight from geometry to the distance fallback.
+openbabel = ["openbabel-wheel>=3.1"]
+# Test suite + benchmark harness.
+dev = ["pytest>=8.0"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/bope"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
