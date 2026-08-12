@@ -1,0 +1,66 @@
+{
+ "dataset": "dataset",
+ "dataset_file": "dataset.json",
+ "total": 101,
+ "stereo_entries": 66,
+ "coverage_pct": 65.3,
+ "methods": {
+  "geometry": {
+   "no_mol": 0,
+   "graph_mismatch": 10,
+   "mapping_ambiguous": 0,
+   "centers": {
+    "correct": 223,
+    "wrong": 0,
+    "unassigned": 0,
+    "phosphate_p": 5,
+    "extra": 4
+   },
+   "ez": {
+    "correct": 13,
+    "wrong": 0,
+    "extra": 0
+   },
+   "full": 49,
+   "comparable": 56
+  },
+  "openbabel": {
+   "no_mol": 3,
+   "graph_mismatch": 15,
+   "mapping_ambiguous": 0,
+   "centers": {
+    "correct": 189,
+    "wrong": 0,
+    "unassigned": 0,
+    "phosphate_p": 5,
+    "extra": 2
+   },
+   "ez": {
+    "correct": 10,
+    "wrong": 0,
+    "extra": 0
+   },
+   "full": 43,
+   "comparable": 48
+  },
+  "distance": {
+   "no_mol": 30,
+   "graph_mismatch": 28,
+   "mapping_ambiguous": 0,
+   "centers": {
+    "correct": 41,
+    "wrong": 0,
+    "unassigned": 0,
+    "phosphate_p": 0,
+    "extra": 0
+   },
+   "ez": {
+    "correct": 4,
+    "wrong": 0,
+    "extra": 0
+   },
+   "full": 8,
+   "comparable": 8
+  }
+ }
+}

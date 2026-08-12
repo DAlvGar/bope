@@ -1,0 +1,32 @@
+{
+ "dataset": "dataset",
+ "dataset_file": "dataset.json",
+ "total": 101,
+ "res_band": "1.0-2.0 A",
+ "methods": {
+  "geometry": {
+   "sanitize": 101,
+   "formula": 88,
+   "graph": 87,
+   "exact": 85,
+   "addh": 101,
+   "recovery": 87
+  },
+  "openbabel": {
+   "sanitize": 96,
+   "formula": 83,
+   "graph": 72,
+   "exact": 71,
+   "addh": 96,
+   "recovery": 72
+  },
+  "distance": {
+   "sanitize": 52,
+   "formula": 12,
+   "graph": 12,
+   "exact": 12,
+   "addh": 52,
+   "recovery": 12
+  }
+ }
+}
