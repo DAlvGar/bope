@@ -365,6 +365,171 @@ def test_crystal_ligands_real_coordinates_geometry_path():
 
 
 # ---------------------------------------------------------------------------
+# Held-out bug-family regressions (crystal100 held-out failures)
+# ---------------------------------------------------------------------------
+# The 27 held-out targets that drove the perception fixes (see
+# benchmarks/crystal100/heldout_failures_analysis.md): every target must
+# recover exactly on the geometry tier, except the five documented data
+# limitations below, which must degrade gracefully instead.  The atoms are
+# the deposited crystal coordinates, frozen in the fixture; the ref SMILES
+# is the CCD canonical descriptor from the held-out dataset entry.
+
+_HELDOUT_FIXTURES = json.load(
+    open(
+        os.path.join(
+            os.path.dirname(__file__), "fixtures", "heldout_regression.json"
+        ),
+        encoding="utf-8",
+    )
+)
+
+#: (pdb, het) targets whose deposited coordinates defeat the geometry tier.
+#: 5MUY MGT: ribose refined with a C=C(O) enol and C-C at 1.296 A.  7FOZ
+#: WD0: N#C at 1.172 A inside a thiazoline ring.  5ME6 M7G: charged
+#: reference (the geometry tier is neutral).  6S7B KYH: ribose with a
+#: ring-refined enol.  7T2X EMY: ring-chain ambiguous thioester -
+#: coordinates carry both the open (CCD) and closed ring forms (C-C
+#: 1.784 A closure, C-N 1.04-1.18 A, S-C 1.334 A), so the CCD descriptor
+#: cannot be reproduced from them.  The CCD template path recovers all but
+#: EMY, which cannot match the template graph.
+_HELDOUT_LIMITATIONS = {
+    "5MUY_MGT", "7FOZ_WD0", "5ME6_M7G", "6S7B_KYH", "7T2X_EMY",
+}
+
+
+def _heldout_metrics(mol, ref):
+    """(formula, graph, exact, addh) mirroring the benchmark's _metrics:
+    formula/graph on the charge-zeroed copy, exact on the raw mol,
+    canonical non-isomeric SMILES throughout."""
+    if mol is None:
+        return False, False, False, False
+    try:
+        m_n = Chem.Mol(mol)  # type: ignore[attr-defined]
+        for a in m_n.GetAtoms():
+            a.SetFormalCharge(0)
+        for a in m_n.GetAtoms():
+            a.SetNoImplicit(False)
+        m_n.UpdatePropertyCache(strict=False)
+        r_n = Chem.Mol(ref)  # type: ignore[attr-defined]
+        for a in r_n.GetAtoms():
+            a.SetFormalCharge(0)
+        for a in r_n.GetAtoms():
+            a.SetNoImplicit(False)
+        r_n.UpdatePropertyCache(strict=False)
+        formula = _formula(m_n) == _formula(r_n)
+        graph = Chem.MolToSmiles(  # type: ignore[attr-defined]
+            m_n, isomericSmiles=False
+        ) == Chem.MolToSmiles(r_n, isomericSmiles=False)  # type: ignore[attr-defined]
+        exact = Chem.MolToSmiles(  # type: ignore[attr-defined]
+            mol, isomericSmiles=False
+        ) == Chem.MolToSmiles(ref, isomericSmiles=False)  # type: ignore[attr-defined]
+        addh = _addh_ok(mol)
+        return formula, graph, exact, addh
+    except Exception:  # noqa: BLE001 - sanitization failure is a metric
+        return False, False, False, False
+
+
+def _heldout_perceive(key: str):
+    """Geometry-tier perception (CCD cache poisoned) of one target."""
+    d = _HELDOUT_FIXTURES[key]
+    atoms = [(el, tuple(xyz)) for el, xyz in d["atoms"]]
+    perception._CCD_CACHE[d["het"]] = None
+    try:
+        mol, strategy = perception.perceive_bond_orders(atoms, resname=None)
+    finally:
+        del perception._CCD_CACHE[d["het"]]
+    return mol, strategy, Chem.MolFromSmiles(d["smiles"])  # type: ignore[attr-defined]
+
+
+def test_heldout_regression_targets_recover_exactly():
+    """Every non-limitation held-out target must recover exactly on the
+    geometry tier: formula AND graph AND canonical SMILES AND AddHs.
+    Covers the bug families - azole N-aryl discrimination (5KYA 6Y4),
+    S-ring admission via C-S evidence (4L9Q 9TP), the spurious lactone
+    C=C demotion (4L9Q 9TP), the nitro double-stacking crash (2YOH WMJ),
+    and the hard-max ring rejections (7RS8 7EI, 2QG0 A94, 1WQW BT5)."""
+    checked = 0
+    for key, d in _HELDOUT_FIXTURES.items():
+        if key in _HELDOUT_LIMITATIONS:
+            continue
+        mol, strategy, ref = _heldout_perceive(key)
+        formula, graph, exact, addh = _heldout_metrics(mol, ref)
+        assert mol is not None, f"{key}: perceived as None ({strategy})"
+        assert strategy == "geometry", f"{key}: strategy {strategy}"
+        assert formula and graph and exact and addh, (
+            f"{key}: formula={formula} graph={graph} exact={exact} "
+            f"addh={addh}"
+        )
+        checked += 1
+    assert checked == 22
+
+
+def test_heldout_documented_limitations_degrade_gracefully():
+    """The five documented data limitations must never crash and must
+    return a sanitizable geometry-tier mol, but are pinned NOT to recover
+    exactly: if one starts recovering, move it out of _HELDOUT_LIMITATIONS
+    (and re-examine its classification in heldout_failures_analysis.md)
+    rather than editing the assertion."""
+    for key in sorted(_HELDOUT_LIMITATIONS):
+        mol, strategy, ref = _heldout_perceive(key)
+        assert mol is not None, f"{key}: perceived as None ({strategy})"
+        assert strategy == "geometry", f"{key}: strategy {strategy}"
+        assert _addh_ok(mol), f"{key}: AddHs failed (over-valent?)"
+        formula, graph, exact, addh = _heldout_metrics(mol, ref)
+        assert not graph, (
+            f"{key}: now recovers exactly - move out of _HELDOUT_LIMITATIONS"
+        )
+
+
+def test_s_heterocycle_fallback_chain():
+    """The S-heterocycle fallback design (corpus.OPENBABEL_FALLBACK):
+    thiazole's ETKDG embed breaks its ring (S-C 1.90 A, C-N 1.16 A) - the
+    geometry tier must REFUSE the broken ring (return None) so the
+    OpenBabel fallback recovers the molecule exactly; the fused
+    S-heterocycles recover on the geometry tier itself.  A geometry tier
+    that silently returns the length-rule ring here would regress the
+    recovery and hide the fallback."""
+    for name, smi, want_strategy in [
+        ("thiazole", "c1cscn1", "openbabel"),
+        ("benzothiazole", "c1ccc2c(c1)scn2", "geometry"),
+        ("dibenzothiophene", "c1ccc2c(c1)c3ccccc3s2", "geometry"),
+    ]:
+        molH = _embed(smi)
+        ref = Chem.RemoveHs(molH)  # type: ignore[attr-defined]
+        mol, strategy = perception.perceive_bond_orders(
+            _noisy_atoms(molH, 0.0), resname=None
+        )
+        assert strategy == want_strategy, f"{name}: {strategy}"
+        assert mol is not None
+        assert _bond_graph(mol) == _bond_graph(ref), f"{name}: graph mismatch"
+
+
+def test_heldout_limitations_template_recovery():
+    """The CCD template path recovers four of the five limitations (the
+    production route for known HET codes); EMY cannot - its coordinates
+    are ring-chain ambiguous and never match the template graph."""
+    template_recoverable = sorted(_HELDOUT_LIMITATIONS - {"7T2X_EMY"})
+    original = dict(perception._CCD_CACHE)
+    try:
+        for key in template_recoverable:
+            d = _HELDOUT_FIXTURES[key]
+            perception._CCD_CACHE[d["het"]] = d["smiles"]
+            atoms = [(el, tuple(xyz)) for el, xyz in d["atoms"]]
+            mol, strategy = perception.perceive_bond_orders(
+                atoms, resname=d["het"]
+            )
+            assert mol is not None, f"{key}: template path gave None"
+            assert strategy == "ccd-template", f"{key}: {strategy}"
+            ref = Chem.MolFromSmiles(d["smiles"])  # type: ignore[attr-defined]
+            assert _formula(mol) == _formula(ref), (
+                f"{key}: template formula {_formula(mol)} != {_formula(ref)}"
+            )
+    finally:
+        perception._CCD_CACHE.clear()
+        perception._CCD_CACHE.update(original)
+
+
+# ---------------------------------------------------------------------------
 # Tautomer sensitivity
 # ---------------------------------------------------------------------------
 

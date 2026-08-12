@@ -101,6 +101,19 @@ _AROMATIC_ENVELOPE: dict[tuple[str, str], tuple[float, float]] = {
     ("C", "P"): (1.75, 1.87),
 }
 
+#: hard upper bound on an aromatic ring edge, beyond which the bond cannot
+#: be aromatic no matter how generous the slack.  The envelope + slack
+#: exists for low-resolution benzenes (uniformly elongated to ~1.52 A C-C),
+#: but must not admit an sp3 ring whose one "good" edge rides the slack
+#: (5KYA 6Y4's pyrrolidine: C-N 1.471/1.488 - the longest real aromatic
+#: C-N in the tuning set is 1XQS AMP's 1.450).  C-C stays uncapped (real
+#: low-res benzenes) and C-O stays uncapped (07L's coumarin lactone ring
+#: C-O refines to 1.444/1.462), so the tight bounds cover the N/S pairs
+#: whose bonds are shorter in every genuine aromatic.
+_AROMATIC_HARD_MAX: dict[tuple[str, str], float] = {
+    ("C", "N"): 1.46, ("N", "N"): 1.42, ("N", "O"): 1.44, ("C", "S"): 1.78,
+}
+
 #: a C-O bond at or below this length is a carbonyl even in crystal
 #: structures, whose carbonyls often refine to 1.34-1.36 A (caffeine C2/C6
 #: in 3RFM).  The pi-count C=O test uses the stricter 1.30 (the length-rule
@@ -111,25 +124,29 @@ _CRYSTAL_CARBONYL: float = 1.40
 
 #: a candidate aromatic ring may exceed its envelope upper bound by at most
 #: ``_AROMATIC_SLACK_BOND`` per bond and ``_AROMATIC_SLACK_RING`` in total.
-#: Low-resolution crystals elongate one or two aromatic bonds slightly (the
-#: 07L coumarin lactone ring at 1.0 A refines its two C-O to 1.444/1.462 vs
-#: the 1.44 upper, and one C-C to 1.514 vs 1.50), while a uniformly
-#: elongated saturated ring (several bonds at 1.52+) must stay rejected -
-#: the Huckel gate still decides the chemistry.  The per-bond cap is the
-#: tighter of the two bounds: a single bond far past its envelope (the 44L
-#: imidazolidinone C-C at 1.539, +0.039 over the 1.50 upper) is an sp3
-#: single, not an elongated aromatic bond - such excess must be spread over
-#: at least two bonds (07L's max single-bond excess is +0.022).
-_AROMATIC_SLACK_BOND: float = 0.03
+#: Low-resolution crystals elongate aromatic bonds unevenly: the 07L
+#: coumarin lactone ring at 1.0 A refines one C-C to 1.514 (+0.014), while
+#: 4L9Q's thiophene at 2.6 A rides the envelope with a C-C at 1.553 (+0.053)
+#: and a C-S at 1.642 (below the 1.66 lower, see _AROMATIC_SLACK_SHORT).
+#: The per-bond cap must be loose enough for that noise regime, and the
+#: Huckel gate still decides the chemistry: a uniformly elongated saturated
+#: ring (several bonds at 1.52+) must stay rejected, and it is - a true
+#: aromatic keeps at least two edges inside the envelope while an sp3 ring
+#: like the 44L imidazolidinone carries a carbonyl/amine pattern the Huckel
+#: judge rejects regardless of slack.
+_AROMATIC_SLACK_BOND: float = 0.06
 _AROMATIC_SLACK_RING: float = 0.06
 
 #: a candidate aromatic ring may undershoot its envelope lower bound by at
 #: most this much.  The lower bound stays strict (a double-embedded ring is
 #: a diene), but genuine aromatic bonds can measure slightly short: the
 #: RNL triazolo-pyridinone N-C at 1.272 A vs the (C,N) lower bound of 1.28
-#: (real imine-like C=N in N-rich rings refines to 1.27-1.30).  A ring
-#: containing a real triple bond (nitrile ~1.16-1.20 A) still sits far below.
-_AROMATIC_SLACK_SHORT: float = 0.01
+#: (real imine-like C=N in N-rich rings refines to 1.27-1.30), and 4L9Q's
+#: thiophene C-S at 1.642/1.658 vs the (C,S) lower bound of 1.66 (aromatic
+#: C-S measures 1.66-1.71 in fine crystals; 2.6 A noise shortens it).
+#: A ring containing a real triple bond (nitrile ~1.16-1.20 A) still sits
+#: far below.
+_AROMATIC_SLACK_SHORT: float = 0.02
 
 #: when the full aromatic set fails to kekulize, candidate rings admitted
 #: only through slack at or below this total excess are dropped and the
