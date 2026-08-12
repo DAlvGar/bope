@@ -278,6 +278,11 @@ def process_candidate(pdb_id: str, args, ctx) -> None:
             "het": het,
             "name": (ccd.get("name") or "").strip(),
             "smiles": Chem.MolToSmiles(ref),  # type: ignore[attr-defined]
+            # stereo ground truth for the stereo benchmark; None when the
+            # CCD has no stereo (most achiral HET codes)
+            "smiles_stereo": (ccd.get("rcsb_chem_comp_descriptor") or {}).get(
+                "SMILES_stereo"
+            ),
             "formula": formula,
             "heavy_atoms": n_heavy,
             "resolution": resolution_of(pdb_text),

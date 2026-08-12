@@ -64,7 +64,8 @@
      -8.234
     ]
    ]
-  ]
+  ],
+  "smiles_stereo": "C(C(=O)[O-])C(=O)[O-]"
  },
  {
   "pdb": "7F8U",
@@ -299,7 +300,8 @@
      52.621
     ]
    ]
-  ]
+  ],
+  "smiles_stereo": "c1ccc2c(c1)cc(n2CC(=O)O)C(=O)Nc3nc(cs3)c4ccccc4Cl"
  },
  {
   "pdb": "9M40",
@@ -382,7 +384,8 @@
      93.808
     ]
    ]
-  ]
+  ],
+  "smiles_stereo": "C(CCNC(=N)N)CN"
  },
  {
   "pdb": "8GUA",
@@ -633,7 +636,8 @@
      112.544
     ]
    ]
-  ]
+  ],
+  "smiles_stereo": "Cc1c(sc(n1)NC(=O)N2CCC[C@H]2C(=O)N)c3ccnc(c3)C(C)(C)C(F)(F)F"
  },
  {
   "pdb": "7R75",
@@ -844,7 +848,8 @@
      21.499
     ]
    ]
-  ]
+  ],
+  "smiles_stereo": "CC1(CCN(CC1)C2=Nc3c(c(n[nH]3)c4cccc(c4)Cl)C(=O)N2)N"
  },
  {
   "pdb": "8E1X",
@@ -1119,7 +1124,8 @@
      -25.264
     ]
    ]
-  ]
+  ],
+  "smiles_stereo": "CC(C)n1ccc(n1)c2cn3c(c(cn3)c4cc(cnc4)C(=O)NC)nc2N[C@H]5CCOC5"
  },
  {
   "pdb": "5T28",
@@ -1378,7 +1384,8 @@
      26.37
     ]
    ]
-  ]
+  ],
+  "smiles_stereo": "Cn1c(nc(n1)c2cnc(c(n2)n3c4ccccc4nn3)N)C5(CC5)c6ccccc6"
  },
  {
   "pdb": "5L3D",
@@ -1813,7 +1820,8 @@
      89.726
     ]
    ]
-  ]
+  ],
+  "smiles_stereo": "Cc1cc2c(cc1C)N(C3=NC(=O)NC(=O)C3=N2)C[C@@H]([C@@H]([C@@H](CO[P@@](=O)(O)O[P@](=O)(O)OC[C@@H]4[C@H]([C@H]([C@@H](O4)n5cnc6c5ncnc6N)O)O)O)O)O"
  },
  {
   "pdb": "4MXZ",
@@ -2112,7 +2120,8 @@
      -11.878
     ]
    ]
-  ]
+  ],
+  "smiles_stereo": "CN1CCN(CC1)CCCOc2cc3c(cc2OC)c(c(cn3)C#N)Nc4cc(c(cc4Cl)Cl)OC"
  },
  {
   "pdb": "3EGQ",
@@ -2323,7 +2332,8 @@
      46.033
     ]
    ]
-  ]
+  ],
+  "smiles_stereo": "C(COCCOCCOCCOCCOCCOCCOCCO)O"
  },
  {
   "pdb": "7LIM",
@@ -2550,7 +2560,8 @@
      178.837
     ]
    ]
-  ]
+  ],
+  "smiles_stereo": "Cc1cc2c(cc1C)N(C3=NC(=O)NC(=O)C3=N2)C[C@@H]([C@@H]([C@@H](CO)O)O)O"
  },
  {
   "pdb": "3PGQ",
@@ -2745,7 +2756,8 @@
      -22.841
     ]
    ]
-  ]
+  ],
+  "smiles_stereo": "CCc1cc(cc(c1C2C(=O)N3CCOCCN3C2=O)C=C)C"
  },
  {
   "pdb": "4INR",
@@ -3124,7 +3136,8 @@
      40.776
     ]
    ]
-  ]
+  ],
+  "smiles_stereo": "CC(C)C[C@@H](C(=O)N[C@@H](CC(C)C)C(=O)N[C@H](CCS(=O)(=O)C)Cc1ccc(cc1)CN)NC(=O)[C@H](Cc2ccccc2)N=[N+]=[N-]"
  },
  {
   "pdb": "9J5C",
@@ -3359,7 +3372,8 @@
      -5.425
     ]
    ]
-  ]
+  ],
+  "smiles_stereo": "CCCC[C@@H](CC)COC(=O)c1ccccc1C(=O)OC[C@@H](CC)CCCC"
  },
  {
   "pdb": "4MPZ",
@@ -3410,7 +3424,8 @@
      -21.035
     ]
    ]
-  ]
+  ],
+  "smiles_stereo": "c1c[nH+]c[nH]1"
  },
  {
   "pdb": "1FVV",
@@ -3669,7 +3684,8 @@
      115.192
     ]
    ]
-  ]
+  ],
+  "smiles_stereo": "c1ccnc(c1)NS(=O)(=O)c2ccc(cc2)NCC3=C4c5c(ncs5)C=CC4=NC3=O"
  },
  {
   "pdb": "5F5W",
@@ -3896,7 +3912,8 @@
      -7.452
     ]
    ]
-  ]
+  ],
+  "smiles_stereo": "c1nc(c2c(n1)n(cn2)[C@H]3[C@@H]([C@@H]([C@H](O3)COS(=O)(=O)NC(=O)CN)O)O)N"
  },
  {
   "pdb": "4OUD",
@@ -4011,7 +4028,8 @@
      88.713
     ]
    ]
-  ]
+  ],
+  "smiles_stereo": "c1cc(ccc1C[C@@H](C(=O)O)N)O"
  },
  {
   "pdb": "6W9Z",
@@ -4222,7 +4240,8 @@
      -14.699
     ]
    ]
-  ]
+  ],
+  "smiles_stereo": "CCCCCCCC/C=C\\CCCCCCCC(=O)OC[C@H](CO)O"
  },
  {
   "pdb": "7XDU",
@@ -4585,7 +4604,8 @@
      4.763
     ]
    ]
-  ]
+  ],
+  "smiles_stereo": "c1cc(c[n+](c1)[C@H]2[C@@H]([C@@H]([C@H](O2)CO[P@@](=O)([O-])O[P@@](=O)(O)OC[C@@H]3[C@H]([C@H]([C@@H](O3)n4cnc5c4ncnc5N)O)O)O)O)C(=O)N"
  },
  {
   "pdb": "1UKI",
@@ -4732,7 +4752,8 @@
      31.065
     ]
    ]
-  ]
+  ],
+  "smiles_stereo": "c1ccc2c(c1)-c3c4c(cccc4[nH]n3)C2=O"
  },
  {
   "pdb": "6U38",
@@ -5055,7 +5076,8 @@
      -26.816
     ]
    ]
-  ]
+  ],
+  "smiles_stereo": "C[C@]1(c2cc(c(cc2CCN1)OC[C@@H]3CCCCO3)Oc4ccc(c(c4)F)C(=O)O)CC(=O)Nc5nccs5"
  },
  {
   "pdb": "7B8T",
@@ -5274,7 +5296,8 @@
      4.259
     ]
    ]
-  ]
+  ],
+  "smiles_stereo": "C[C@H]1COc2c3c(cc(c2N4CCN(CC4)C)F)C(=O)C(=CN31)C(=O)O"
  },
  {
   "pdb": "1EAE",
@@ -5381,7 +5404,8 @@
      29.356
     ]
    ]
-  ]
+  ],
+  "smiles_stereo": "C(CCC(=O)N)C[C@H](CCS)S"
  },
  {
   "pdb": "6U3X",
@@ -5584,7 +5608,8 @@
      -24.469
     ]
    ]
-  ]
+  ],
+  "smiles_stereo": "C[C@]1(c2cc(c(cc2CCN1)OC)OC)CC(=O)Nc3nccs3"
  },
  {
   "pdb": "5YJL",
@@ -5979,7 +6004,8 @@
      -24.825
     ]
    ]
-  ]
+  ],
+  "smiles_stereo": "c1cc(c[n+](c1)[C@H]2[C@@H]([C@@H]([C@H](O2)CO[P@@](=O)([O-])O[P@](=O)(O)OC[C@@H]3[C@H]([C@H]([C@@H](O3)n4cnc5c4ncnc5N)OP(=O)(O)O)O)O)O)C(=O)N"
  },
  {
   "pdb": "2AMO",
@@ -6334,7 +6360,8 @@
      8.902
     ]
    ]
-  ]
+  ],
+  "smiles_stereo": "Cc1c2n3c(c1CCC(=O)O)C=C4C(=C(C5=[N]4[Fe]36[N]7=C(C=C8N6C(=C5)C(=C8C)C=C)C(=C(C7=C2)C)C=C)C)CCC(=O)O"
  },
  {
   "pdb": "4J91",
@@ -6561,7 +6588,8 @@
      -11.552
     ]
    ]
-  ]
+  ],
+  "smiles_stereo": "c1nc(c2c(n1)n(cn2)[C@H]3[C@@H]([C@@H]([C@H](O3)CO[P@](=O)(O)OP(=O)(O)O)O)O)N"
  },
  {
   "pdb": "2A2G",
@@ -6660,7 +6688,8 @@
      57.328
     ]
    ]
-  ]
+  ],
+  "smiles_stereo": "CC(=C)[C@@H]1CC[C@]2([C@@H](C1)O2)C"
  },
  {
   "pdb": "3IGV",
@@ -6951,7 +6980,8 @@
      50.246
     ]
    ]
-  ]
+  ],
+  "smiles_stereo": "CC[C@H]1CC(=C(C(=O)N1Cc2ccc(cc2)F)C3=Nc4ccc(cc4S(=O)(=O)N3)NS(=O)(=O)C)O"
  },
  {
   "pdb": "3R22",
@@ -7186,7 +7216,8 @@
      5.31
     ]
    ]
-  ]
+  ],
+  "smiles_stereo": "CS(=O)(=O)Nc1ccc(cn1)Nc2ncc3cnn(c3n2)C4CCCCCC4"
  },
  {
   "pdb": "8JT9",
@@ -7429,7 +7460,8 @@
      111.963
     ]
    ]
-  ]
+  ],
+  "smiles_stereo": "c1ccc2c(c1)C(=O)N(C(=O)N2)CCN3CCC(CC3)C(=O)c4ccc(cc4)F"
  },
  {
   "pdb": "1IY0",
@@ -7688,7 +7720,8 @@
      55.302
     ]
    ]
-  ]
+  ],
+  "smiles_stereo": "c1nc(c2c(n1)n(cn2)[C@H]3[C@@H]([C@@H]([C@H](O3)CO[P@](=O)(O)O[P@@](=O)(NP(=O)(O)O)O)O)O)N"
  },
  {
   "pdb": "7HB7",
@@ -7811,7 +7844,8 @@
      24.294
     ]
    ]
-  ]
+  ],
+  "smiles_stereo": "CC1(Cc2cccc(c2O1)C(=O)N)C"
  },
  {
   "pdb": "6FH5",
@@ -8038,7 +8072,8 @@
      31.875
     ]
    ]
-  ]
+  ],
+  "smiles_stereo": "CN1c2cnc3ccc(cc3c2N(C1=O)C4CCOCC4)c5cccnc5"
  },
  {
   "pdb": "8OW2",
@@ -8321,7 +8356,8 @@
      -8.675
     ]
    ]
-  ]
+  ],
+  "smiles_stereo": "CCN1CCN(CC1)c2ccc(cc2)Nc3cc(ccn3)Nc4cccc5c4N(CC5)C(=O)C"
  },
  {
   "pdb": "8OXU",
@@ -8612,7 +8648,8 @@
      -70.572
     ]
    ]
-  ]
+  ],
+  "smiles_stereo": "CN1C(=C(C(C(=C1CCN(C)C)C(=O)OC)c2ccc(cc2)C(F)(F)F)C(=O)OC)CCN(C)C"
  },
  {
   "pdb": "1XQS",
@@ -8807,7 +8844,8 @@
      29.993
     ]
    ]
-  ]
+  ],
+  "smiles_stereo": "c1nc(c2c(n1)n(cn2)[C@H]3[C@@H]([C@@H]([C@H](O3)COP(=O)(O)O)O)O)N"
  },
  {
   "pdb": "9Q1M",
@@ -9010,7 +9048,8 @@
      13.117
     ]
    ]
-  ]
+  ],
+  "smiles_stereo": "CCC(=O)n1cc2cccc(c2c1)Nc3cccc(c3)C(F)(F)F"
  },
  {
   "pdb": "2A98",
@@ -9213,7 +9252,8 @@
      13.161
     ]
    ]
-  ]
+  ],
+  "smiles_stereo": "[C@H]1([C@@H]([C@H]([C@@H]([C@H]([C@@H]1OP(=O)(O)O)O)OP(=O)(O)O)OP(=O)(O)O)O)O"
  },
  {
   "pdb": "4JAJ",
@@ -9344,7 +9384,8 @@
      7.529
     ]
    ]
-  ]
+  ],
+  "smiles_stereo": "c1ccc2c(c1)-c3cccnc3NC2=O"
  },
  {
   "pdb": "3COH",
@@ -9563,7 +9604,8 @@
      44.369
     ]
    ]
-  ]
+  ],
+  "smiles_stereo": "CCN1c2cc3c(cc2C(C1=O)(C)C)[nH]c-4c3CCCc5c4[nH]nc5C"
  },
  {
   "pdb": "8OW9",
@@ -9734,7 +9776,8 @@
      62.22
     ]
    ]
-  ]
+  ],
+  "smiles_stereo": "C[C@H](C(=O)O)O[C@@H]1[C@H]([C@@H](O[C@@H]([C@H]1O)CO)O)NC(=O)C"
  },
  {
   "pdb": "8E8R",
@@ -9889,7 +9932,8 @@
      110.534
     ]
    ]
-  ]
+  ],
+  "smiles_stereo": "CCCCCCCCCCCCCCCC(=O)O"
  },
  {
   "pdb": "7V1T",
@@ -10132,7 +10176,8 @@
      69.68
     ]
    ]
-  ]
+  ],
+  "smiles_stereo": "c1ccc(c(c1)NC2=CC(=O)c3cccc(c3C2=O)S(=O)(=O)N)N4CCNCC4"
  },
  {
   "pdb": "2HL2",
@@ -10375,7 +10420,8 @@
      -5.154
     ]
    ]
-  ]
+  ],
+  "smiles_stereo": "c1nc(c2c(n1)n(cn2)[C@H]3[C@@H]([C@@H]([C@H](O3)COS(=O)(=O)NC(=O)[C@H](CO)N)O)O)N"
  },
  {
   "pdb": "2GEJ",
@@ -10698,7 +10744,8 @@
      28.665
     ]
    ]
-  ]
+  ],
+  "smiles_stereo": "c1nc2c(n1[C@H]3[C@@H]([C@@H]([C@H](O3)CO[P@](=O)(O)O[P@](=O)(O)O[C@@H]4[C@H]([C@H]([C@@H]([C@H](O4)CO)O)O)O)O)O)N=C(NC2=O)N"
  },
  {
   "pdb": "3GND",
@@ -10821,7 +10868,8 @@
      -106.743
     ]
    ]
-  ]
+  ],
+  "smiles_stereo": "C([C@H]([C@H](C(=O)CO)O)O)OP(=O)(O)O"
  },
  {
   "pdb": "9T07",
@@ -11128,7 +11176,8 @@
      32.376
     ]
    ]
-  ]
+  ],
+  "smiles_stereo": "c1cc-2c(c(c1)F)S(=O)(=O)Cc3c2n(nc3C(=O)N4CCOCC4)c5ccc(cc5)CN6CCOCC6"
  },
  {
   "pdb": "9BEQ",
@@ -11539,7 +11588,8 @@
      -8.053
     ]
    ]
-  ]
+  ],
+  "smiles_stereo": "CC[C@@H](c1cc(c(c(c1)OC)OC)OC)C(=O)N2CCCC[C@H]2C(=O)O[C@H](CCc3ccc(c(c3)OC)OC)c4cccc(c4)OCC(=O)O"
  },
  {
   "pdb": "5W9R",
@@ -11742,7 +11792,8 @@
      96.939
     ]
    ]
-  ]
+  ],
+  "smiles_stereo": "CC(C)(C)n1c2c(c(n1)Cc3c[nH]c4c3cccc4)c(ncn2)N"
  },
  {
   "pdb": "4ICA",
@@ -11921,7 +11972,8 @@
      3.041
     ]
    ]
-  ]
+  ],
+  "smiles_stereo": "CCOCCOCCOCCOCCOCCOCCO"
  },
  {
   "pdb": "2WPO",
@@ -12276,7 +12328,8 @@
      67.4
     ]
    ]
-  ]
+  ],
+  "smiles_stereo": "C[C@@H]([C@@H](C(=O)NCc1ccc(cc1)I)O)NC(=O)[C@H](CC(=O)n2cccc2)NC(=O)[C@H](C(C)(C)C)NC(=O)CC(C)(C)C"
  },
  {
   "pdb": "1JZR",
@@ -12447,7 +12500,8 @@
      52.46
     ]
    ]
-  ]
+  ],
+  "smiles_stereo": "C(CC(=O)N[C@@H](CS)C(=O)NCC(=O)O)[C@@H](C(=O)O)N"
  },
  {
   "pdb": "1TSI",
@@ -12546,7 +12600,8 @@
      24.708
     ]
    ]
-  ]
+  ],
+  "smiles_stereo": "C(CC(=O)NO)CP(=O)([O-])[O-]"
  },
  {
   "pdb": "4LQ2",
@@ -12637,7 +12692,8 @@
      -6.792
     ]
    ]
-  ]
+  ],
+  "smiles_stereo": "CC(=O)OC[C@@H](C(=O)O)N"
  },
  {
   "pdb": "3DLP",
@@ -12728,7 +12784,8 @@
      -10.622
     ]
    ]
-  ]
+  ],
+  "smiles_stereo": "c1cc(ccc1C(=O)O)Cl"
  },
  {
   "pdb": "5LO1",
@@ -12987,7 +13044,8 @@
      -28.01
     ]
    ]
-  ]
+  ],
+  "smiles_stereo": "CCNC(=O)C1(CCC1)c2ccc3c(c2)c(nc(n3)N)C(=O)N4Cc5ccccc5C4"
  },
  {
   "pdb": "3KTJ",
@@ -13102,7 +13160,8 @@
      29.754
     ]
    ]
-  ]
+  ],
+  "smiles_stereo": "C1CCC(CC1)NCCS(=O)(=O)O"
  },
  {
   "pdb": "5DTE",
@@ -13209,7 +13268,8 @@
      2.03
     ]
    ]
-  ]
+  ],
+  "smiles_stereo": "C([C@@H]1[C@H]([C@H]([C@H]([C@@H](O1)O)O)O)O)O"
  },
  {
   "pdb": "24XZ",
@@ -13420,7 +13480,8 @@
      165.533
     ]
    ]
-  ]
+  ],
+  "smiles_stereo": "C1=CN(C(=O)NC1=O)[C@H]2[C@@H]([C@@H]([C@H](O2)CO[P@@](=O)(O)OP(=O)(O)O)O)O"
  },
  {
   "pdb": "9DP6",
@@ -13607,7 +13668,8 @@
      186.66
     ]
    ]
-  ]
+  ],
+  "smiles_stereo": "CC(C)(COP(=O)(O)O)[C@H](C(=O)NCCC(=O)NCCS)O"
  },
  {
   "pdb": "2OPR",
@@ -13778,7 +13840,8 @@
      25.149
     ]
    ]
-  ]
+  ],
+  "smiles_stereo": "CC[C@H]1C(=O)Nc2ccc(cc2N1C(=O)OC(C)C)F"
  },
  {
   "pdb": "3WGN",
@@ -14045,7 +14108,8 @@
      3.686
     ]
    ]
-  ]
+  ],
+  "smiles_stereo": "c1nc2c(n1[C@H]3[C@@H]([C@@H]([C@H](O3)CO[P@](=O)(O)O[P@](=O)(O)OP(=S)(O)O)O)O)N=C(NC2=O)N"
  },
  {
   "pdb": "4EJW",
@@ -14376,7 +14440,8 @@
      4.335
     ]
    ]
-  ]
+  ],
+  "smiles_stereo": "[H]/N=C(/N)\\N[C@@H]1[C@H]([C@@H]([C@H]([C@@H]([C@H]1O)O)O[C@H]2[C@@H]([C@]([C@@H](O2)C)(C=O)O)O[C@H]3[C@H]([C@@H]([C@H]([C@@H](O3)CO)O)O)NC)N/C(=N\\[H])/N)O"
  },
  {
   "pdb": "8QIN",
@@ -14635,7 +14700,8 @@
      24.382
     ]
    ]
-  ]
+  ],
+  "smiles_stereo": "Cc1cc2c(cc1C)N(C3=NC(=O)NC(=O)C3=N2)C[C@@H]([C@@H]([C@@H](COP(=O)(O)O)O)O)O"
  },
  {
   "pdb": "6TIA",
@@ -14918,7 +14984,8 @@
      -36.01
     ]
    ]
-  ]
+  ],
+  "smiles_stereo": "CC1(CC1)Oc2c3c(ccc(n3)c4cnn(c4)C)nc(n2)Nc5cnn(c5)C6CCN(CC6)C"
  },
  {
   "pdb": "6EJ4",
@@ -15105,7 +15172,8 @@
      14.156
     ]
    ]
-  ]
+  ],
+  "smiles_stereo": "c1cc(cc(c1)N)c2cc3c(c[nH]c3nc2)c4cccnc4"
  },
  {
   "pdb": "8XL2",
@@ -15524,7 +15592,8 @@
      316.76
     ]
    ]
-  ]
+  ],
+  "smiles_stereo": "CC(=O)SCCNC(=O)CCNC(=O)[C@@H](C(C)(C)CO[P@](=O)(O)O[P@@](=O)(O)OC[C@@H]1[C@H]([C@H]([C@@H](O1)n2cnc3c2ncnc3N)O)OP(=O)(O)O)O"
  },
  {
   "pdb": "7QYT",
@@ -15711,7 +15780,8 @@
      -19.564
     ]
    ]
-  ]
+  ],
+  "smiles_stereo": "Cc1c2c(c([nH]1)c3csc(n3)N4CCNCC4)CCCC2=O"
  },
  {
   "pdb": "1JLF",
@@ -15882,7 +15952,8 @@
      22.152
     ]
    ]
-  ]
+  ],
+  "smiles_stereo": "Cc1ccnc2c1NC(=O)c3cccnc3N2C4CC4"
  },
  {
   "pdb": "7YX1",
@@ -16237,7 +16308,8 @@
      14.555
     ]
    ]
-  ]
+  ],
+  "smiles_stereo": "Cc1c(c([nH]c1\\C=C/2\\C(=C(C(=O)N2)C=C)C)\\C=C/3\\C(=C(C(=N3)\\C=C/4\\C(=C(C(=O)N4)C)C=C)C)CCC(=O)O)CCC(=O)O"
  },
  {
   "pdb": "7UWO",
@@ -16360,7 +16432,8 @@
      -55.592
     ]
    ]
-  ]
+  ],
+  "smiles_stereo": "CC(=O)Nc1ccc(cc1)NC(=O)C"
  },
  {
   "pdb": "5HI2",
@@ -16627,7 +16700,8 @@
      -12.782
     ]
    ]
-  ]
+  ],
+  "smiles_stereo": "CNC(=O)c1cc(ccn1)Oc2ccc(cc2)NC(=O)Nc3ccc(c(c3)C(F)(F)F)Cl"
  },
  {
   "pdb": "7N93",
@@ -16886,7 +16960,8 @@
      -15.359
     ]
    ]
-  ]
+  ],
+  "smiles_stereo": "c1cc2c(c(c1)C(=O)N)ncnc2N[C@H](CN3CCC3)c4ccc(c(c4)C(F)(F)F)Cl"
  },
  {
   "pdb": "8FDV",
@@ -17337,7 +17412,8 @@
      86.477
     ]
    ]
-  ]
+  ],
+  "smiles_stereo": "Cc1cc2c(cc1C)N(C3=C(N2C[C@@H]([C@@H]([C@@H](COP(=O)(O)OP(=O)(O)OC[C@@H]4[C@H]([C@H]([C@@H](O4)n5cnc6c5ncnc6N)O)O)O)O)O)NC(=O)NC3=O)C=O"
  },
  {
   "pdb": "3DTW",
@@ -17588,7 +17664,8 @@
      9.4
     ]
    ]
-  ]
+  ],
+  "smiles_stereo": "c1cc(cc(c1)Nc2c3ccc(c(c3on2)C(=O)Nc4cncnc4)Cl)C(F)(F)F"
  },
  {
   "pdb": "5YXB",
@@ -17887,7 +17964,8 @@
      -24.658
     ]
    ]
-  ]
+  ],
+  "smiles_stereo": "Cc1c(c(c(c(n1)C)C(=O)OC/C=C/c2ccccc2)c3cccc(c3)[N+](=O)[O-])C(=O)OCCOC"
  },
  {
   "pdb": "6C3I",
@@ -18098,7 +18176,8 @@
      58.792
     ]
    ]
-  ]
+  ],
+  "smiles_stereo": "CCCCCCCC\\C=C/CCCCCCCC(=O)OC[C@@H](CO)O"
  },
  {
   "pdb": "3WHK",
@@ -18357,7 +18436,8 @@
      36.953
     ]
    ]
-  ]
+  ],
+  "smiles_stereo": "c1nc(c2c(n1)n(cn2)[C@H]3[C@@H]([C@@H]([C@H](O3)CO[P@@](=O)(O)O[P@](=O)(O)OP(=O)(O)O)O)O)N"
  },
  {
   "pdb": "2HZN",
@@ -18584,7 +18664,8 @@
      40.143
     ]
    ]
-  ]
+  ],
+  "smiles_stereo": "c1cc(cc(c1)NC(=O)Nc2ccc(cc2)Oc3ccncc3)C(F)(F)F"
  },
  {
   "pdb": "1P17",
@@ -18779,7 +18860,8 @@
      -7.414
     ]
    ]
-  ]
+  ],
+  "smiles_stereo": "c1nc2c(n1[C@H]3[C@@H]([C@@H]([C@H](O3)COP(=O)(O)O)O)O)N=CNC2=O"
  },
  {
   "pdb": "1C72",
@@ -19062,7 +19144,8 @@
      66.996
     ]
    ]
-  ]
+  ],
+  "smiles_stereo": "c1cc(ccc1[N+](=O)[O-])OC[C@H](CO)SC[C@@H](C(=O)NCC(=O)O)NC(=O)CC[C@@H](C(=O)O)N"
  },
  {
   "pdb": "5L6W",
@@ -19321,7 +19404,8 @@
      26.995
     ]
    ]
-  ]
+  ],
+  "smiles_stereo": "c1nc(c2c(n1)n(cn2)[C@H]3[C@@H]([C@@H]([C@H](O3)COP(=O)(O)OP(=O)(O)OP(=S)(O)O)O)O)N"
  },
  {
   "pdb": "5AR7",
@@ -19540,7 +19624,8 @@
      8.409
     ]
    ]
-  ]
+  ],
+  "smiles_stereo": "CC(C)(C)c1cc(no1)NC(=O)Nc2ccc(cc2)Oc3ccncc3"
  },
  {
   "pdb": "9M1P",
@@ -19615,7 +19700,8 @@
      138.389
     ]
    ]
-  ]
+  ],
+  "smiles_stereo": "c1c(nc[nH]1)CCN"
  },
  {
   "pdb": "1UH0",
@@ -19754,7 +19840,8 @@
      15.14
     ]
    ]
-  ]
+  ],
+  "smiles_stereo": "CC(=O)N[C@@H]1[C@H]([C@H]([C@H](O[C@@H]1OC)CO)O)O"
  },
  {
   "pdb": "7VL8",
@@ -19989,7 +20076,8 @@
      117.175
     ]
    ]
-  ]
+  ],
+  "smiles_stereo": "CC(C)CCC[C@@H](C)[C@H]1CC[C@@H]2[C@@]1(CC[C@H]3[C@H]2CC=C4[C@@]3(CC[C@@H](C4)O)C)C"
  },
  {
   "pdb": "2CKE",
@@ -20136,7 +20224,8 @@
      13.455
     ]
    ]
-  ]
+  ],
+  "smiles_stereo": "c1cc2cnccc2c(c1)S(=O)(=O)NCCN"
  },
  {
   "pdb": "7AEM",
@@ -20467,7 +20556,8 @@
      -24.625
     ]
    ]
-  ]
+  ],
+  "smiles_stereo": "CN1CCN(CC1)C2CCN(CC2)c3ccc(c(c3)OC)Nc4ncc(c(n4)Nc5ccccc5P(=O)(C)C)Cl"
  },
  {
   "pdb": "3BUS",
@@ -20686,7 +20776,8 @@
      28.034
     ]
    ]
-  ]
+  ],
+  "smiles_stereo": "c1nc(c2c(n1)n(cn2)[C@H]3[C@@H]([C@@H]([C@H](O3)CSCC[C@@H](C(=O)O)N)O)O)N"
  },
  {
   "pdb": "9MCU",
@@ -20977,7 +21068,8 @@
      154.548
     ]
    ]
-  ]
+  ],
+  "smiles_stereo": "CC(C)CCC[C@@H](C)[C@H]1CC[C@@H]2[C@@]1(CC[C@H]3[C@H]2CC=C4[C@@]3(CC[C@@H](C4)OC(=O)CCC(=O)O)C)C"
  },
  {
   "pdb": "8OG9",
@@ -21172,7 +21264,8 @@
      6.12
     ]
    ]
-  ]
+  ],
+  "smiles_stereo": "c1ccc2c(c1)cc(n3c2ncc3)C4(CC4)c5ccc(cc5)Cl"
  },
  {
   "pdb": "1R5N",
@@ -21407,7 +21500,8 @@
      56.613
     ]
    ]
-  ]
+  ],
+  "smiles_stereo": "c1nc2c(n1[C@H]3[C@@H]([C@@H]([C@H](O3)CO[P@](=O)(O)OP(=O)(O)O)O)O)N=C(NC2=O)N"
  },
  {
   "pdb": "4JRV",
@@ -21738,7 +21832,8 @@
      -0.36
     ]
    ]
-  ]
+  ],
+  "smiles_stereo": "CN(C)CCCC(=O)Nc1cccc(c1)c2c3c(ncnc3oc2c4ccccc4)N[C@H](CO)c5ccccc5"
  },
  {
   "pdb": "3HHM",
@@ -21997,7 +22092,8 @@
      113.209
     ]
    ]
-  ]
+  ],
+  "smiles_stereo": "CC(=O)O[C@@H]1C[C@]2([C@@H](CCC2=O)C3=C1[C@@]4(c5c(coc5C3=O)C(=O)O[C@@H]4COC)C)C"
  },
  {
   "pdb": "7S8P",
@@ -22216,7 +22312,8 @@
      86.828
     ]
    ]
-  ]
+  ],
+  "smiles_stereo": "C[C@@]12CC3C[C@@](C1)(CC(C3)(C2)C(=O)N[C@H](Cc4ccccc4)C(=O)O)C"
  },
  {
   "pdb": "6UH7",
@@ -22395,7 +22492,8 @@
      112.319
     ]
    ]
-  ]
+  ],
+  "smiles_stereo": "CCCCCCCCCCCCCC=C[C@@H]([C@@H](CO)N)O"
  },
  {
   "pdb": "8BVD",
@@ -22598,7 +22696,8 @@
      -12.917
     ]
    ]
-  ]
+  ],
+  "smiles_stereo": "c1cc2cc(ccc2nc1)/C=C/C[C@@H]3[C@H]([C@H]([C@@H]([C@H](O3)CO)O)O)O"
  },
  {
   "pdb": "7JVR",
@@ -22953,7 +23052,8 @@
      129.437
     ]
    ]
-  ]
+  ],
+  "smiles_stereo": "CC(C)C[C@H]1C(=O)N2CCC[C@H]2[C@]3(N1C(=O)[C@](O3)(C(C)C)NC(=O)[C@H]4CN([C@@H]5Cc6c7c(cccc7[nH]c6Br)C5=C4)C)O"
  },
  {
   "pdb": "8J6J",
@@ -23100,6 +23200,7 @@
      80.58
     ]
    ]
-  ]
+  ],
+  "smiles_stereo": "CCCCCN1c2c([nH]c(n2)Cl)C(=O)NC1=O"
  }
 ]

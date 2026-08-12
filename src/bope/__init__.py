@@ -45,6 +45,10 @@ the geometry perception is validated on the eval dataset, OpenBabel is
 known to corrupt N-rich ring systems, and the distance fallback is bare
 topology.
 
+Stereochemistry is a separate concern: nothing here labels centers, and
+:func:`bope.stereo.perceive_stereochemistry` assigns R/S and E/Z from
+the coordinates on request.
+
 Validation
 ----------
 The pipeline was validated end-to-end on 16 experimental crystal
@@ -90,7 +94,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from bope import ccd, distance, geometry, helpers, openbabel, tables
+from bope import ccd, distance, geometry, helpers, openbabel, stereo, tables
 from bope._deps import (
     _OPENBABEL_AVAILABLE,
     _RDKIT_AVAILABLE,
@@ -100,6 +104,7 @@ from bope.distance import perceive_bond_orders_distance
 from bope.geometry import perceive_bond_orders_geometric
 from bope.helpers import _build_rwmol, _distance_bond_graph
 from bope.openbabel import perceive_bond_orders_with_openbabel
+from bope.stereo import perceive_stereochemistry
 
 #: Strategy name for "no atoms" / "RDKit unavailable" / "everything failed".
 NO_STRATEGY = ""
