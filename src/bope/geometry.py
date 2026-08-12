@@ -17,15 +17,19 @@ where OpenBabel's ``PerceiveBondOrders`` corrupts ring systems
 from __future__ import annotations
 
 import math
+from itertools import combinations
 from typing import Any
 
 from bope._deps import Chem, rdGeometry
 from bope.helpers import _planarity_rms, _sym_pair
 from bope.tables import (
     _AROMATIC_ENVELOPE,
+    _AROMATIC_RESCUE_RMS_MAX,
+    _RESCUE_RING_BOND_MAX,
     _AROMATIC_SLACK_BOND,
     _AROMATIC_SLACK_DROP,
     _AROMATIC_SLACK_RING,
+    _AROMATIC_SLACK_SHORT,
     _BOND_ORDER_TABLE,
     _CRYSTAL_CARBONYL,
     _HUCKEL,
@@ -76,13 +80,88 @@ def perceive_bond_orders_geometric(
         rw0.AddBond(i, j, Chem.BondType.SINGLE)  # type: ignore[attr-defined]
     rings_info = Chem.GetSymmSSSR(rw0.GetMol())  # type: ignore[attr-defined]
 
+    graph_nbrs_all: dict[int, list[int]] = {}
+    for a, b in graph:
+        graph_nbrs_all.setdefault(a, []).append(b)
+        graph_nbrs_all.setdefault(b, []).append(a)
+
     cand_rings: list[list[int]] = []
     ring_excess: dict[tuple[int, ...], float] = {}
+    # atoms shared with other rings: a bond from a ring atom to one of these
+    # is a fusion bond or an N-aryl bond of the ring system, never an exo
+    # double (the indole 2,3-bond, the purine imidazole C-N, an N-aryl
+    # pyrrole) - those are single bonds that stay inside the fused aromatic
+    # system or are policed by the aniline rule and the valence demotion
+    # pass at assemble time.
+    other_ring_atoms: set[int] = set()
+    for r2 in rings_info:
+        other_ring_atoms.update(r2)
     for ring in rings_info:
         rl = list(ring)
+        if len(rl) < 5:
+            continue  # 4-membered (and smaller) rings are never aromatic:
+                      # the square faces of a saturated cage like cubane are
+                      # perfectly planar and their fused 6-atom unions score
+                      # a Huckel 6-pi rescue, which would mark the cage
+                      # aromatic and strip its hydrogens (C8H8 -> C8).
+                      # Anti-aromatic or non-aromatic, 4-rings (cubane,
+                      # cyclobutadiene, biphenylene's central ring, the
+                      # beta-lactam azetidinone) never take part in aromatic
+                      # perception.
         rms = _planarity_rms([coords[i] for i in rl])
         if rms > 0.12:
             continue
+        # a 5-membered aromatic ring cannot carry an exocyclic double bond:
+        # in any valid kekule pattern the lone-pair atom (N-H / O / S) takes
+        # two singles and every other atom takes exactly one ring double, so
+        # an atom with a genuine exo double (valence already spent) makes
+        # the ring unkekulizable.  The 8TO5 azadiene ring
+        # (C2'=N-C38-C32=C2''-C2' with the exo C38=C9b) is such a
+        # non-aromatic diene whose N-H form scores 6 pi and would be marked
+        # aromatic - then SanitizeMol fails.  Six-membered rings are
+        # unaffected (uracil / styrene / coumarin carbonyl and vinyl
+        # substituents take ring singles and kekulize).
+        # The length test alone cannot tell a real exo double from a short
+        # single (the PKK benzofuran Ar-C(=O) bond refines to 1.36 A): a
+        # bond is a genuine blocker only when the exo atom stays within
+        # valence with it as a double - otherwise the valence demotion pass
+        # fixes it at assemble time and the ring stays aromatic.
+        if len(rl) == 5:
+            rset = set(rl)
+            blocked = False
+            for a in rl:
+                for j in graph_nbrs_all.get(a, ()):
+                    if j in rset or j in other_ring_atoms:
+                        continue
+                    dlen = blen[_sym_pair(a, j)]
+                    pair = _sym_pair(elements[a], elements[j])
+                    if pair in _TRIPLE_BOND_TABLE and dlen <= _TRIPLE_BOND_TABLE[pair]:
+                        continue  # a nitrile / alkyne substituent is a
+                                  # single-atom triple, not a double
+                    dmax = _BOND_ORDER_TABLE.get(pair, (None, None))[1]
+                    if dmax is None or dlen > dmax:
+                        continue
+                    vmax = _MAX_VALENCE.get(elements[j])
+                    if vmax is not None:
+                        val = 2.0  # this bond as a double
+                        for k in graph_nbrs_all.get(j, ()):
+                            if k == a:
+                                continue
+                            dk = blen[_sym_pair(j, k)]
+                            pk = _sym_pair(elements[j], elements[k])
+                            if pk in _TRIPLE_BOND_TABLE and dk <= _TRIPLE_BOND_TABLE[pk]:
+                                val += 3.0
+                            else:
+                                dkmax = _BOND_ORDER_TABLE.get(pk, (None, None))[1]
+                                val += 2.0 if dkmax is not None and dk <= dkmax else 1.0
+                        if val > vmax:
+                            continue  # demotable - leave it to the demotion pass
+                    blocked = True
+                    break
+                if blocked:
+                    break
+            if blocked:
+                continue
         ok = True
         excess = 0.0
         for k in range(len(rl)):
@@ -91,7 +170,7 @@ def perceive_bond_orders_geometric(
             lo, hi = _AROMATIC_ENVELOPE.get(
                 _sym_pair(elements[i], elements[j]), (1.27, 1.50)
             )
-            if d < lo:
+            if d < lo - _AROMATIC_SLACK_SHORT:
                 ok = False  # short bonds stay strict: a double-embedded
                 break       # ring is a diene, not an aromatic candidate
             if d > hi:
@@ -205,22 +284,34 @@ def perceive_bond_orders_geometric(
                     return 2
                 if any(carbonyl_c(e, _CRYSTAL_CARBONYL) for e in exo_nbrs[a]):
                     return 2
-                # an N-alkyl 6-ring N is pyridinium only in a pyridine-like
-                # ring (exactly one N).  A ring holding a second N is a
-                # saturated lactam/amine (1D1): the alkyl N has no p orbital,
-                # and counting it as 1 pi would let the ring pass Huckel at
-                # 6 pi with the amide N at 2 pi (0 carbonyl + 1 + 1 + 1 + 1
-                # + 2) and come out aromatic (and unkekulizable unless the
-                # wrong N is charged).
-                if any(
-                    sum(1 for b in rl if elements[b] == "N") > 1
-                    for rl in cand_rings if a in rl and len(rl) > 5
-                ):
-                    return None
+                # An N-alkyl 6-ring N is pyridinium only in a pyridine-like
+                # ring (exactly one N).  A ring holding a second N is either
+                # a saturated lactam/amine (1D1: the sibling N is amide-type
+                # with a heavy exo substituent, so the alkyl N has no p
+                # orbital - None) or a fused N-heteroaromatic where the alkyl
+                # N is a neutral pyrrole-type N with its lone pair in the
+                # ring p orbital (flavin N10 in FMN/RS3/FAD: all sibling N's
+                # are pyridine-type with no exo - 2 pi; the fused system
+                # supplies the pi the per-ring count lacks).  The amide-type
+                # sibling is the discriminator: pyridine-type N's carry no
+                # heavy exo substituent.
+                for rl in cand_rings:
+                    if a in rl and len(rl) > 5:
+                        others = [b for b in rl if elements[b] == "N" and b != a]
+                        if not others:
+                            return 1  # exactly one N: plain pyridinium
+                        if any(exo_sigma(b) > 0 for b in others):
+                            return None  # amide-type sibling: saturated amine
+                        return 2  # pyridine-type siblings: pyrrole-like N
                 return 1
             if rs == 3 and exo == 0:
-                return 1  # fusion N shared by two rings (purine / triazolo-
-                          # triazine bridgehead): pyridine-type, 0 H
+                # fusion N shared by two rings (triazolo-triazine bridgehead,
+                # etc.): 3 ring sigma, no H - RDKit gives it Two electrons
+                # (countAtomElec: dv 3, degree 3, nlp 2 -> 2).  The old 1-pi
+                # assignment made RNL/QUP/9KI triazoles score 5-7, failing
+                # Huckel and gaining +1 H in the formula; 2 pi makes the
+                # triazole itself Huckel (6) and unblocks kekulization.
+                return 2
             if rs == 2 and exo == 0:
                 return 2 if h_choice else 1  # pyrrole(1H) vs pyridine(0H)
             return None
@@ -236,38 +327,173 @@ def perceive_bond_orders_geometric(
         ]
         flex_idx = {a: i for i, a in enumerate(flex_n)}
 
-        def score(mask: int) -> int:
-            ok_rings = 0
-            for rl in cand_rings:
-                total = 0
-                good = True
-                for a in rl:
-                    p = pi_of(a, (mask >> flex_idx[a]) & 1 if a in flex_idx else 0)
-                    if p is None:
-                        good = False
-                        break
-                    total += p
-                if good and total in _HUCKEL:
-                    ok_rings += 1
-            return ok_rings
+        # fused systems: rings sharing an edge (>= 2 atoms) belong to one
+        # conjugated system, aromaticity decided by the exact RDKit
+        # subset-union rule in arom_for(): a ring is aromatic iff it is in a
+        # fused subset whose 1-2-ring atom union is Huckel.  Isoalloxazine's
+        # pyrazine ring is 7 pi per-ring and its uracil ring 5 pi, yet the
+        # {uracil,pyrazine} union is 10 (and the tricycle 14) - both 4n+2;
+        # the triazolo-triazines of RNL/QUP/9KI pass the same way (6-ring
+        # 7 pi, 5-ring 6 pi, union 10).
+        ring_sys = list(range(len(cand_rings)))
+        for i in range(len(cand_rings)):
+            for j in range(i):
+                if len(set(cand_rings[i]) & set(cand_rings[j])) >= 2:
+                    si, sj = ring_sys[i], ring_sys[j]
+                    for k in range(len(cand_rings)):
+                        if ring_sys[k] == sj:
+                            ring_sys[k] = si
+        sys_rings: dict[int, list[int]] = {}
+        for i, s in enumerate(ring_sys):
+            sys_rings.setdefault(s, []).append(i)
 
-        best_mask, best_score = None, -1
+        def pi_val(a: int, mask: int) -> int | None:
+            return pi_of(a, (mask >> flex_idx[a]) & 1 if a in flex_idx else 0)
+
+        def huckel_subset(mask: int, rings: list[int]) -> bool:
+            """Exact RDKit fused-ring rule (applyHuckelToFused): the union of
+            the subset's ring atoms - each atom present in 1-2 rings of the
+            subset counted once, atoms in 3+ rings excluded (they have no
+            p-orbital contribution, the acepentalene fix) - must be a Huckel
+            4n+2 pi set.  The subset must also be fused (connected), checked
+            by the caller."""
+            cnt: dict[int, int] = {}
+            for ri in rings:
+                for a in cand_rings[ri]:
+                    cnt[a] = cnt.get(a, 0) + 1
+            unon = [a for a, c in cnt.items() if c in (1, 2)]
+            if len(unon) < 3:
+                return False
+            tot = 0
+            for a in unon:
+                p = pi_val(a, mask)
+                if p is None:
+                    return False  # an sp3-type N poisons the subset, not a
+                                  # 0-pi atom (1D1's lactam alkyl N)
+                tot += p
+            return tot in _HUCKEL
+
+        def subset_fused(rings: list[int]) -> bool:
+            """checkFused: the subset's rings must form one connected
+            component via shared edges (>= 2 shared atoms)."""
+            n = len(rings)
+            if n <= 1:
+                return True
+            parent = list(range(n))
+
+            def find(x: int) -> int:
+                while parent[x] != x:
+                    parent[x] = parent[parent[x]]
+                    x = parent[x]
+                return x
+
+            for i in range(n):
+                for j in range(i):
+                    if len(set(cand_rings[rings[i]]) & set(cand_rings[rings[j]])) >= 2:
+                        ri, rj = find(i), find(j)
+                        if ri != rj:
+                            parent[rj] = ri
+            return len({find(i) for i in range(n)}) == 1
+
+        def arom_for(mask: int) -> tuple[set[int], set[int]]:
+            """(aromatic ring indices, per-ring aromatic ring indices) per
+            the exact RDKit fused-subset rule: a ring is aromatic iff it
+            belongs to a fused subset (sizes 1..min(n,6)) whose 1-2-ring
+            atom union is Huckel.  Trying subsets in size order and marking
+            every ring of a passing subset reproduces the C++ loop."""
+            arom: set[int] = set()
+            per_ring: set[int] = set()
+            def rescue_eligible(ri: int) -> bool:
+                """A ring may be rescued through a fused subset only if it
+                shows no reduction and contains no in-ring ketone-type C=O.
+                A reduced ring (an sp3 atom: the FADH2 pyrazine of 7VKD is
+                puckered with 1.47-1.48 A edges) must stay out of the
+                rescue, which would rewrite reduced hydrogens back into the
+                formula.  Two independent reduction tests, OR'd because
+                neither works alone: at fine resolution the oxidized RS3
+                pyrazine is flat but refines to the same 1.48-1.49 A edges,
+                while at 2.5-3.0 A the oxidized 8QIN flavin rings are bent
+                by pure coordinate noise (rms 0.096) but keep short
+                1.36-1.40 A edges.  A ring passes if it is essentially
+                planar (rms <= _AROMATIC_RESCUE_RMS_MAX) or free of long
+                edges (<= _RESCUE_RING_BOND_MAX, C=O-adjacent excepted: a
+                normal aromatic uracil carries ~1.47 A C-C(=O) singles).
+                The ketone gate keeps a cyclohexadienone ring (in-ring
+                C-C(=O)-C, e.g. the 537/1UKI ketone ring) out of the
+                rescue: its C=O carbon's p orbital sits in the exo double
+                and the ring is a non-aromatic dienone, and a ring carbon
+                carrying an exo double cannot take the alternating kekule
+                pattern - the mol is then unkekulizable.  Amide-type C=O
+                (a ring neighbour N - the flavin uracil, the RNL
+                pyrimidinone) stays rescuable: those rings are genuinely
+                heteroaromatic."""
+                if (_planarity_rms([coords[i] for i in cand_rings[ri]])
+                        > _AROMATIC_RESCUE_RMS_MAX):
+                    rl = cand_rings[ri]
+                    for k in range(len(rl)):
+                        i, j = rl[k], rl[(k + 1) % len(rl)]
+                        if blen[_sym_pair(i, j)] <= _RESCUE_RING_BOND_MAX:
+                            continue
+                        if (elements[i] == "C" and carbonyl_c(i)) or (
+                                elements[j] == "C" and carbonyl_c(j)):
+                            continue
+                        return False
+                rset = set(cand_rings[ri])
+                for a in cand_rings[ri]:
+                    if elements[a] != "C" or not carbonyl_c(a):
+                        continue
+                    rnbrs = [b for b in graph_nbrs[a] if b in rset]
+                    if len(rnbrs) == 2 and all(elements[b] == "C" for b in rnbrs):
+                        return False
+                return True
+
+            for rings in sys_rings.values():
+                n = len(rings)
+                for size in range(1, min(n, 6) + 1):
+                    for comb in combinations(rings, size):
+                        if not subset_fused(comb):
+                            continue
+                        if size > 1 and not all(rescue_eligible(ri) for ri in comb):
+                            continue
+                        if not huckel_subset(mask, comb):
+                            continue
+                        for ri in comb:
+                            arom.add(ri)
+                        if size == 1:
+                            per_ring.add(comb[0])
+            return arom, per_ring
+
+        def score(mask: int) -> tuple[int, int, int]:
+            """(aromatic rings, per-ring aromatic rings, amide-H count).
+            The total counts rings aromatic per-ring OR via any passing fused
+            subset (isoalloxazine's pyrazine is 7 pi per-ring and its uracil
+            5, yet the {uracil,pyrazine} union is 10 and the tricycle 14 -
+            both 4n+2); the per-ring count breaks ties toward the mask that
+            needs no system rescue (purine's N7-H tautomer over the
+            pyrimidine-N1-H tautomer, which is aromatic only via the
+            system); the amide-H count then breaks flavin-type ties: the
+            pyrrole-H prefers the N with the most carbonyl ring neighbours
+            (flavin N3 between the two C=O's, matching the ccd, over N1)."""
+            arom, per_ring = arom_for(mask)
+            ok = len(arom)
+            per_ring_n = len(per_ring)
+            amide_h = 0
+            for a in flex_n:
+                if (mask >> flex_idx[a]) & 1:
+                    amide_h += sum(
+                        1 for j in ring_nbrs[a]
+                        if carbonyl_c(j, _CRYSTAL_CARBONYL)
+                    )
+            return ok, per_ring_n, amide_h
+
+        best_mask, best_score = None, (-1, -1, -1)
         for mask in range(1 << len(flex_n)):
             s = score(mask)
             if s > best_score:
                 best_score, best_mask = s, mask
 
-        arom_rings = []
-        for rl in cand_rings:
-            ps = [
-                pi_of(a, (best_mask >> flex_idx[a]) & 1 if a in flex_idx else 0)
-                for a in rl
-            ]
-            if None in ps:
-                continue  # an sp3-type N (non-pyridinium) makes the ring
-                          # non-Huckel, not a 0-pi atom
-            if sum(ps) in _HUCKEL:
-                arom_rings.append(rl)
+        arom, _ = arom_for(best_mask)
+        arom_rings = [cand_rings[ri] for ri in sorted(arom)]
         arom_atoms = set()
         for rl in arom_rings:
             arom_atoms.update(rl)
@@ -276,7 +502,6 @@ def perceive_bond_orders_geometric(
             for k in range(len(rl)):
                 i, j = rl[k], rl[(k + 1) % len(rl)]
                 arom_bonds.add(_sym_pair(i, j))
-
         def assemble(exo_force_all: bool) -> tuple[Any | None, str | None]:
             """Build the mol with bond orders.  exo_force_all=False: only degree-1
             N/S exo to an aromatic atom (NH2 / amino-pyridine) is forced single;
@@ -295,26 +520,70 @@ def perceive_bond_orders_geometric(
                         # nitrile / alkyne: unmistakably short, checked first so an
                         # N/S exo triple on an aromatic ring (benzonitrile) survives
                         m.AddBond(i, j, Chem.BondType.TRIPLE)  # type: ignore[attr-defined]
-                    elif (i in arom_atoms or j in arom_atoms) and (
-                        elements[i] in ("N", "S") or elements[j] in ("N", "S")
-                    ):
-                        if exo_force_all:
+                    elif (i in arom_atoms) != (j in arom_atoms):
+                        # exactly one aromatic endpoint.  A non-aromatic atom
+                        # bonded to two or more aromatic atoms is a macrocycle
+                        # bridge (the porphyrin methine carbons of HEM/HEC/
+                        # ZNH, each sitting between two pyrrole rings): its
+                        # bonds to them are single, never double - the length
+                        # rule reads the 1.37-1.40 A bridges as C=C doubles,
+                        # and a bridge double saturates the pyrrole ring
+                        # carbon (valence 5 with its ring bonds), which then
+                        # cannot take its ring double and the kekulization
+                        # dies.  A genuine exo double substituent (vinyl,
+                        # carbonyl, imine) has exactly one aromatic neighbour.
+                        narm = i if i not in arom_atoms else j
+                        arom_nbrs = sum(
+                            1 for a, b in graph
+                            if (a == narm and b in arom_atoms)
+                            or (b == narm and a in arom_atoms)
+                        )
+                        if arom_nbrs >= 2:
                             m.AddBond(i, j, Chem.BondType.SINGLE)  # type: ignore[attr-defined]
-                        else:
-                            ns = i if elements[i] in ("N", "S") else j
-                            deg_ns = sum(1 for a, b in graph if a == ns or b == ns)
-                            if deg_ns == 1:
-                                # aniline / amino-pyridine NH2: single, always
+                        elif elements[i] in ("N", "S") or elements[j] in ("N", "S"):
+                            if exo_force_all:
                                 m.AddBond(i, j, Chem.BondType.SINGLE)  # type: ignore[attr-defined]
-                            elif pair in _BOND_ORDER_TABLE:
-                                _, dmax = _BOND_ORDER_TABLE[pair]
-                                m.AddBond(
-                                    i, j,
-                                    Chem.BondType.DOUBLE if (dmax is not None and d <= dmax)
-                                    else Chem.BondType.SINGLE,
-                                )  # type: ignore[attr-defined]
                             else:
-                                m.AddBond(i, j, Chem.BondType.SINGLE)  # type: ignore[attr-defined]
+                                ns = i if elements[i] in ("N", "S") else j
+                                deg_ns = sum(1 for a, b in graph if a == ns or b == ns)
+                                if deg_ns == 1:
+                                    # aniline / amino-pyridine NH2: single, always
+                                    m.AddBond(i, j, Chem.BondType.SINGLE)  # type: ignore[attr-defined]
+                                elif pair in _BOND_ORDER_TABLE:
+                                    _, dmax = _BOND_ORDER_TABLE[pair]
+                                    m.AddBond(
+                                        i, j,
+                                        Chem.BondType.DOUBLE if (dmax is not None and d <= dmax)
+                                        else Chem.BondType.SINGLE,
+                                    )  # type: ignore[attr-defined]
+                                else:
+                                    m.AddBond(i, j, Chem.BondType.SINGLE)  # type: ignore[attr-defined]
+                        elif pair in _BOND_ORDER_TABLE:
+                            # exo C-C / C-O / C-S substituent (methyl, vinyl,
+                            # carbonyl) of a single aromatic neighbour: on the
+                            # length rule like the non-aromatic pairs, so a
+                            # short conjugated C=C or C=O stays double while
+                            # the 1.43-1.55 A ring-substituent singles stay
+                            # single.
+                            _, dmax = _BOND_ORDER_TABLE[pair]
+                            m.AddBond(
+                                i, j,
+                                Chem.BondType.DOUBLE if (dmax is not None and d <= dmax)
+                                else Chem.BondType.SINGLE,
+                            )  # type: ignore[attr-defined]
+                        else:
+                            m.AddBond(i, j, Chem.BondType.SINGLE)  # type: ignore[attr-defined]
+                    elif i in arom_atoms:
+                        # both endpoints aromatic but the bond is not a ring
+                        # edge: an inter-ring linkage (N-aryl, S-aryl,
+                        # biphenyl, a fused-ring junction).  These are
+                        # single, never on the length rule - a double
+                        # between two aromatic atoms has no valid kekule,
+                        # and N-aryl C-N refines to 1.33-1.43 A in crystals
+                        # (the N-aryl pyrrole of QUP/5AEP measures 1.337),
+                        # inside the C=N cutoff.  Ring-internal doubles live
+                        # in the AROMATIC branch above.
+                        m.AddBond(i, j, Chem.BondType.SINGLE)  # type: ignore[attr-defined]
                     elif pair in _BOND_ORDER_TABLE:
                         _, dmax = _BOND_ORDER_TABLE[pair]
                         m.AddBond(
@@ -411,6 +680,65 @@ def perceive_bond_orders_geometric(
                     if vmax is None or a.GetIsAromatic() or a.GetFormalCharge() != 0:
                         continue
                     val = sum(b.GetBondTypeAsDouble() for b in a.GetBonds())
+                    if val == vmax and a.GetSymbol() == "C":
+                        # exactly-valent sp3-looking carbon holding a C=N
+                        # double: the length rule reads a noisy amine C-N as
+                        # a short imine (the STU sugar 4'-N-methylamino C-N
+                        # at 1.416 A measures 1.355 under 0.03-A bond-RMS
+                        # noise - inside the raised 1.37 imine cutoff that
+                        # the 8TO5 azadiene needs).  A genuine imine carbon
+                        # is sp2 with at most one carbon single (the 8TO5
+                        # ring C2'=N, PLP's pyridoxal C=N against an
+                        # aromatic ring); a carbon with two saturated
+                        # single-bonded carbon neighbours cannot hold a
+                        # double, so demote it.  Real C=N's survive:
+                        # oximes bond to O, amidines/guanidines to N's,
+                        # N-H ketimines have no heavy single on the N, and
+                        # conjugated imines fail the all-single-neighbour
+                        # test.
+                        db = [
+                            b for b in a.GetBonds()
+                            if b.GetBondType() == Chem.BondType.DOUBLE
+                            and not b.GetIsAromatic()
+                        ]
+                        if len(db) == 1:
+                            nbr = db[0].GetOtherAtom(a)
+                            if nbr.GetSymbol() == "N" and not nbr.GetIsAromatic():
+                                # exclude the double itself by endpoints - RDKit
+                                # wraps the same C++ bond in a fresh Python
+                                # object per GetBonds() call, so `is not` fails
+                                # and the double would be counted as a single.
+                                dbl_ends = (
+                                    db[0].GetBeginAtomIdx(), db[0].GetEndAtomIdx()
+                                )
+                                cn_singles = [
+                                    b for b in a.GetBonds()
+                                    if (b.GetBeginAtomIdx(), b.GetEndAtomIdx()) != dbl_ends
+                                    and (b.GetEndAtomIdx(), b.GetBeginAtomIdx()) != dbl_ends
+                                ]
+                                if (
+                                    len(cn_singles) >= 2
+                                    and all(
+                                        b.GetBondType() == Chem.BondType.SINGLE  # type: ignore[attr-defined]
+                                        and b.GetOtherAtom(a).GetSymbol() == "C"
+                                        and not b.GetOtherAtom(a).GetIsAromatic()
+                                        and all(
+                                            bb.GetBondType() == Chem.BondType.SINGLE  # type: ignore[attr-defined]
+                                            for bb in b.GetOtherAtom(a).GetBonds()
+                                        )
+                                        for b in cn_singles
+                                    )
+                                    and any(
+                                        b.GetBondType() == Chem.BondType.SINGLE  # type: ignore[attr-defined]
+                                        and b.GetOtherAtom(nbr).GetSymbol() == "C"
+                                        for b in nbr.GetBonds()
+                                    )
+                                ):
+                                    mol.GetBondBetweenAtoms(  # type: ignore[attr-defined]
+                                        db[0].GetBeginAtomIdx(), db[0].GetEndAtomIdx()
+                                    ).SetBondType(Chem.BondType.SINGLE)  # type: ignore[attr-defined]
+                                    changed = True
+                                    break
                     if val > vmax:
                         db = [
                             b for b in a.GetBonds()

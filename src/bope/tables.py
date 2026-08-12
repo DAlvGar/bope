@@ -66,8 +66,17 @@ _DOUBLE_BOND_TOLERANCE: float = 0.03
 
 #: (el1, el2) -> (single_max, double_max) bond lengths in Angstrom; a
 #: ``None`` double_max means the pair never takes a double bond.
+#: (el1, el2) -> (single_max, double_max) bond lengths in Angstrom; a
+#: ``None`` double_max means the pair never takes a double bond.
+#: The C=N double bound sits at 1.37 (not 1.33): low-resolution crystals
+#: elongate imines by up to ~0.05 A (the 8TO5 azadiene C=N refines to
+#: 1.360 A, a conjugated diene imine), and the valence demotion pass already
+#: protects the false doubles it admits: an amide C-N at 1.34-1.37 is
+#: demoted back to single when the carbonyl makes the carbon over-valent,
+#: the exo-NH2 rule keeps aniline-type C-N single regardless of length, and
+#: aromatic ring C-N is set AROMATIC before the length rule ever runs.
 _BOND_ORDER_TABLE: dict[tuple[str, str], tuple[float, float | None]] = {
-    ("C", "C"): (1.50, 1.38), ("C", "N"): (1.48, 1.33), ("C", "O"): (1.44, 1.30),
+    ("C", "C"): (1.50, 1.38), ("C", "N"): (1.48, 1.37), ("C", "O"): (1.44, 1.30),
     ("C", "S"): (1.82, 1.72), ("C", "P"): (1.85, 1.75),
     ("C", "F"): (1.40, None), ("C", "CL"): (1.80, None), ("C", "BR"): (1.95, None),
     ("C", "I"): (2.15, None), ("N", "N"): (1.47, 1.33), ("N", "O"): (1.45, 1.28),
@@ -114,6 +123,14 @@ _CRYSTAL_CARBONYL: float = 1.40
 _AROMATIC_SLACK_BOND: float = 0.03
 _AROMATIC_SLACK_RING: float = 0.06
 
+#: a candidate aromatic ring may undershoot its envelope lower bound by at
+#: most this much.  The lower bound stays strict (a double-embedded ring is
+#: a diene), but genuine aromatic bonds can measure slightly short: the
+#: RNL triazolo-pyridinone N-C at 1.272 A vs the (C,N) lower bound of 1.28
+#: (real imine-like C=N in N-rich rings refines to 1.27-1.30).  A ring
+#: containing a real triple bond (nitrile ~1.16-1.20 A) still sits far below.
+_AROMATIC_SLACK_SHORT: float = 0.01
+
 #: when the full aromatic set fails to kekulize, candidate rings admitted
 #: only through slack at or below this total excess are dropped and the
 #: perception retried.  Noise-level slack (1D1's pyridinone ring at +0.003)
@@ -121,5 +138,26 @@ _AROMATIC_SLACK_RING: float = 0.06
 #: set unkekulizable; true low-resolution aromatics sit well above the line
 #: (NDP's pyridinium ring +0.012, 07L's coumarin +0.041) and survive.
 _AROMATIC_SLACK_DROP: float = 0.005
+
+#: a ring may benefit from the fused-subset rescue (its Huckel count passing
+#: via the union of several rings) only if it shows no reduction: planar
+#: (rms below _AROMATIC_RESCUE_RMS_MAX) OR free of single-bond edges (all
+#: edges at most _RESCUE_RING_BOND_MAX, C=O-adjacent excepted - a normal
+#: aromatic uracil carries ~1.47 A C-C(=O) singles).  The rescue exists for
+#: flat fused systems whose per-ring pi count is off by the shared-edge
+#: accounting (the isoalloxazine pyrazine: 7 pi alone, 10 with its uracil);
+#: a reduced ring is a dihydro species instead - the FADH2 pyrazine of 7VKD
+#: (rms 0.089, edges 1.47-1.48) is the textbook butterfly pucker of a
+#: dihydro-flavin.  Neither test alone covers both resolutions: at fine
+#: resolution RS3's oxidized pyrazine is flat but refines to the same
+#: 1.48-1.49 A edges (4G6I rms 0.002), while at 2.5-3.0 A the oxidized
+#: flavin rings of 8QIN measure rms 0.096 off-plane (pure coordinate noise)
+#: but keep short 1.36-1.40 A edges.  Without the gate the
+#: {pyrazine,uracil}=10 rescue marks the reduced pyrazine aromatic and
+#: strips the N1-H/N5-H of the FADH2 formula.  Per-ring aromaticity keeps
+#: the looser 0.12 candidate-planarity bound.
+_AROMATIC_RESCUE_RMS_MAX: float = 0.05
+_RESCUE_RING_BOND_MAX: float = 1.44
+
 _MAX_VALENCE: dict[str, int] = {"C": 4, "N": 3, "O": 2, "S": 6, "P": 5}
 _HUCKEL: set[int] = {2, 6, 10, 14, 18}

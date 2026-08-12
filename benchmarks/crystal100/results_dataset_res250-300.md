@@ -8,7 +8,7 @@ Dataset: 101 PDB entries (protein-only, resolution band 2.5-3.0 A, one non-polym
 
 | method | formula | graph | exact | AddHs | recovery |
 |---|---|---|---|---|---|
-| geometry | 74/101 (73%) | 66/101 (65%) | 63/101 (62%) | 97/101 (96%) | 66/101 (65%) |
+| geometry | 79/101 (78%) | 71/101 (70%) | 68/101 (67%) | 101/101 (100%) | 71/101 (70%) |
 | openbabel | 78/101 (77%) | 63/101 (62%) | 61/101 (60%) | 98/101 (97%) | 63/101 (62%) |
 | distance | 11/101 (11%) | 11/101 (11%) | 11/101 (11%) | 53/101 (52%) | 11/101 (11%) |
 
@@ -20,9 +20,9 @@ Ligands whose formula matches but whose bond graph does not: the geometry tier's
 |---|---|---|---|
 | 8GUA | 1LT |  | C19H22F3N5O2S |
 | 7R75 | 33I |  | C17H19ClN6O |
-| 8E1X | U9P |  | C23H26N8O2 |
 | 1FVV | 107 |  | C21H15N5O3S2 |
 | 1UKI | 537 |  | C14H8N2O |
+| 5YJL | NAP |  | C21H28N7O17P3 |
 | 3IGV | B80 |  | C22H23FN4O6S2 |
 | 3COH | 83H |  | C21H24N4O |
 | 9M1P | HSM |  | C5H9N3 |
@@ -36,16 +36,14 @@ Every ligand the geometry tier failed to recover exactly.  This table is the inp
 | 8GUA | 1LT |  | C19H22F3N5O2S | wrong |  |
 | 7R75 | 33I |  | C17H19ClN6O | wrong |  |
 | 8E1X | U9P |  | C23H26N8O2 | wrong |  |
-| 5L3D | FAD |  | C27H33N9O15P2 | wrong |  |
 | 4MXZ | DB8 |  | C26H29Cl2N5O3 | wrong |  |
-| 7LIM | RBF |  | C17H20N4O6 | wrong |  |
 | 3PGQ | GY3 |  | C18H22N2O3 | wrong |  |
 | 4INR | 1G1 |  | C33H49N7O5S | wrong |  |
 | 4MPZ | IMD |  | C3H5N2+ | wrong |  |
 | 1FVV | 107 |  | C21H15N5O3S2 | wrong |  |
 | 1UKI | 537 |  | C14H8N2O | wrong |  |
 | 5YJL | NAP |  | C21H28N7O17P3 | wrong |  |
-| 2AMO | HEM |  | C34H32FeN4O4 | None | santize: Can't kekulize mol.  Unkekulized atoms: 4 5 6 7 15 17 21 22 23 24 28 29 30 31 |
+| 2AMO | HEM |  | C34H32FeN4O4 | wrong |  |
 | 3IGV | B80 |  | C22H23FN4O6S2 | wrong |  |
 | 1IY0 | ANP |  | C10H17N6O12P3 | wrong |  |
 | 3COH | 83H |  | C21H24N4O | wrong |  |
@@ -55,17 +53,14 @@ Every ligand the geometry tier failed to recover exactly.  This table is the inp
 | 3WGN | GSP |  | C10H16N5O13P3S | wrong |  |
 | 8TC3 | SF4 |  | Fe4S4 | wrong |  |
 | 4EJW | SRY |  | C21H39N7O12 | wrong |  |
-| 8QIN | FMN |  | C17H21N4O9P | wrong |  |
-| 6EJ4 | B7W |  | C18H14N4 | None | santize: Can't kekulize mol.  Unkekulized atoms: 7 8 9 10 11 12 14 |
 | 8XL2 | ACO |  | C23H38N7O17P3S | wrong |  |
 | 7QYT | GJI |  | C16H20N4OS | wrong |  |
-| 7YX1 | BLA |  | C33H34N4O6 | None | santize: Can't kekulize mol.  Unkekulized atoms: 2 3 4 |
+| 7YX1 | BLA |  | C33H34N4O6 | wrong |  |
 | 5YXB | 93O |  | C27H26N2O7 | wrong |  |
 | 1C72 | EPY |  | C19H26N4O10S | wrong |  |
 | 5L6W | AGS |  | C10H16N5O12P3S | wrong |  |
 | 9M1P | HSM |  | C5H9N3 | wrong |  |
 | 8OG9 | VM3 |  | C20H15ClN2 | wrong |  |
-| 4JRV | KJV |  | C32H33N5O3 | None | santize: Can't kekulize mol.  Unkekulized atoms: 9 10 11 12 13 |
 | 3HHM | KWT |  | C23H24O8 | wrong |  |
 | 8BVD | RLO |  | C18H21NO5 | wrong |  |
 
@@ -80,10 +75,10 @@ Every ligand the geometry tier failed to recover exactly.  This table is the inp
 | 7R75 | 33I |  | C17H19ClN6O | 2.83 | FAIL | FAIL | FAIL |
 | 8E1X | U9P |  | C23H26N8O2 | 2.68 | FAIL | OK | FAIL |
 | 5T28 | 74Q |  | C22H19N9 | 2.80 | OK | FAIL | FAIL |
-| 5L3D | FAD |  | C27H33N9O15P2 | 2.60 | FAIL | FAIL | FAIL |
+| 5L3D | FAD |  | C27H33N9O15P2 | 2.60 | OK | FAIL | FAIL |
 | 4MXZ | DB8 |  | C26H29Cl2N5O3 | 2.58 | FAIL | OK | FAIL |
 | 3EGQ | PE8 |  | C16H34O9 | 2.55 | OK | OK | OK |
-| 7LIM | RBF |  | C17H20N4O6 | 2.75 | FAIL | FAIL | FAIL |
+| 7LIM | RBF |  | C17H20N4O6 | 2.75 | OK | FAIL | FAIL |
 | 3PGQ | GY3 |  | C18H22N2O3 | 2.80 | FAIL | FAIL | FAIL |
 | 4INR | 1G1 |  | C33H49N7O5S | 2.70 | FAIL | FAIL | FAIL |
 | 9J5C | TKU |  | C24H38O4 | 2.70 | OK | OK | FAIL |
@@ -139,9 +134,9 @@ Every ligand the geometry tier failed to recover exactly.  This table is the inp
 | 3WGN | GSP |  | C10H16N5O13P3S | 2.61 | FAIL | FAIL | FAIL |
 | 8TC3 | SF4 |  | Fe4S4 | 2.57 | FAIL | FAIL | FAIL |
 | 4EJW | SRY |  | C21H39N7O12 | 2.80 | FAIL | FAIL | FAIL |
-| 8QIN | FMN |  | C17H21N4O9P | 2.70 | FAIL | FAIL | FAIL |
+| 8QIN | FMN |  | C17H21N4O9P | 2.70 | OK | FAIL | FAIL |
 | 6TIA | ND2 |  | C24H29N9O | 2.52 | OK | OK | FAIL |
-| 6EJ4 | B7W |  | C18H14N4 | 2.88 | FAIL | FAIL | FAIL |
+| 6EJ4 | B7W |  | C18H14N4 | 2.88 | OK | FAIL | FAIL |
 | 8XL2 | ACO |  | C23H38N7O17P3S | 2.73 | FAIL | OK | FAIL |
 | 7QYT | GJI |  | C16H20N4OS | 2.60 | FAIL | OK | FAIL |
 | 1JLF | NVP |  | C15H14N4O | 2.60 | OK | OK | FAIL |
@@ -168,7 +163,7 @@ Every ligand the geometry tier failed to recover exactly.  This table is the inp
 | 9MCU | Y01 |  | C31H50O4 | 2.69 | OK | FAIL | FAIL |
 | 8OG9 | VM3 |  | C20H15ClN2 | 2.95 | FAIL | OK | FAIL |
 | 1R5N | GDP |  | C10H15N5O11P2 | 2.90 | OK | FAIL | FAIL |
-| 4JRV | KJV |  | C32H33N5O3 | 2.80 | FAIL | FAIL | FAIL |
+| 4JRV | KJV |  | C32H33N5O3 | 2.80 | OK | FAIL | FAIL |
 | 3HHM | KWT |  | C23H24O8 | 2.80 | FAIL | FAIL | FAIL |
 | 7S8P | 8IX |  | C22H29NO3 | 2.60 | OK | OK | FAIL |
 | 6UH7 | SPH |  | C18H37NO2 | 2.87 | OK | OK | OK |
