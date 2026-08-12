@@ -64,15 +64,22 @@ TIERS = {
 TUNING = ("dataset.json", "dataset_res250-300.json")
 
 
-def tuning_exclusions() -> tuple[set[str], set[str]]:
-    """Union of PDB ids and HET codes across both tuning datasets."""
+def dataset_exclusions(files: list[str]) -> tuple[set[str], set[str]]:
+    """Union of PDB ids and HET codes across the given dataset files."""
     pdbs, hets = set(), set()
-    for name in TUNING:
+    for name in files:
         path = os.path.join(HERE, name)
+        if not os.path.exists(path):
+            raise SystemExit(f"exclusion dataset not found: {path}")
         for entry in json.load(open(path, encoding="utf-8")):
             pdbs.add(entry["pdb"])
             hets.add(entry["het"])
     return pdbs, hets
+
+
+def tuning_exclusions() -> tuple[set[str], set[str]]:
+    """Union of PDB ids and HET codes across both tuning datasets."""
+    return dataset_exclusions(TUNING)
 
 
 def evaluate_candidate(pdb_id: str, seen_hets: set[str]) -> dict | str:
@@ -136,18 +143,36 @@ def main() -> None:
     parser.add_argument("--size", type=int, default=60)
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--workers", type=int, default=6)
+    parser.add_argument("--label", default="",
+                        help="output infix: dataset_heldout{_label}_{tier}_k*.json "
+                             "(empty label keeps the default generation name)")
+    parser.add_argument("--exclude-datasets", nargs="+", default=[],
+                        help="extra dataset JSONs whose (pdb, het) pairs join "
+                             "the exclusion - e.g. a prior held-out generation "
+                             "must not re-appear in a fresh draw")
+    parser.add_argument("--preflight", action="store_true",
+                        help="report universe/exclusion sizes and stop before "
+                             "fetching any candidate")
     args = parser.parse_args()
 
     min_res, max_res = TIERS[args.tier]
     need = args.buckets * args.size
     excluded_pdbs, excluded_hets = tuning_exclusions()
+    if args.exclude_datasets:
+        extra_pdbs, extra_hets = dataset_exclusions(args.exclude_datasets)
+        excluded_pdbs |= extra_pdbs
+        excluded_hets |= extra_hets
     entries = search_entries(min_res, max_res)
     candidates = [p for p in entries if p not in excluded_pdbs]
     print(f"universe: {len(entries)} candidates, {len(entries) - len(candidates)} "
-          f"excluded by tuning PDB id, {len(candidates)} eligible")
+          f"excluded by PDB id (tuning + {len(args.exclude_datasets)} extra "
+          f"datasets), {len(candidates)} eligible")
     if len(candidates) < need:
         raise SystemExit(f"universe too small: {len(candidates)} eligible < "
                          f"{need} needed - re-decide bucket size with the user")
+    if args.preflight:
+        print("preflight OK - universe sufficient, no candidates fetched")
+        return
 
     random.Random(args.seed).shuffle(candidates)
     accepted: list[dict] = []
@@ -183,11 +208,12 @@ def main() -> None:
                          "re-decide bucket size with the user")
 
     # bucket assignment: one seeded shuffle, chunk into --buckets samples
+    label = f"_{args.label}" if args.label else ""
     random.Random(args.seed + 1).shuffle(accepted)
     for k in range(args.buckets):
         bucket = accepted[k * args.size:(k + 1) * args.size]
         out = os.path.join(
-            HERE, f"dataset_heldout_{args.tier}_k{k + 1}.json")
+            HERE, f"dataset_heldout{label}_{args.tier}_k{k + 1}.json")
         with open(out, "w", encoding="utf-8") as fh:
             json.dump(bucket, fh, indent=1, separators=(",", ": "))
         print(f"bucket {k + 1}: {len(bucket)} entries -> {out}")
@@ -197,6 +223,7 @@ def main() -> None:
         "resolution_band": [min_res, max_res],
         "search_total": len(entries),
         "excluded_by_tuning_pdb": len(entries) - len(candidates),
+        "excluded_datasets": args.exclude_datasets,
         "accepted": len(accepted),
         "buckets": args.buckets,
         "bucket_size": args.size,
@@ -204,7 +231,7 @@ def main() -> None:
         "skipped": dict(sorted(skipped.items(), key=lambda kv: -kv[1])),
         "elapsed_s": round(time.time() - t0, 1),
     }
-    out = os.path.join(HERE, f"dataset_heldout_{args.tier}_manifest.json")
+    out = os.path.join(HERE, f"dataset_heldout{label}_{args.tier}_manifest.json")
     with open(out, "w", encoding="utf-8") as fh:
         json.dump(manifest, fh, indent=1, separators=(",", ": "))
     print(f"manifest: {out}")

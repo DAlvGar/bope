@@ -118,9 +118,10 @@ def stereo_fractions(sidecar: dict, method: str) -> dict:
     }
 
 
-def verify_exclusion(prefix: str = "dataset_heldout") -> tuple[set, set]:
-    """(overlapping pdb ids, overlapping het codes) between held-out and
-    tuning - must be empty for the protocol to hold."""
+def verify_exclusion(prefix: str = "dataset_heldout") -> tuple[set, set, set, set]:
+    """(held-out pdb ids, held-out het codes, overlap with tuning pdb ids,
+    overlap with tuning het codes) - the overlaps must be empty for the
+    protocol to hold."""
     tuning_pdbs, tuning_hets = set(), set()
     for name in TUNING_DATASETS:
         for e in load_json(name):
@@ -132,7 +133,7 @@ def verify_exclusion(prefix: str = "dataset_heldout") -> tuple[set, set]:
             for e in load_json(f"{prefix}_{tier}_k{k}.json"):
                 ho_pdbs.add(e["pdb"])
                 ho_hets.add(e["het"])
-    return ho_pdbs & tuning_pdbs, ho_hets & tuning_hets
+    return ho_pdbs, ho_hets, ho_pdbs & tuning_pdbs, ho_hets & tuning_hets
 
 
 def main() -> None:
@@ -141,6 +142,10 @@ def main() -> None:
                     help="held-out dataset basename (default: %(default)s)")
     ap.add_argument("--out", default="results_heldout.md",
                     help="summary output file (default: %(default)s)")
+    ap.add_argument("--prior", default=None,
+                    help="earlier held-out generation prefix to verify "
+                         "disjointness against (e.g. dataset_heldout when "
+                         "summarizing gen2)")
     args = ap.parse_args()
     prefix = args.prefix
     env = _env_info()
@@ -163,7 +168,17 @@ def main() -> None:
               "stereo_benchmark.py on dataset.json / dataset_res250-300.json "
               "to include the tuning-vs-held-out comparison")
 
-    overlap_pdbs, overlap_hets = verify_exclusion(prefix)
+    ho_pdbs, ho_hets, overlap_pdbs, overlap_hets = verify_exclusion(prefix)
+    prior_overlap_pdbs = prior_overlap_hets = None
+    if args.prior:
+        prior_pdbs, prior_hets = set(), set()
+        for tier in TIERS:
+            for k in range(1, BUCKETS + 1):
+                for e in load_json(f"{args.prior}_{tier}_k{k}.json"):
+                    prior_pdbs.add(e["pdb"])
+                    prior_hets.add(e["het"])
+        prior_overlap_pdbs = ho_pdbs & prior_pdbs
+        prior_overlap_hets = ho_hets & prior_hets
 
     lines = []
     w = lines.append
@@ -180,15 +195,16 @@ def main() -> None:
       "are optimistic.  The held-out sets sample the same RCSB universes "
       "(protein-only, one non-polymer entity, resolution band) minus "
       "every entry whose **PDB id or HET code** appears in either tuning "
-      "dataset, as 5 independent buckets of 60 per tier.  Each bucket is "
-      "a simple random sample: the per-bucket spread is genuine sampling "
-      "variation, reported as mean +/- std (n = 5).  All held-out runs "
-      "use the exact committed perception code - no tuning on held-out "
-      "results.")
+      "dataset or any prior held-out generation (the manifest records the "
+      "exact exclusion list), as 5 independent buckets of 60 per tier.  "
+      "Each bucket is a simple random sample: the per-bucket spread is "
+      "genuine sampling variation, reported as mean +/- std (n = 5).  "
+      "All held-out runs use the exact committed perception code - no "
+      "tuning on held-out results.")
     w("")
     w("## Sampling frame")
     w("")
-    w("| tier | resolution band | search total | excluded (tuning PDB) "
+    w("| tier | resolution band | search total | excluded (PDB id) "
       "| accepted | buckets x size | seed |")
     w("|---|---|---|---|---|---|---|")
     for t in TIERS:
@@ -207,8 +223,12 @@ def main() -> None:
     w("## Verification")
     w("")
     w(f"Held-out vs tuning overlap - PDB ids: **{len(overlap_pdbs)}**, "
-      f"HET codes: **{len(overlap_hets)}** (protocol requires zero).  "
-      "Per-bucket results carry the environment + commit footer of the "
+      f"HET codes: **{len(overlap_hets)}** (protocol requires zero).")
+    if prior_overlap_pdbs is not None:
+        w(f"Held-out vs prior generation ({args.prior}) overlap - PDB ids: "
+          f"**{len(prior_overlap_pdbs)}**, HET codes: "
+          f"**{len(prior_overlap_hets)}** (protocol requires zero).")
+    w("Per-bucket results carry the environment + commit footer of the "
       "exact code they ran.")
     w("")
     w("## Bond-order recovery (formula AND graph AND AddHs)")
@@ -325,6 +345,9 @@ def main() -> None:
     # ---- console summary ----
     print(f"overlap with tuning: {len(overlap_pdbs)} PDB ids, "
           f"{len(overlap_hets)} HET codes (must be 0)")
+    if prior_overlap_pdbs is not None:
+        print(f"overlap with {args.prior}: {len(prior_overlap_pdbs)} PDB ids, "
+              f"{len(prior_overlap_hets)} HET codes (must be 0)")
     print("\n== bond-order recovery ==")
     for t in TIERS:
         for m in METHODS_ORDER:

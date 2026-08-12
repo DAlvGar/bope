@@ -1,0 +1,85 @@
+{
+ "dataset": "dataset_heldout_gen2_main_k2",
+ "dataset_file": "dataset_heldout_gen2_main_k2.json",
+ "total": 60,
+ "stereo_entries": 29,
+ "coverage_pct": 48.3,
+ "methods": {
+  "geometry": {
+   "no_mol": 0,
+   "graph_mismatch": 14,
+   "mapping_ambiguous": 0,
+   "centers": {
+    "correct": 53,
+    "wrong": 0,
+    "unassigned": 0,
+    "phosphate_p": 0,
+    "extra": 1
+   },
+   "ez": {
+    "correct": 3,
+    "wrong": 0,
+    "extra": 0
+   },
+   "full": 14,
+   "comparable": 15
+  },
+  "openbabel": {
+   "no_mol": 0,
+   "graph_mismatch": 15,
+   "mapping_ambiguous": 0,
+   "centers": {
+    "correct": 57,
+    "wrong": 0,
+    "unassigned": 0,
+    "phosphate_p": 0,
+    "extra": 1
+   },
+   "ez": {
+    "correct": 3,
+    "wrong": 0,
+    "extra": 0
+   },
+   "full": 13,
+   "comparable": 14
+  },
+  "distance": {
+   "no_mol": 10,
+   "graph_mismatch": 16,
+   "mapping_ambiguous": 0,
+   "centers": {
+    "correct": 3,
+    "wrong": 0,
+    "unassigned": 0,
+    "phosphate_p": 0,
+    "extra": 0
+   },
+   "ez": {
+    "correct": 3,
+    "wrong": 0,
+    "extra": 0
+   },
+   "full": 3,
+   "comparable": 3
+  },
+  "rdDetermineBonds": {
+   "no_mol": 29,
+   "graph_mismatch": 0,
+   "mapping_ambiguous": 0,
+   "centers": {
+    "correct": 0,
+    "wrong": 0,
+    "unassigned": 0,
+    "phosphate_p": 0,
+    "extra": 0
+   },
+   "ez": {
+    "correct": 0,
+    "wrong": 0,
+    "extra": 0
+   },
+   "full": 0,
+   "comparable": 0
+  }
+ }
+}

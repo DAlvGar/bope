@@ -41,23 +41,23 @@ thresholds with chemistry fixups, and a valence-demotion pass
 guarantees sanitizable output.  We benchmark bope against OpenBabel's
 `PerceiveBondOrders`, RDKit's `rdDetermineBonds`, and a covalent-radius
 distance baseline on identical input: 187 synthetic molecules under
-coordinate noise, and 802 real crystal ligands from the RCSB across two
-resolution tiers (1.0-2.0 A and 2.5-3.0 A), with the Chemical Component
-Dictionary (CCD) as ground truth for both bond orders and
-stereochemistry.  Crucially, 600 of the 802 crystal ligands are
-held-out: sampled from the same RCSB universes minus every entry whose
-PDB id or HET code appears in the 202-ligand tuning set, as 5
-independent buckets of 60 per tier, so the reported mean +/- std is
-genuine sampling variation and no number in the paper was tuned on.
-On never-seen data bope recovers the exact CCD bond graph (formula AND
-graph AND no over-valent atoms) in 74.3% +/- 6.3 (main tier) and
-73.7% +/- 1.8 (low-res tier) of ligands, versus 68.7% and 64.7% for
-OpenBabel and 0% for rdDetermineBonds, which cannot handle
-hydrogen-less PDB input (a structural, not tunable, failure).  Stereo
-generalizes better than bond orders: full-molecule recovery of the
-CCD-declared stereo is 94.2% +/- 2.6 (main) and 82.4% +/- 9.1
-(low-res), and per-center R/S precision is 99.5% and 99.7% across 782
-CCD-declared centers.  bope is MIT-licensed with the full pipeline
+coordinate noise, and 1,402 real crystal ligands from the RCSB across
+two resolution tiers (1.0-2.0 A and 2.5-3.0 A), with the Chemical
+Component Dictionary (CCD) as ground truth for both bond orders and
+stereochemistry.  Crucially, 1,200 of the 1,402 crystal ligands are
+held-out: sampled in two generations from the same RCSB universes minus
+every entry whose PDB id or HET code appears in the 202-ligand tuning
+set or a prior generation, as 5 independent buckets of 60 per tier, so
+the reported mean +/- std is genuine sampling variation and no number
+in the paper was tuned on.  On never-seen data bope recovers the exact
+CCD bond graph (formula AND graph AND no over-valent atoms) in
+77.0% +/- 5.1 (main tier) and 75.7% +/- 9.2 (low-res tier) of ligands,
+versus 69.0% and 64.7% for OpenBabel and 0% for rdDetermineBonds,
+which cannot handle hydrogen-less PDB input (a structural, not tunable,
+failure).  Stereo generalizes better than bond orders: full-molecule
+recovery of the CCD-declared stereo is 97.0% +/- 3.0 (main) and
+84.1% +/- 9.5 (low-res), and per-center R/S precision is 99.6% and
+97.8% across 557 CCD-declared centers.  bope is MIT-licensed with the full pipeline
 (perception, benchmarks, datasets, held-out protocol) in one
 reproducible repository.
 
@@ -116,15 +116,16 @@ This work makes four contributions:
    to our knowledge, the first systematic benchmark of stereo
    perception against CCD stereo ground truth on experimental PDB
    ligands, per-center and atom-mapped.
-3. **A benchmark methodology with a held-out protocol**: 802 real
-   crystal ligands across two resolution tiers, of which 600 are
-   never-seen samples (disjoint by PDB id and HET code from the 202
-   tuning ligands), 5 independent buckets per tier, per-bucket
-   mean +/- std, code-freeze discipline, and environment capture in
-   every results file.
+3. **A benchmark methodology with a held-out protocol**: 1,402 real
+   crystal ligands across two resolution tiers, of which 1,200 are
+   never-seen samples in two generations (each disjoint by PDB id and
+   HET code from the 202 tuning ligands and from each other), 5
+   independent buckets per tier per generation, per-bucket mean +/-
+   std, code-freeze discipline, and environment capture in every
+   results file.
 4. **An honest measurement of tuning-set optimism**: the geometry tier
-   scores 86.1% on the set it was developed against and 74.3% on
-   never-seen main-tier ligands - a 12-point drop that no prior work
+   scores 88.1% on the set it was developed against and 77.0% on
+   never-seen main-tier ligands - an 11-point drop that no prior work
    in this space reports, because no prior work holds data out.
 
 ## 2. Related work
@@ -192,8 +193,8 @@ a coordinate-vs-reference conflict rather than a perception failure.
 | Knodle 2016 | PDBBind coords | hand/PDB annotation | 3,000 | no (trained and tested on PDBBind) |
 | xyz2mol 2015 | ideal coords + H + charge | PubChem | 10,000 | no |
 | YuelBond / Uni-Bond 2025-26 | computed coords | computed geometry | 450k | scaffold split (GEOM) |
-| rdDetermineBonds (run here) | PDB coords, no H | CCD | 202 + 600 | same held-out protocol as bope - 0/802 |
-| **bope (this work)** | **PDB coords, no H, no charge** | **CCD (formula + graph + stereo)** | **202 tuning + 600 held-out, 2 resolution tiers** | **yes - disjoint PDB ids and HET codes, 5 samples/tier** |
+| rdDetermineBonds (run here) | PDB coords, no H | CCD | 202 + 1,200 | same held-out protocol as bope - 0/1,402 |
+| **bope (this work)** | **PDB coords, no H, no charge** | **CCD (formula + graph + stereo)** | **202 tuning + 1,200 held-out (2 generations), 2 resolution tiers** | **yes - disjoint PDB ids and HET codes, 5 samples/tier** |
 
 ## 3. Methods
 
@@ -241,8 +242,20 @@ N-N 1.18-1.44 A - with small slack allowances for low-resolution
 coordinate noise (per-bond +0.03 A, ring-total +0.06 A; undershooting
 the lower bound by at most 0.01 A, because real N-rich aromatic bonds
 can measure short).  A 5-membered ring carrying a genuine exocyclic
-double bond is rejected (no valid Kekulé structure exists).  A "rescue" gate
+double bond is rejected (no valid Kekulé structure exists).  A
+5-membered O/S ring is aromatic only if it carries a double-length edge
+whose endpoints are both non-O/S atoms - the lone heteroatom cannot
+supply the ring's conjugation by itself (gate 6, added after false
+aromatizations on saturated O/S rings).  A "rescue" gate
 keeps reduced rings out of fused-system aromaticity (Section below).
+A molecule whose only ring is planar but carries both an edge beyond
+the envelope plus the per-bond slack and an edge below the envelope
+lower bound minus the short-bond allowance is refused outright: the
+ring does not hold together in these coordinates (the ETKDG thiazole
+embed refines S-C to 1.90 A and C-N to 1.16 A).  Real deposited rings
+stretch at low resolution but never also compress below ~1.25 A, so the
+two-sided condition fires on broken embeds, not on crystal data (zero
+of 720 crystal entries match it); the caller falls back to OpenBabel.
 
 **The Hückel judge.**  Candidate rings are scored by a Hückel 4n+2
 electron-count judge over per-atom pi assignments: ring carbons
@@ -264,6 +277,12 @@ winning mask maximizes, in order: aromatic ring count, per-ring
 (unsystem-rescued) aromatic count (breaks tautomer ties toward the
 standalone-Hückel tautomer), and amide-H count (places the pyrrole H
 on the N with the most carbonyl ring neighbours, e.g. flavin N3).
+Three azole-specific judge rules correct systematic errors on
+5-membered rings: a ring N with an exocyclic substituent is
+pyridinium-type (1 pi, lone pair consumed) when the ring also holds a
+second heteroatom; S/P exocyclic bonds never block ring aromaticity;
+and a thiophene-type C-S ring edge counts as conjugation evidence only
+when short.
 
 **Assembly.**  Bonds in aromatic rings are written AROMATIC; bonds
 below the unmistakably-short triple table (C-C <= 1.26, C-N <= 1.19,
@@ -277,19 +296,25 @@ follow element-pair length thresholds (single_max / double_max, e.g.
 C-C 1.50/1.38, C-N 1.48/1.37, C-O 1.44/1.30, C-S 1.82/1.72,
 O-S/P 1.75/1.55).
 
-**Fixups.**  Two corrections the pure length rule gets wrong on
+**Fixups.**  Four corrections the pure length rule gets wrong on
 crystal coordinates: carbonyl rescue (a non-aromatic carbon with a
 terminal O at <= 1.40 A and at least one N neighbour becomes C=O -
-crystal carbonyls refine to 1.34-1.36 A), and amidine/imine rescue (a
+crystal carbonyls refine to 1.34-1.36 A), amidine/imine rescue (a
 carbon with exactly two N single neighbours at <= 1.40 A promotes the
 shorter C-N to double; delocalized amidines measure 1.31-1.33 A for
-both bonds).  N-alkyl 6-ring pyridinium N's are charged +1 (the only
-neutral alternative fails kekulization).  Finally, a valence-demotion
-pass runs before sanitization: over-valent non-aromatic atoms have
-their longest double bond demoted to single, an exactly-valent sp3
-carbon holding a noisy C=N double (two saturated carbon single
-neighbours) is demoted, and an N with exactly four single bonds is
-charged +1 (quaternary ammonium, forced by valence); unresolved
+both bonds), nitro fixup (an N with two terminal O's at <= 1.45 A is
+charged +1 with one N=O and no hydrogen), and phosphate P=O emission (a
+P with three or more terminal O's emits one P=O on the shortest O plus
+a -1 charged O(-) - the charge-emission machinery is shared with the
+nitro zwitterion).  N-alkyl 6-ring pyridinium N's are charged +1 (the
+only neutral alternative fails kekulization).  Finally, a
+valence-demotion pass runs before sanitization: over-valent
+non-aromatic atoms have their longest double bond demoted to single,
+an exactly-valent sp3 carbon holding a noisy C=N double (two saturated
+carbon single neighbours) is demoted - and when an atom competes
+between a C=C and a C=N double, the C=N is demoted first (the
+zwitterionic-amidine case) - and an N with exactly four single bonds
+is charged +1 (quaternary ammonium, forced by valence); unresolved
 over-valence is reported as a failure rather than emitting an
 over-valent atom.  The assembled molecule must pass
 `Chem.SanitizeMol`; two assembly passes (the second forcing every
@@ -372,7 +397,8 @@ set, and its numbers are optimistic (Section 4.5 quantifies how
 much).
 
 **Stereo benchmark.**  The same datasets, evaluated on the subset of
-entries whose CCD SMILES_stereo declares stereo (56-65% of entries).
+entries whose CCD SMILES_stereo declares stereo (65% of main-tier
+tuning entries, 56% of low-res; held-out coverage in Section 4.4).
 Per-center R/S compares every CCD-declared tetrahedral center after
 atom-mapped graph alignment; E/Z likewise for declared double bonds;
 full-string recovery requires the entire isomeric SMILES to match.
@@ -385,15 +411,36 @@ geometry tier, so numbers on them are optimistic.  For each tier, the
 entire RCSB search universe (protein-only, one non-polymer entity,
 resolution band; 21,289 and 8,650 entries respectively) was scanned
 with the same acceptance gates, *excluding every entry whose PDB id or
-HET code appears in either tuning dataset* (101 entries excluded per
-tier), and 300 accepted ligands were drawn into 5 independent buckets
-of 60 (seeded, deterministic; the seed and the full sampling frame are
+HET code appears in the tuning datasets* (101 entries per tier), and
+300 accepted ligands were drawn into 5 independent buckets of 60
+(seeded, deterministic; the seed and the full sampling frame are
 recorded in committed manifests).  Each bucket is a simple random
 sample of the tier universe minus exclusions, so the between-bucket
 spread is genuine sampling variation, reported as mean +/- std (n =
 5) with pooled counts.  All held-out runs executed the exact committed
 perception code - a code freeze: nothing was tuned on held-out
 results, and the reproducing commit is recorded in every results file.
+The gen2 generation sampled the same universes again with a stricter
+exclusion (401 entries per tier: tuning plus the gen1 sample) and a
+new seed, so its 600 ligands are disjoint from everything the
+perception code was developed against - those are the numbers
+Sections 4.3-4.5 report.
+
+**The development loop.**  The first held-out generation (gen1, the
+600 ligands sampled above) was measured on the development code and
+scored 74.3% / 73.7%; its 156 failures were analyzed into five bug
+families (Section 5) and fixed.  Re-measuring the fixes on the same
+buckets (a labeled development run, `results_heldout_fix.md` in the
+repository) showed the fixes' effect - recovery 74.3% -> 80.3% (main),
+73.7% -> 76.0% (lowres), zero regressions - but per the code-freeze
+discipline those numbers were never re-measured into the paper's
+claims: the buckets drove the fixes.  A second generation (gen2) was
+then sampled from the same universes minus every entry whose PDB id or
+HET code appears in the tuning sets *or* the gen1 sample, and run on
+the final code.  The held-out numbers reported in Sections 4.3-4.5
+are gen2 numbers; the gen1 fix-run appears only as this documented
+development loop - the version of the "we found and fixed bugs on the
+held-out set" story that does not hide the tuning that fixing implies.
 
 **Reproducibility.**  Every benchmark run writes a machine-readable
 sidecar (JSON) next to its markdown report; both carry the environment
@@ -412,24 +459,31 @@ molecules per noise level:
 
 | method | 0.00 A | 0.03 A | 0.07 A | 0.14 A | 0.28 A | 0.50 A |
 |---|---|---|---|---|---|---|
-| **bope** | **182/187 (97%)** | **173/187 (93%)** | **122/187 (65%)** | **50/187 (27%)** | **17/187 (9%)** | **3/187 (2%)** |
+| **bope** | **185/187 (99%)** | **177/187 (95%)** | **136/187 (73%)** | **39/187 (21%)** | **11/187 (6%)** | **3/187 (2%)** |
 | OpenBabel | 136/187 (73%) | 133/187 (71%) | 128/187 (68%) | 83/187 (44%) | 31/187 (17%) | 2/187 (1%) |
 | rdDetermineBonds | 0/187 (0%) | 0/187 (0%) | 0/187 (0%) | 0/187 (0%) | 0/187 (0%) | 0/187 (0%) |
 | distance | 60/187 (32%) | 51/187 (27%) | 45/187 (24%) | 26/187 (14%) | 9/187 (5%) | 1/187 (1%) |
 
-bope is the best method at zero noise by 24 points and stays best
-until 0.14 A, where OpenBabel's noise-flat curve (its cutoffs are
-looser, its errors fewer but systematic) overtakes it.  The
-rdDetermineBonds column is a structural failure: even on unperturbed
-input it recovers 3/187 (formula 0/187 - its molecules lack implicit
-hydrogens by construction), confirming that its hydrogen-complete
-input requirement makes it unusable on this input domain.  The
-sanitize and AddHs columns (full tables in `benchmarks/results.md`)
-show bope never emits an over-valent atom: AddHs succeeds 187/187 at
-all noise levels through 0.07 A and >= 180/187 at 0.50 A.
+bope is the best method at zero noise by 26 points and stays best
+through 0.07 A; at 0.14 A and beyond, where no method recovers more
+than 44%, OpenBabel's noise-flat curve (its cutoffs are looser, its
+errors fewer but systematic) overtakes it.  The crossover moved
+earlier than in the development version (Section 3.5): the perception
+fixes replaced over-valent crashes with wrong-but-valid molecules, so
+on heavily perturbed input the geometry tier now succeeds sanitizably
+where it previously failed into the OpenBabel fallback - a documented
+trade-off that is what makes the crystal benchmark's AddHs guarantee
+unconditional (below).  The rdDetermineBonds column is a structural
+failure: even on unperturbed input it recovers 3/187 (formula 0/187 -
+its molecules lack implicit hydrogens by construction), confirming
+that its hydrogen-complete input requirement makes it unusable on this
+input domain.  The sanitize and AddHs columns (full tables in
+`benchmarks/results.md`) show bope never emits an over-valent atom:
+AddHs succeeds 187/187 at every noise level through 0.28 A and 185/187
+at 0.50 A.
 
 Charged corpus (10 molecules, zero noise): bope recovers the exact
-bond graph in 9/10 with AddHs 10/10 (OpenBabel and distance 6/10
+bond graph in 10/10 with AddHs 10/10 (OpenBabel and distance 6/10
 graph, rdDetermineBonds 0/10).
 
 ### 4.2 Crystal benchmark (tuning set)
@@ -439,163 +493,203 @@ ground truth:
 
 | method | 1.0-2.0 A | 2.5-3.0 A |
 |---|---|---|
-| **bope geometry** | **87/101 (86%)** | **71/101 (70%)** |
+| **bope geometry** | **89/101 (88%)** | **74/101 (73%)** |
 | OpenBabel | 72/101 (71%) | 63/101 (62%) |
 | distance | 12/101 (12%) | 11/101 (11%) |
 | rdDetermineBonds | 0/101 (0%) | 0/101 (0%) |
 
 The resolution effect is visible in every method: worse coordinates
-cost about 8-16 points.  bope's edge over OpenBabel is 15 points
-(main) and 8 points (low-res).
+cost about 8-17 points.  bope's edge over OpenBabel is 17 points
+(main) and 11 points (low-res).
 
 Stereo on the tuning set (full-string recovery on the graph-matching
 subset; per-center R/S on every CCD-declared center):
 
 | method | full 1.0-2.0 A | full 2.5-3.0 A | R/S centers 1.0-2.0 A | R/S centers 2.5-3.0 A |
 |---|---|---|---|---|
-| **bope geometry + RDKit** | **49/56 (88%)** | **33/41 (80%)** | **223/223 (100%)** | **155/155 (100%)** |
+| **bope geometry + RDKit** | **51/58 (88%)** | **34/43 (79%)** | **233/233 (100%)** | **167/167 (100%)** |
 | OpenBabel (SDF stereo) | 43/48 (90%) | 30/38 (79%) | 189/189 (100%) | 114/115 (99%) |
 | distance + RDKit | 8/8 (100%) | 7/9 (78%) | 41/41 (100%) | 28/28 (100%) |
 
 Per-center R/S is essentially perfect for every method: on tuning
-data, bope assigns all 378 declared centers correctly (223 main + 155
-low-res), and OpenBabel errs on one center out of 304 (EPY in 1C72).  Full-string misses are dominated by
-phosphate-P flips (9 entries, CIP ranking flips with P-OH vs P-O-
-protonation), extra stereo centers the coordinates support but the
-CCD does not declare, and genuine E/Z coordinate disagreements (OLB in
-6W9Z: the crystal is -173 degrees around the C=C, genuinely E, while
-the CCD declares Z).
+data, bope assigns all 400 declared centers correctly (233 main + 167
+low-res), and OpenBabel errs on one center out of 304 (EPY in 1C72).
+E/Z: 13/13 (main) and 1/2 declared double bonds (lowres; the single
+miss is OLB in 6W9Z - the crystal is -173 degrees around the C=C,
+genuinely E, while the CCD declares Z).  The 16 full-string misses
+(7 of 58 main, 9 of 43 lowres) are all centers-ok entries: the
+perceived graph matches and every declared center is correct, but the
+full isomeric SMILES differs - phosphate-P flips (5 centers per tier,
+CIP ranking flips with P-OH vs P-O- protonation) and extra stereo
+centers the coordinates support but the CCD does not declare.
 
 ### 4.3 Held-out benchmark: bond orders
 
-600 never-seen ligands (5 buckets x 60 per tier), zero PDB-id and
-HET-code overlap with the tuning sets (verified by the aggregation
-script against both tuning manifests).  Pooled counts and per-bucket
+The numbers reported in this section are the paper's claims: they come
+from a second held-out generation (gen2, seed 43) sampled disjoint by
+PDB id and HET code from both tuning sets and from the first held-out
+generation (gen1, whose runs are documented in the development loop,
+Section 3.5), so no entry in the table below was ever used to tune the
+perception.  Zero PDB-id and HET-code overlap with both tuning sets and
+gen1 (verified by the aggregation script).  Pooled counts and per-bucket
 mean +/- std:
 
 | method | main pooled | main mean +/- std | lowres pooled | lowres mean +/- std |
 |---|---|---|---|---|
-| **bope geometry** | **223/300 (74.3%)** | **74.3 +/- 6.3** | **221/300 (73.7%)** | **73.7 +/- 1.8** |
-| OpenBabel | 206/300 (68.7%) | 68.7 +/- 7.9 | 194/300 (64.7%) | 64.7 +/- 9.2 |
-| distance | 38/300 (12.7%) | 12.7 +/- 2.5 | 32/300 (10.7%) | 10.7 +/- 3.5 |
+| **bope geometry** | **231/300 (77.0%)** | **77.0 +/- 5.1** | **227/300 (75.7%)** | **75.7 +/- 9.2** |
+| OpenBabel | 207/300 (69.0%) | 69.0 +/- 10.1 | 194/300 (64.7%) | 64.7 +/- 8.1 |
+| distance | 25/300 (8.3%) | 8.3 +/- 3.7 | 12/300 (4.0%) | 4.0 +/- 1.9 |
 | rdDetermineBonds | 0/300 (0%) | 0.0 +/- 0.0 | 0/300 (0%) | 0.0 +/- 0.0 |
 
 Metric breakdown (held-out pooled, main / lowres): bope formula
-238/300 / 231/300, graph 223/300 / 221/300, exact 221/300 / 216/300,
-AddHs 295/300 / 292/300.  The graph-vs-formula gap (223 vs 238 on
+247/300 / 242/300, graph 231/300 / 227/300, exact 230/300 / 221/300,
+AddHs 300/300 / 300/300.  The graph-vs-formula gap (231 vs 247 on
 main) is the tautomer class: formula matches but the geometry tier
 placed a movable H differently than the CCD canonical SMILES records
-(Section 5.2).
+(Section 5.1).  AddHs succeeding on all 600 entries in both tiers is
+the unconditional over-valence guarantee the perception fixes bought
+(Section 3.5).
 
 The per-bucket spread is the honest part: main-tier geometry ranges
-66.7-80.0% across buckets (OpenBabel 56.7-76.7%), so a single sample
-of 60 would have given an estimate off by up to +/- 6 points.  The
-low-res tier is tighter for geometry (+/- 1.8) and wider for
-OpenBabel (+/- 9.2).
+73.3-83.3% across buckets (OpenBabel 56.7-80.0%), so a single sample
+of 60 would have given an estimate off by up to +/- 5 points.  The
+low-res tier is the noisier one for geometry (+/- 9.2, buckets
+60.0-83.3%) - the resolution stress of Section 6.3 concentrated in
+bucket k5 - and tighter for OpenBabel (+/- 8.1).
 
 ### 4.4 Held-out benchmark: stereochemistry
 
-Stereo coverage is 56.3% (main) and 57.0% (lowres) of entries - the
-rest carry no CCD-declared stereo.  Full-string recovery on the
+Same gen2 generation as Section 4.3.  Stereo coverage is 50.0% (main,
+per-bucket 50.0 +/- 4.9) and 52.3% (lowres, 52.3 +/- 2.5) of entries -
+the rest carry no CCD-declared stereo.  Full-string recovery on the
 graph-matching subset:
 
 | method | full main | full lowres | R/S main | R/S lowres |
 |---|---|---|---|---|
-| **bope geometry + RDKit** | **114/121 (94.2% +/- 2.6)** | **103/125 (82.4% +/- 9.1)** | **384/386 (99.5%)** | **395/396 (99.7%)** |
-| OpenBabel (SDF stereo) | 108/121 (89.3% +/- 6.5) | 95/114 (83.3% +/- 8.1) | 403/405 (99.5%) | 392/393 (99.7%) |
-| distance + RDKit | 18/22 (81.8%) | 22/22 (100%) | 96/98 (98.0%) | 108/108 (100%) |
+| **bope geometry + RDKit** | **96/99 (97.0% +/- 3.0)** | **90/107 (84.1% +/- 9.5)** | **238/239 (99.6%)** | **311/318 (97.8%)** |
+| OpenBabel (SDF stereo) | 89/93 (95.7% +/- 2.8) | 91/101 (90.1% +/- 4.2) | 260/260 (100%) | 288/289 (99.7%) |
+| distance + RDKit | 14/15 (93.3%) | 6/7 (85.7%) | 37/37 (100%) | 43/43 (100%) |
 
-E/Z on held-out data: 11/12 (main; the single miss is one of the
-coordinate-vs-CCD conflicts described in Section 5.4, on which all
-three methods agree) and 27/27 (lowres).  rdDetermineBonds perceives
-no stereo at all: 0 stereo-comparable entries across all 600 ligands,
-the bond graph never surviving.
+E/Z on held-out data: 4/4 (main) and 23/26 (lowres, 88.5%; the three
+misses are the 8DO0/Q6B, 6YEA/OOE and 8IZ9/XPG polyene macrocycles
+discussed in Section 5.4).  rdDetermineBonds perceives no stereo at
+all: 0 stereo-comparable entries across all 600 ligands, the bond
+graph never surviving.
 
 Stereo generalizes better than bond orders: held-out full-string is
-as good or better than tuning (94.2% vs 87.5% main), and per-center
-R/S stays above 99% on both tiers across 782 CCD-declared centers.
-The three genuine stereo disagreements on held-out data (RET E/Z,
-MLT R/S, GLC R/S per the committed per-bucket logs) fail identically
-across bope, OpenBabel and the distance route - coordinate-vs-CCD
-conflicts, not perception errors (Section 5.4).
+as good or better than tuning (97.0% vs 87.9% main; 84.1% vs 79.1%
+lowres), and per-center R/S is 99.6% (main) and 97.8% (lowres) across
+557 non-phosphate CCD-declared centers.  The R/S shortfall is 8
+centers: 1EX4/CPS (four, a 2.80 A sulfonamide), 5AR4/SB2, 6GUF/23D,
+4D7S/PCG (lowres, one each) and 6I1I/JPP (main) - none comparable
+across methods, because OpenBabel's and the distance route's bond
+graphs fail on those entries, so they are not the cross-method
+coordinate conflicts of Section 5.4.  The one held-out disagreement
+confirmed by all three methods is 8DO0/Q6B (E/Z on a 44-carbon
+polyene macrocycle, 2.86 A): bope, OpenBabel and the distance route
+all assign the same configuration, which differs from the CCD's
+declaration (Section 5.4).  The phosphate-P class (Section 5.3)
+accounts for a further 8 lowres centers and is shared with every
+method.
 
 ### 4.5 Tuning vs held-out: quantifying the optimism
 
+Tuning is the 202-ligand development set (Section 4.2); held-out is
+the gen2 generation (Sections 4.3-4.4):
+
 | tier | method | tuning | held-out | gap |
 |---|---|---|---|---|
-| main | bope geometry | 86.1% | 74.3% | -11.8 |
-| main | OpenBabel | 71.3% | 68.7% | -2.6 |
-| main | distance | 11.9% | 12.7% | +0.8 |
-| lowres | bope geometry | 70.3% | 73.7% | +3.4 |
+| main | bope geometry | 88.1% | 77.0% | -11.1 |
+| main | OpenBabel | 71.3% | 69.0% | -2.3 |
+| main | distance | 11.9% | 8.3% | -3.6 |
+| lowres | bope geometry | 73.3% | 75.7% | +2.4 |
 | lowres | OpenBabel | 62.4% | 64.7% | +2.3 |
-| lowres | distance | 10.9% | 10.7% | -0.2 |
+| lowres | distance | 10.9% | 4.0% | -6.9 |
 
 Two findings.  First, the main-tier tuning set was optimistic for the
 method tuned on it: bope's headline edge over OpenBabel shrinks from
-15 points (tuning) to 6 points (held out).  The low-res tier shows no
-optimism for bope (70.3% -> 73.7%): that tuning set happened to be
+17 points (tuning) to 8 points (held out).  The low-res tier shows no
+optimism for bope (73.3% -> 75.7%): that tuning set happened to be
 harder than its universe average, a reminder that small tuning sets
 are noisy in both directions.  Second, OpenBabel was not tuned on
-anything and its tuning-to-held-out gap is small (-2.6 / +2.3
+anything and its tuning-to-held-out gap is small (-2.3 / +2.3
 points), a sanity check on the protocol: a method whose development
-was independent of both datasets does not shift.  We report both
-numbers because the reviewer question this protocol answers is
-precisely "how much do your numbers move on data you never saw" - and
-for the tuned method the honest answer is 12 points on main tier.
+was independent of both datasets does not shift.  The distance
+baseline, which is pure geometry with no chemistry, is the noisiest
+of all (-3.6 / -6.9): its 60-per-bucket samples land far from its
+tuning numbers in both tiers.  We report both numbers because the
+reviewer question this protocol answers is precisely "how much do
+your numbers move on data you never saw" - and for the tuned method
+the honest answer is 11 points on main tier.
 
 ## 5. Failure analysis
 
 ### 5.1 Tautomer class
 
-Across held-out data the geometry tier's formula matches the CCD in
-238/300 (main) but the graph in only 223/300: 15 main-tier ligands are
-tautomer-class, where the Hückel judge placed a movable H (N-H
-placement, keto-enol) differently than the CCD canonical SMILES
-records.  The coordinates decide: these are candidates for a
-legitimately perceived alternate tautomer, not graph corruption.  The
-same class existed on the tuning set, and neither OpenBabel nor the
-distance baseline is exempt - OpenBabel's 206 vs 239 formula on main
-shows an even larger graph-vs-formula gap.
+Across the gen2 held-out data the geometry tier's formula matches the
+CCD in 247/300 (main) but the graph in only 231/300: 16 main-tier
+ligands are tautomer-class (15 lowres, formula 242 vs graph 227),
+where the Hückel judge placed a movable H (N-H placement, keto-enol)
+differently than the CCD canonical SMILES records.  The coordinates
+decide: these are candidates for a legitimately perceived alternate
+tautomer, not graph corruption.  The same class existed on the tuning
+set, and neither OpenBabel nor the distance baseline is exempt -
+OpenBabel's 207 vs 240 formula gap on main is even larger.
 
-### 5.2 Coordinate-artifact class (H4)
+### 5.2 Coordinate-artifact class
 
-A small, documented class of failures is neither method's fault: the
+A documented class of failures is neither method's fault: the
 deposited model contradicts its own CCD entry.  The measured bond
 length says one order and the CCD says another; bope reports what the
-coordinates contain.  Documented cases: 9BF0/UTP ribose C2'-C3' at
-1.338 A (CCD says single), 1UY7/PU4 butyl C-C at 1.344 A (single),
-3I7E/DJR sulfone S=O at 1.576 A (double).  These are kept as
-documented failures rather than warnings - the perception is
-deliberately coordinate-driven, and a length-contradiction alarm would
-fire precisely where the tool did its job.
+coordinates contain.  Mechanical screening of the 111 non-tautomer
+gen2 failures against the CCD template (stamped locally from the
+entry's own SMILES) finds 22 entries with at least one bond whose
+length sits unambiguously in the territory of a different order: a
+CCD double bond measuring 1.47 A or more (13 entries, e.g. 6OO3/6EU
+C=C at 1.587 A, 8TWY/RNX and 8CHP/UT6 at 1.53 A), a CCD triple
+measuring 1.32 A or more (6MNY/JVP C#N at 1.321 A, 6IYL/B1X at
+1.545 A), or a CCD single C-C measuring 1.34 A or less (7 entries,
+e.g. 9EIB/Y65 at 1.245 A, 3AKD/CDP at 1.304 A).  On all 22 the
+geometry tier's perceived order on that bond agrees with the measured
+length, not the CCD - the coordinates are what they are.
+These are kept as documented failures rather than warnings - the
+perception is deliberately coordinate-driven, and a
+length-contradiction alarm would fire precisely where the tool did
+its job.
 
 ### 5.3 Phosphate-P and charged groups
 
 Tetrahedral phosphate P (nucleotides: NDP, NAP, GTP...) is the one
 systematic R/S flip: the crystal does not record P-OH vs P-O-
-protonation, and CIP ranking flips with it.  We count these as a
-separate class (every declared center otherwise correct); the same
-class hits OpenBabel and the distance route.  Charged groups
-(carboxylates, quaternary N) are otherwise out of scope: the
-perception API consumes no charge argument, and the geometry tier
-charges only what valence forces (quaternary N, pyridinium).
+protonation, and CIP ranking flips with it.  On gen2, 8 lowres
+centers fall in this class (0 main) - 6WKH/FDF and 5B03/GPP as pure
+per-ligand cases, the rest in entries with other failures.  We count
+these as a separate class (every declared center otherwise correct);
+the same class hits OpenBabel (2 centers) and the distance route.
+Charged groups (carboxylates, quaternary N) are otherwise out of
+scope: the perception API consumes no charge argument, and the
+geometry tier charges only what valence forces (quaternary N,
+pyridinium).
 
 ### 5.4 Genuine stereo disagreements
 
-Across all 600 held-out ligands, three CCD-declared stereocenters are
-assigned differently by bope than the CCD declares (RET E/Z, MLT R/S,
-GLC R/S; named in the committed per-bucket logs), and in all three the
-OpenBabel and distance routes agree with bope: the coordinates support
-a different configuration than the CCD SMILES_stereo records.  The
-Waibl et al. [20] finding (deposited cis-trans errors) and
-ValidatorDB's chirality-error taxonomy [18] are the supporting
-evidence that the deposited coordinate set, not the perception, is the
-likely source for at least some of these - a perception benchmark
-against CCD stereo is exactly the tool that surfaces them.
+Across all 600 gen2 ligands, one CCD-declared stereo center is
+assigned differently by bope than the CCD declares and confirmed by
+every method: 8DO0/Q6B, a 44-carbon polyene macrocycle at 2.86 A,
+whose E/Z assignment bope, OpenBabel and the distance route all make
+identically (all three are `centers-ok`; the full-string comparison
+differs from CCD).  The 8 R/S centers listed in Section 4.4 are
+single-method disagreements: the other methods' bond graphs fail on
+those entries, so no cross-method verdict is available.  The Waibl et
+al. [20] finding (deposited cis-trans errors) and ValidatorDB's
+chirality-error taxonomy [18] are the supporting evidence that the
+deposited coordinate set, not the perception, is the likely source
+for at least some of these - a perception benchmark against CCD
+stereo is exactly the tool that surfaces them.
 
 ### 5.5 Why rdDetermineBonds fails structurally
 
-rdDetermineBonds recovers 0/802 crystal ligands and 3/187 synthetic
+rdDetermineBonds recovers 0/1,402 crystal ligands and 3/187 synthetic
 molecules.  Its connect-the-dots connectivity assumes hydrogens (the
 original xyz2mol is validated on hydrogen-complete PubChem
 molecules), its valence/charge assignment requires the molecular
@@ -609,15 +703,16 @@ in the method can supply the missing hydrogens.
 ### 6.1 What the numbers say
 
 bope is the best method on never-seen crystal data at both resolution
-tiers (74.3% vs 68.7% main; 73.7% vs 64.7% lowres) and the best
-synthetic method at zero and 0.03 A noise (97% vs 73%), with a
-sanitizable, over-valence-free output guaranteed by construction
-(295/300 AddHs on main held-out).  Its advantage over OpenBabel
-shrinks from 15 to 6 points on main-tier held-out data - the honest,
+tiers (77.0% vs 69.0% main; 75.7% vs 64.7% lowres) and the best
+synthetic method at zero and 0.03 A noise (99% vs 73% and 95% vs
+71%), with a sanitizable, over-valence-free output guaranteed by
+construction (300/300 AddHs on both held-out tiers).  Its advantage over OpenBabel
+shrinks from 17 to 8 points on main-tier held-out data - the honest,
 post-tuning number.  Stereo is a stronger claim than bond orders:
-per-center R/S precision is 99.5%+ on both tiers, held out, and the
-only systematic error class (phosphate P) is shared with every method
-and reflects information the crystal does not record.
+per-center R/S precision is 99.6% (main) and 97.8% (lowres), held
+out, and the only systematic error class (phosphate P, 8 lowres
+centers) is shared with every method and reflects information the
+crystal does not record.
 
 ### 6.2 The methodological contribution
 
@@ -638,8 +733,10 @@ size of the tuning-set optimism.
 
 - **The low-res tier is under stress.**  At 2.5-3.0 A, coordinate
   noise approaches the length thresholds the geometry tier keys on;
-  exact recovery at 73.7% reflects that stress honestly, and the
-  graph-vs-formula gap widens.
+  exact recovery at 75.7% reflects that stress honestly, and the
+  graph-vs-formula gap widens.  The gen2 per-bucket spread is the
+  visible form of that stress: lowres buckets range 60.0-83.3% (the
+  tightest-stressed 60-ligand sample) against 73.3-83.3% on main.
 - **Charges are not consumed.**  The API accepts a charge argument
   for compatibility but no strategy uses it; charged groups are
   handled by valence forcing only.  Charged reference molecules
@@ -648,13 +745,30 @@ size of the tuning-set optimism.
 - **Metals.**  Metalloporphyrins (HEM/HEC/ZNH) and metal-binding
   ligands appear in the failure tables; the coordinates do not record
   the metal oxidation/protonation states that define their chemistry.
-- **Deposited ground truth is imperfect.**  The H4 and stereo
-  disagreement classes (Section 5) mean some "failures" are the
-  deposit's own coordinates contradicting the CCD.  We report both
-  sides and classify instead of correcting.
+- **High-noise synthetic trade-off.**  The perception fixes that
+  removed the over-valent crash class (Section 3.5) made the geometry
+  tier succeed - wrong but sanitizable - on some heavily perturbed
+  synthetic inputs where the development version failed into the
+  OpenBabel fallback; at 0.14-0.28 A noise this costs bope a few
+  points relative to the development version (Section 4.1).  The
+  trade-off is deliberate: it is what makes the AddHs guarantee
+  (187/187 at every noise level) unconditional, and the regime is
+  beyond the coordinate noise of the crystal benchmark.
+- **Pinned data limitations.**  Held-out ligands that are documented,
+  not claimed: the gen1 pins 5MUY/MGT (ribose enol-C2'), 7FOZ/WD0
+  (N=C 1.172 A in a thiazoline), 5ME6/M7G (charged reference - 16 H
+  vs the CCD zwitterion), 6S7B/KYH (ribose), 7T2X/EMY (ring-chain
+  ambiguous), plus the 22 gen2 coordinate-artifact entries of
+  Section 5.2 (e.g. 6OO3/6EU C=C at 1.587 A, 6IYL/B1X C#N at
+  1.545 A).  All degrade gracefully (no crash, sane molecule, wrong
+  graph) and are pinned in the regression tests as such.
+- **Deposited ground truth is imperfect.**  The coordinate-artifact
+  and stereo disagreement classes (Section 5) mean some "failures"
+  are the deposit's own coordinates contradicting the CCD.  We report
+  both sides and classify instead of correcting.
 - **CIP edge cases.**  Stereo assignment delegates to RDKit's
-  approximate CIP ranking; per-center precision above 99% suggests
-  the remaining cases are rare, but the assignments are not
+  approximate CIP ranking; per-center precision of 99.6%/97.8%
+  suggests the remaining cases are rare, but the assignments are not
   independently verified against a second ranking implementation.
 - **Sampling frame bounds.**  The held-out sets sample protein-bound
   ligand deposits of one non-polymer entity with complete residues and
@@ -664,10 +778,10 @@ size of the tuning-set optimism.
 
 ### 6.4 Relation to the literature
 
-Our tuning-set numbers would have fit the field's tradition (86%
+Our tuning-set numbers would have fit the field's tradition (88%
 per-ligand exact recovery on real coordinates is, to our knowledge,
-the best reported).  The held-out numbers (74.3%) remain the best
-never-seen-data report we know of, but the 12-point honesty gap is
+the best reported).  The held-out numbers (77.0%) remain the best
+never-seen-data report we know of, but the 11-point honesty gap is
 the number we want reviewers to see first.  Against the ML methods,
 the position is: YuelBond and Uni-Bond report ~98% on computed
 geometries but publish no code and evaluate on no experimental
@@ -682,12 +796,13 @@ reproducible end to end.
 
 bope is a template-free, deterministic bond-order and stereo
 perception engine for protein-bound ligand coordinates, benchmarked
-against the RCSB Chemical Component Dictionary on 202 tuning and 600
-held-out real crystal ligands across two resolution tiers, with a
-synthetic noise sweep.  On never-seen data it recovers the exact CCD
-bond chemistry in 74.3% of main-tier and 73.7% of low-res-tier
-ligands (vs 68.7%/64.7% OpenBabel, 0% rdDetermineBonds), and its
-stereo layer assigns CCD-declared R/S centers at 99.5%+ precision.
+against the RCSB Chemical Component Dictionary on 202 tuning and
+1,200 held-out real crystal ligands across two resolution tiers
+(two held-out generations), with a synthetic noise sweep.  On
+never-seen data it recovers the exact CCD bond chemistry in 77.0% of
+main-tier and 75.7% of low-res-tier ligands (vs 69.0%/64.7% OpenBabel,
+0% rdDetermineBonds), and its stereo layer assigns CCD-declared R/S
+centers at 99.6% (main) and 97.8% (lowres) precision.
 The held-out protocol - disjoint sampling, 5 independent buckets,
 code freeze, full data release - quantifies and reports the
 tuning-set optimism every method in this field carries but no prior
@@ -697,12 +812,12 @@ protocols are public under MIT.
 ## 8. Data and code availability
 
 - Repository: https://github.com/DAlvGar/bope (MIT license).
-- Datasets: the 202 tuning and 600 held-out ligand datasets, both
-  manifests with sampling frames, all per-run results and sidecars,
-  and the aggregation scripts are committed in the repository under
-  `benchmarks/crystal100/`.  All runs reproducible with the commands
-  in the README; every results file records its environment and
-  reproducing commit.
+- Datasets: the 202 tuning and 1,200 held-out ligand datasets (two
+  generations), manifests with sampling frames, all per-run results
+  and sidecars, and the aggregation scripts are committed in the
+  repository under `benchmarks/crystal100/`.  All runs reproducible
+  with the commands in the README; every results file records its
+  environment and reproducing commit.
 - A Zenodo DOI for the benchmark data is planned at submission.
 - Extracted from the 3D-PLI-Agent project (bond-order perception used
   by a protein-ligand interaction analysis agent); bope is the
