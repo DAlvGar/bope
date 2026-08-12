@@ -74,6 +74,9 @@ BLACKLIST = {
     "HF", "TA", "RE", "OS", "IR", "PD", "RH", "RU", "TC",
     # ions
     "CL", "BR", "I", "F", "PO4", "SO4", "NO3", "PER", "NH4", "CYN", "SCN",
+    # inorganic clusters (no organic framework - 8TC3 slipped through into
+    # the low-res tier as SF4 Fe4S4)
+    "SF4",
     # solvents / additives / buffers
     "GOL", "EDO", "EOH", "ACT", "ACE", "PGE", "MPD", "PEG", "DMS", "DTT",
     "BME", "TRS", "HEPES", "MES", "MOPS", "BIC", "IMZ", "1PE", "2PE",
@@ -350,6 +353,15 @@ def main() -> None:
 
     with ThreadPoolExecutor(max_workers=args.workers) as pool:
         list(pool.map(worker, range(args.workers)))
+
+    if len(ctx.dataset) > args.target:
+        # worker race: several workers can pass the target check before the
+        # count updates, so the file can overshoot by a few accepts - truncate
+        # to the acceptance order (the first target entries).
+        del ctx.dataset[args.target:]
+        with open(out_json, "w", encoding="utf-8") as fh:
+            json.dump(ctx.dataset, fh, indent=1, separators=(",", ": "))
+        print(f"truncated to {len(ctx.dataset)} entries (worker overshoot)")
 
     print(f"\ndone: {len(ctx.dataset)} entries in {out_json}")
     for reason, count in sorted(ctx.skipped.items(), key=lambda kv: -kv[1]):

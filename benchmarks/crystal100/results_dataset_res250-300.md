@@ -8,8 +8,8 @@ Dataset: 101 PDB entries (protein-only, resolution band 2.5-3.0 A, one non-polym
 
 | method | formula | graph | exact | AddHs | recovery |
 |---|---|---|---|---|---|
-| geometry | 79/101 (78%) | 71/101 (70%) | 68/101 (67%) | 101/101 (100%) | 71/101 (70%) |
-| openbabel | 78/101 (77%) | 63/101 (62%) | 61/101 (60%) | 98/101 (97%) | 63/101 (62%) |
+| geometry | 80/101 (79%) | 71/101 (70%) | 68/101 (67%) | 101/101 (100%) | 71/101 (70%) |
+| openbabel | 79/101 (78%) | 63/101 (62%) | 61/101 (60%) | 98/101 (97%) | 63/101 (62%) |
 | distance | 11/101 (11%) | 11/101 (11%) | 11/101 (11%) | 53/101 (52%) | 11/101 (11%) |
 
 ## Tautomer detection (geometry)
@@ -26,6 +26,7 @@ Ligands whose formula matches but whose bond graph does not: the geometry tier's
 | 3IGV | B80 |  | C22H23FN4O6S2 |
 | 3COH | 83H |  | C21H24N4O |
 | 9M1P | HSM |  | C5H9N3 |
+| 8J6J | OKL |  | C10H13ClN4O2 |
 
 ## Geometry failures (collected, not corrected)
 
@@ -51,7 +52,6 @@ Every ligand the geometry tier failed to recover exactly.  This table is the inp
 | 2HL2 | SSA |  | C13H19N7O8S | wrong |  |
 | 5LO1 | 70L |  | C24H25N5O2 | wrong |  |
 | 3WGN | GSP |  | C10H16N5O13P3S | wrong |  |
-| 8TC3 | SF4 |  | Fe4S4 | wrong |  |
 | 4EJW | SRY |  | C21H39N7O12 | wrong |  |
 | 8XL2 | ACO |  | C23H38N7O17P3S | wrong |  |
 | 7QYT | GJI |  | C16H20N4OS | wrong |  |
@@ -63,6 +63,7 @@ Every ligand the geometry tier failed to recover exactly.  This table is the inp
 | 8OG9 | VM3 |  | C20H15ClN2 | wrong |  |
 | 3HHM | KWT |  | C23H24O8 | wrong |  |
 | 8BVD | RLO |  | C18H21NO5 | wrong |  |
+| 8J6J | OKL |  | C10H13ClN4O2 | wrong |  |
 
 ## Per-ligand detail
 
@@ -132,7 +133,6 @@ Every ligand the geometry tier failed to recover exactly.  This table is the inp
 | 9DP6 | PNS |  | C11H23N2O7PS | 2.81 | OK | OK | FAIL |
 | 2OPR | HBQ |  | C14H17FN2O3 | 2.90 | OK | OK | FAIL |
 | 3WGN | GSP |  | C10H16N5O13P3S | 2.61 | FAIL | FAIL | FAIL |
-| 8TC3 | SF4 |  | Fe4S4 | 2.57 | FAIL | FAIL | FAIL |
 | 4EJW | SRY |  | C21H39N7O12 | 2.80 | FAIL | FAIL | FAIL |
 | 8QIN | FMN |  | C17H21N4O9P | 2.70 | OK | FAIL | FAIL |
 | 6TIA | ND2 |  | C24H29N9O | 2.52 | OK | OK | FAIL |
@@ -169,4 +169,5 @@ Every ligand the geometry tier failed to recover exactly.  This table is the inp
 | 6UH7 | SPH |  | C18H37NO2 | 2.87 | OK | OK | OK |
 | 8BVD | RLO |  | C18H21NO5 | 3.00 | FAIL | FAIL | FAIL |
 | 7JVR | 08Y |  | C32H40BrN5O5 | 2.80 | OK | FAIL | FAIL |
+| 8J6J | OKL |  | C10H13ClN4O2 | 2.80 | FAIL | FAIL | FAIL |
 
