@@ -87,11 +87,21 @@ they did or did not evaluate.
 
 - **YuelBond 2025** [12] - GNN with edge-level prediction over pairwise
   distances, trained on the GEOM dataset (450k+ computed geometries).
-  ~98% accuracy on clean coordinates, ~93% at 0.2 A noise.  Not
-  evaluated on experimental PDB coordinates; GEOM geometries are
-  idealized, mostly neutral drug-like molecules.  Publishes its
-  implementation on Bitbucket (dokhlab/yuel_bond); no pretrained
-  weights found (checked Aug 2026).
+  ~98% accuracy on clean coordinates, ~93% at 0.2 A noise.  Publishes
+  its implementation on Bitbucket (dokhlab/yuel_bond) AND its
+  pretrained weights (Zenodo record 15353365: geom_3d.ckpt etc.,
+  7.7 MB each) - checked Aug 2026.  That made an independent run
+  possible: this work ran geom_3d.ckpt head-to-head on the crystal
+  benchmark (first evaluation of any ML perception model on
+  experimental PDB coordinates against CCD ground truth).  Result:
+  37.0% / 27.7% exact CCD recovery (main / low-res) vs its ~98% F1
+  on clean GEOM - the GEOM-trained network does not transfer to
+  deposited coordinates (its own code also silently maps any element
+  outside its 9-atom vocabulary C/O/N/F/S/Cl/Br/I/P to Cl; 12 of the
+  1,200 held-out ligands carry B/Fe/Se/W).  GEOM geometries are
+  idealized, mostly neutral drug-like molecules - exactly the
+  coordinate-quality axis the crystal benchmark splits into
+  resolution tiers.
 - **Uni-Bond 2026** [13] - Uni-Mol encoder + pairwise classification
   head; ~19x error reduction over baselines on GEOM scaffold split;
   zero-shot transfer to peptides/clusters.  Same evaluation domain
@@ -107,12 +117,18 @@ they did or did not evaluate.
   release is a research binary (no public repo, no pip package, not
   Python-3 compatible), so its numbers are cited, not re-measured.
 - Position: ML perception is a genuine alternative but is trained and
-  evaluated on computed, idealized geometries; none of these works
-  reports accuracy on experimental PDB ligand coordinates against CCD
-  ground truth, and of the 2025-26 models only YuelBond publishes its
-  implementation (none publishes pretrained weights; none was
-  independently run here).  The trained models also embed their
-  training-domain biases (charge assignment, metal handling,
+  evaluated on computed, idealized geometries.  Of the 2025-26
+  models, only YuelBond publishes its implementation and weights
+  (Zenodo 15353365), and this work runs it head-to-head on
+  experimental PDB ligand coordinates against CCD ground truth - the
+  first such evaluation of any ML perception model - where it
+  recovers 37.0% / 27.7% (main / low-res), 40-48 points below bope's
+  geometry tier, with ~40% of its outputs unsanitizable (see
+  Section 4.3 of the paper).  Uni-Bond publishes no code or weights;
+  CoTAR evaluates on condensed-phase MD trajectories, not crystals;
+  Knodle is a research binary (not Python-3 compatible) - their
+  numbers are cited, not re-measured.  The trained models also embed
+  their training-domain biases (charge assignment, metal handling,
   protonation), which is exactly what a deposit-derived ligand is
   worst at.  bope's geometry tier is parameter-light, deterministic
   and explainable - properties a publication reader can audit without
@@ -167,15 +183,16 @@ they did or did not evaluate.
 
 Existing perception evaluations, summarized:
 
-| work | input | ground truth | scale | held out? |
-|---|---|---|---|---|
-| Baber & Hodgkin 1992 | CSD coords | hand-curated | 91 | no (method-developed on it) |
-| Labute 2005 | PDB + CSD coords | hand-curated | 179 complexes | no; set reused by others |
-| Knodle 2016 | PDBBind coords | hand/PDB annotation | 3,000 | no - trained on PDBBind, tested on PDBBind |
-| xyz2mol 2015 | ideal coords + H + charge | PubChem | 10,000 | no |
-| YuelBond / Uni-Bond 2025-26 | computed coords | computed geometry | 450k | scaffold split (GEOM) |
-| **bope (this work)** | **PDB coords, no H, no charge** | **CCD (formula + graph + stereo)** | **202 tuning + 1,200 held-out (2 generations), 2 resolution tiers** | **yes - disjoint PDB ids and HET codes, 5 samples/tier** |
-| rdDetermineBonds (run here) | PDB coords, no H | CCD | 202 + 1,200 | same held-out protocol - 0/1,402 recovered |
+| work | input | ground truth | scale | held out? | reported accuracy (their metric) |
+|---|---|---|---|---|---|
+| Baber & Hodgkin 1992 | CSD coords | hand-curated | 91 | no (method-developed on it) | ~82% connectivity |
+| Labute 2005 | PDB + CSD coords | hand-curated | 179 complexes | no; set reused by others | no accuracy number (method paper) |
+| Knodle 2016 | PDBBind coords | hand/PDB annotation | 3,000 | no - trained on PDBBind, tested on PDBBind | ~3.9% errors (PDBBind), 5-6 errors on 179-complex set |
+| xyz2mol 2015 | ideal coords + H + charge | PubChem | 10,000 | no | near-100% bond-order-matrix recovery |
+| YuelBond 2025 | computed coords | computed geometry | 450k | scaffold split (GEOM) | ~98% F1 (clean), 92.7% (0.2 A noise); **37.0% / 27.7% exact CCD recovery on PDB coords (run here)** |
+| Uni-Bond 2026 | computed coords | computed geometry | GEOM | scaffold split (GEOM) | ~19x error reduction vs baselines; no code or weights |
+| rdDetermineBonds (run here) | PDB coords, no H | CCD | 202 + 1,200 | same held-out protocol - 0/1,402 recovered | 0% exact recovery |
+| **bope (this work)** | **PDB coords, no H, no charge** | **CCD (formula + graph + stereo)** | **202 tuning + 1,200 held-out (2 generations), 2 resolution tiers** | **yes - disjoint PDB ids and HET codes, 5 samples/tier** | **77.0% / 75.7% exact CCD recovery (main / low-res)** |
 
 What no prior work does:
 

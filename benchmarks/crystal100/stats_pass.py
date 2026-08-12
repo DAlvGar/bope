@@ -8,12 +8,15 @@ the tuning sidecars, and renders `results_stats.md` with:
 - per-bucket means +/- std with t-based 95% CIs (df = 4: the 60-ligand
   bucket is the experimental unit, so this is the design's honest,
   cluster-level error);
-- the bope-vs-OpenBabel edge as per-bucket paired differences (t, df=4)
-  with the pooled-binomial contrast alongside;
+- the head-to-head edges (geometry minus every other runnable baseline,
+  per bucket, paired) as t-CIs (df=4) with the pooled-binomial contrast
+  alongside;
 - the tuning-vs-held-out gap (bond recovery) with normal-approximation
   CIs on the pooled difference.
 
-All inputs are the committed benchmark sidecars; no re-measurement.
+The YuelBond baseline (run_yuelbond.py, published model + weights) is
+merged from its own sidecars when present.  All inputs are the committed
+benchmark sidecars; no re-measurement.
 """
 from __future__ import annotations
 
@@ -32,6 +35,8 @@ Z = 1.959964  # 97.5% normal quantile
 T_DF4 = 2.776445  # 97.5% t quantile, df = 4 (5 buckets)
 
 METHODS = ["geometry", "openbabel", "distance", "rdDetermineBonds"]
+#: order of the head-to-head edge rows (geometry minus baseline)
+BASELINES = ["openbabel", "distance", "rdDetermineBonds", "yuelbond"]
 
 
 def wilson(ok: int, n: int, z: float = Z) -> tuple[float, float]:
@@ -70,6 +75,24 @@ def load_bond(tier: str, gen: str) -> list[dict]:
     return out
 
 
+def load_bond_with_yuelbond(tier: str, gen: str) -> tuple[list[dict], bool]:
+    """Bond sidecars with the YuelBond method merged in from its own
+    sidecars (run_yuelbond.py) - present only when all 5 buckets exist
+    and match the bond runs' totals."""
+    bond = load_bond(tier, gen)
+    yb_files = sorted(glob.glob(
+        os.path.join(HERE, f"results_yuelbond_{gen}_{tier}_k*.json")))
+    if len(yb_files) != len(bond):
+        return bond, False
+    for b, f in zip(bond, yb_files):
+        with open(f) as fh:
+            yb = json.load(fh)
+        if yb.get("total") != b["total"] or "yuelbond" not in yb["methods"]:
+            return bond, False
+        b["methods"]["yuelbond"] = yb["methods"]["yuelbond"]
+    return bond, True
+
+
 def load_stereo(tier: str, gen: str) -> list[dict]:
     files = sorted(glob.glob(os.path.join(HERE, f"results_stereo_{gen}_{tier}_k*.json")))
     out = []
@@ -102,17 +125,18 @@ def main() -> None:
     add("")
 
     for tier in ["main", "lowres"]:
-        bond = load_bond(tier, "dataset_heldout_gen2")
+        bond, have_yb = load_bond_with_yuelbond(tier, "dataset_heldout_gen2")
+        methods = METHODS + (["yuelbond"] if have_yb else [])
+        baselines = (BASELINES if have_yb
+                     else [b for b in BASELINES if b != "yuelbond"])
         stereo = load_stereo(tier, "dataset_heldout_gen2")
 
         add(f"## Bond-order recovery - {tier} tier (formula AND graph AND AddHs)")
         add("")
         add("| method | pooled | Wilson 95% CI | bucket mean +/- std | t-CI (df=4) |")
         add("|---|---|---|---|---|")
-        for m in METHODS:
+        for m in methods:
             ok, total = pool_method(bond, m, "recovery")
-            if total == 0 or (ok == 0 and sum(b["methods"][m].get("recovery", 0) for b in bond) == 0 and m == "rdDetermineBonds"):
-                pass
             rates = [b["methods"][m]["recovery"] / b["total"] * 100 for b in bond]
             mean, std, lo, hi = t_ci(rates)
             wlo, whi = wilson(ok, total)
@@ -196,25 +220,28 @@ def main() -> None:
             f"{mean:.1f} +/- {std:.1f} | {fmt(lo, hi, pct=False)} |")
         add("")
 
-        add(f"## bope vs OpenBabel edge - {tier} tier")
+        add(f"## Head-to-head edges vs geometry - {tier} tier")
         add("")
-        diffs = []
-        for bg, bo in zip(bond, bond):
-            g = bg["methods"]["geometry"]["recovery"] / bg["total"]
-            o = bo["methods"]["openbabel"]["recovery"] / bo["total"]
-            diffs.append((g - o) * 100)
-        mean, std, lo, hi = t_ci(diffs)
-        ok_g, tot_g = pool_method(bond, "geometry", "recovery")
-        ok_o, tot_o = pool_method(bond, "openbabel", "recovery")
-        pg, po = ok_g / tot_g, ok_o / tot_o
-        se_pool = math.sqrt(pg * (1 - pg) / tot_g + po * (1 - po) / tot_o)
-        add("| edge | bucket mean (paired) | t-CI (df=4) | pooled diff | binomial 95% CI |")
+        add("| edge | bucket mean (paired) | t-CI (df=4) | pooled diff | "
+            "binomial 95% CI |")
         add("|---|---|---|---|---|")
-        add(f"| geometry - openbabel | {mean:.1f} | {fmt(lo, hi, pct=False)} | "
-            f"{100 * (pg - po):.1f} | {fmt(100 * (pg - po - Z * se_pool), 100 * (pg - po + Z * se_pool), pct=False)} |")
+        for base in baselines:
+            diffs = []
+            for b in bond:
+                g = b["methods"]["geometry"]["recovery"] / b["total"]
+                o = b["methods"][base]["recovery"] / b["total"]
+                diffs.append((g - o) * 100)
+            mean, std, lo, hi = t_ci(diffs)
+            ok_g, tot_g = pool_method(bond, "geometry", "recovery")
+            ok_o, tot_o = pool_method(bond, base, "recovery")
+            pg, po = ok_g / tot_g, ok_o / tot_o
+            se_pool = math.sqrt(pg * (1 - pg) / tot_g + po * (1 - po) / tot_o)
+            add(f"| geometry - {base} | {mean:.1f} | {fmt(lo, hi, pct=False)} | "
+                f"{100 * (pg - po):.1f} | "
+                f"{fmt(100 * (pg - po - Z * se_pool), 100 * (pg - po + Z * se_pool), pct=False)} |")
         add("")
         add("The t-CI on the paired bucket differences is the design's honest interval for "
-            "the edge; the binomial CI pools the 300 ligands as independent and is reported "
+            "each edge; the binomial CI pools the 300 ligands as independent and is reported "
             "to show how much the cluster effect widens it.")
         add("")
 
@@ -229,9 +256,11 @@ def main() -> None:
     add("|---|---|---|---|---|---|")
     for tier in ["main", "lowres"]:
         t = tuning[tier]
-        held = load_bond(tier, "dataset_heldout_gen2")
-        for m in METHODS:
-            tok = t["methods"][m].get("recovery", 0)
+        held, have_yb = load_bond_with_yuelbond(tier, "dataset_heldout_gen2")
+        for m in METHODS + (["yuelbond"] if have_yb else []):
+            if m == "yuelbond" and "yuelbond" not in t["methods"]:
+                continue  # tuning set was never run with YuelBond
+            tok = t["methods"].get(m, {}).get("recovery", 0)
             tt = t["total"]
             hok, ht = pool_method(held, m, "recovery")
             pt, ph = tok / tt, hok / ht

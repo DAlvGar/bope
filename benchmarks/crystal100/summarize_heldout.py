@@ -19,6 +19,11 @@ The tuning-set numbers (sidecars of the committed ``dataset.json`` and
 tuning-vs-held-out gap is exactly the reviewer question this protocol
 answers.
 
+The YuelBond head-to-head (``run_yuelbond.py``, the released model and
+weights from Zenodo record 15353365) is merged from its own sidecars
+(``results_yuelbond_*.json``) into the bond-order tables when all 5
+buckets of a tier are present.
+
 Also writes the sampling frame from the manifests (search total,
 exclusion counts, seeds) and verifies the held-out PDB ids and HET
 codes have zero overlap with the tuning sets.
@@ -153,6 +158,18 @@ def main() -> None:
                 for k in range(1, BUCKETS + 1)] for t in TIERS}
     stereo = {t: [load_json(f"results_stereo_{prefix}_{t}_k{k}.json")
                   for k in range(1, BUCKETS + 1)] for t in TIERS}
+    # YuelBond head-to-head sidecars (run_yuelbond.py) - merged into the
+    # bond sidecars so the same tables render one row per method.
+    yb = {t: [load_json(f"results_yuelbond_{prefix}_{t}_k{k}.json")
+              for k in range(1, BUCKETS + 1)] for t in TIERS}
+    have_yb = {}
+    for t in TIERS:
+        have_yb[t] = all(s is not None and bond[t][k] is not None
+                         and s.get("total") == bond[t][k]["total"]
+                         for k, s in enumerate(yb[t]))
+        for k, s in enumerate(yb[t]):
+            if have_yb[t] and "yuelbond" in s["methods"]:
+                bond[t][k]["methods"]["yuelbond"] = s["methods"]["yuelbond"]
     manifests = {t: load_json(f"{prefix}_{t}_manifest.json")
                  for t in TIERS}
     for t in TIERS:
@@ -201,6 +218,12 @@ def main() -> None:
       "genuine sampling variation, reported as mean +/- std (n = 5).  "
       "All held-out runs use the exact committed perception code - no "
       "tuning on held-out results.")
+    if any(have_yb.values()):
+        w("YuelBond rows are the released model with its published weights "
+          "(Zenodo record 15353365) run head-to-head on the same "
+          "(element, xyz) input, merged from the `results_yuelbond_*.json` "
+          "sidecars of `run_yuelbond.py`.")
+        w("")
     w("")
     w("## Sampling frame")
     w("")
@@ -236,15 +259,17 @@ def main() -> None:
     w("| tier | method | tuning | held-out pooled | per-bucket mean +/- std (5 x 60) |")
     w("|---|---|---|---|---|")
     for t in TIERS:
-        for m in METHODS_ORDER:
+        for m in METHODS_ORDER + (("yuelbond",) if have_yb[t] else ()):
             pooled_ok = sum(b["methods"][m]["recovery"] for b in bond[t])
             pooled_tot = sum(b["total"] for b in bond[t])
             per_bucket = [bond_fraction(b, m, "recovery") for b in bond[t]]
             mmean, mstd = mean_std(per_bucket)
             tb = tuning_bond[t]
-            tun = (f"{tb['methods'][m]['recovery']}/{tb['total']} "
-                   f"({frac(tb['methods'][m]['recovery'], tb['total']):.1f}%)"
-                   if tb else "-")
+            if tb and m in tb["methods"]:
+                tun = (f"{tb['methods'][m]['recovery']}/{tb['total']} "
+                       f"({frac(tb['methods'][m]['recovery'], tb['total']):.1f}%)")
+            else:
+                tun = "-"
             w(f"| {t} | {m} | {tun} | {pct(pooled_ok, pooled_tot)} "
               f"| {fms(mmean, mstd)} |")
     w("")
@@ -253,7 +278,7 @@ def main() -> None:
     w("| tier | method | formula | graph | exact | AddHs |")
     w("|---|---|---|---|---|---|")
     for t in TIERS:
-        for m in METHODS_ORDER:
+        for m in METHODS_ORDER + (("yuelbond",) if have_yb[t] else ()):
             tot = sum(b["total"] for b in bond[t])
             cells = [f"{sum(b['methods'][m][k] for b in bond[t])}/{tot}"
                      for k in ("formula", "graph", "exact", "addh")]
@@ -350,7 +375,7 @@ def main() -> None:
               f"{len(prior_overlap_hets)} HET codes (must be 0)")
     print("\n== bond-order recovery ==")
     for t in TIERS:
-        for m in METHODS_ORDER:
+        for m in METHODS_ORDER + (("yuelbond",) if have_yb[t] else ()):
             pooled_ok = sum(b["methods"][m]["recovery"] for b in bond[t])
             pooled_tot = sum(b["total"] for b in bond[t])
             mmean, mstd = mean_std([bond_fraction(b, m, "recovery")

@@ -16,6 +16,12 @@ Draft notes (to resolve before submission):
   proportions and t-CIs (df = 4) on per-bucket means are generated
   by the committed `benchmarks/crystal100/stats_pass.py`
   (`results_stats.md`) and reported in Sections 4.3-4.5.
+- Comparison pass done (2026-08-12): YuelBond run head-to-head on
+  the gen2 held-out sets with its published weights (Zenodo record
+  15353365; `run_yuelbond.py`, sidecars `results_yuelbond_*.json`,
+  merged by `summarize_heldout.py` / `stats_pass.py`); head-to-head
+  edge CIs for all runnable baselines added to Sections 3.4, 4.3,
+  6.4 and the abstract.
 - Journal-specific formatting (abstract length, section order,
   references style) deferred to submission.
 - Reference numbers follow `benchmarks/related_work.md`; a final
@@ -53,9 +59,12 @@ the reported mean +/- std is genuine sampling variation and no number
 in the paper was tuned on.  On never-seen data bope recovers the exact
 CCD bond graph (formula AND graph AND no over-valent atoms) in
 77.0% +/- 5.1 (main tier) and 75.7% +/- 9.2 (low-res tier) of ligands,
-versus 69.0% and 64.7% for OpenBabel and 0% for rdDetermineBonds,
-which cannot handle hydrogen-less PDB input (a structural, not tunable,
-failure).  Stereo generalizes better than bond orders: full-molecule
+versus 69.0% and 64.7% for OpenBabel, 37.0% and 27.7% for YuelBond -
+the only recent ML bond-perception model that releases weights, run
+here head-to-head on the same input, in the first evaluation of any ML
+perception model on experimental PDB coordinates - and 0% for
+rdDetermineBonds, which cannot handle hydrogen-less PDB input (a
+structural, not tunable, failure).  Stereo generalizes better than bond orders: full-molecule
 recovery of the CCD-declared stereo is 97.0% +/- 3.0 (main) and
 84.1% +/- 9.5 (low-res), and per-center R/S precision is 99.6% and
 97.8% across 557 CCD-declared centers.  bope is MIT-licensed with the full pipeline
@@ -166,11 +175,13 @@ overlap, Ligand Expo evaluation on ideal geometries) and it is not
 independently runnable (research binary, no public repo, no pip
 package, not Python-3 compatible).  YuelBond [12] and Uni-Bond [13]
 are recent GNNs reporting ~98% accuracy on the computed GEOM
-geometries.  YuelBond publishes its implementation (Bitbucket,
-checked Aug 2026); Uni-Bond publishes neither code nor weights
-(checked Aug 2026).  Both evaluate only on computed GEOM-derived
+geometries.  YuelBond publishes its implementation (Bitbucket) and
+pretrained weights (Zenodo record 15353365) - both checked Aug 2026 -
+which made an independent head-to-head possible (Section 3.4, 4.3);
+Uni-Bond publishes neither code nor weights (ICML 2026 page, checked
+Aug 2026).  Both original evaluations use only computed GEOM-derived
 geometries - neither reports results on experimental PDB
-coordinates.
+coordinates; the YuelBond run in this paper does.
 
 ### 2.3 Stereo perception and ground truth
 
@@ -190,15 +201,16 @@ a coordinate-vs-reference conflict rather than a perception failure.
 
 ### 2.4 The gap
 
-| work | input | ground truth | scale | held out? |
-|---|---|---|---|---|
-| Baber & Hodgkin 1992 | CSD coords | hand-curated | 91 | no |
-| Labute 2005 | PDB + CSD coords | hand-curated | 179 complexes | no (reused by others) |
-| Knodle 2016 | PDBBind coords | hand/PDB annotation | 3,000 | no (trained and tested on PDBBind) |
-| xyz2mol 2015 | ideal coords + H + charge | PubChem | 10,000 | no |
-| YuelBond / Uni-Bond 2025-26 | computed coords | computed geometry | 450k | scaffold split (GEOM) |
-| rdDetermineBonds (run here) | PDB coords, no H | CCD | 202 + 1,200 | same held-out protocol as bope - 0/1,402 |
-| **bope (this work)** | **PDB coords, no H, no charge** | **CCD (formula + graph + stereo)** | **202 tuning + 1,200 held-out (2 generations), 2 resolution tiers** | **yes - disjoint PDB ids and HET codes, 5 samples/tier** |
+| work | input | ground truth | scale | held out? | reported accuracy (their metric) |
+|---|---|---|---|---|---|
+| Baber & Hodgkin 1992 | CSD coords | hand-curated | 91 | no | ~82% connectivity |
+| Labute 2005 | PDB + CSD coords | hand-curated | 179 complexes | no (reused by others) | no accuracy number (method paper) |
+| Knodle 2016 | PDBBind coords | hand/PDB annotation | 3,000 | no (trained and tested on PDBBind) | ~3.9% errors (PDBBind), 5-6 errors on 179-complex set |
+| xyz2mol 2015 | ideal coords + H + charge | PubChem | 10,000 | no | near-100% bond-order-matrix recovery |
+| YuelBond 2025 | computed coords | computed geometry | 450k | scaffold split (GEOM) | ~98% F1 (clean), 92.7% (0.2 A noise); **37.0% / 27.7% exact CCD recovery on PDB coords (run here)** |
+| Uni-Bond 2026 | computed coords | computed geometry | GEOM | scaffold split (GEOM) | ~19x error reduction vs baselines; no code or weights |
+| rdDetermineBonds (run here) | PDB coords, no H | CCD | 202 + 1,200 | same held-out protocol as bope - 0/1,402 | 0% exact recovery |
+| **bope (this work)** | **PDB coords, no H, no charge** | **CCD (formula + graph + stereo)** | **202 tuning + 1,200 held-out (2 generations), 2 resolution tiers** | **yes - disjoint PDB ids and HET codes, 5 samples/tier** | **77.0% / 75.7% exact CCD recovery (main / low-res)** |
 
 ## 3. Methods
 
@@ -357,6 +369,22 @@ Three methods are compared on identical input.
   double-bond radii + 0.03 A, then `Chem.SanitizeMol` upgrades orders
   where the topology allows.  This is bope's own fallback, used as the
   "bare topology" reference.
+- **YuelBond**: the released GNN of Wang and Dokholyan [12] with its
+  published pretrained weights (`geom_3d.ckpt`, Zenodo record
+  15353365, sha256 `0bdca52eebc2`), run unmodified via its own
+  `BondDataset`/forward pipeline (PyTorch 2.13, CPU).  Input is the
+  same heavy-atom `(element, xyz)` list as every other baseline; the
+  model builds a graph of all atom pairs within its fixed 3.0 A
+  cutoff and predicts one of ten bond classes (SINGLE..ZERO) per edge
+  by argmax, with element one-hot features.  Two released-model
+  properties matter for the comparison and are kept exactly as
+  shipped: its atom vocabulary covers only C/O/N/F/S/Cl/Br/I/P (its
+  own code silently maps any other element to Cl - 12 of the 1,200
+  held-out ligands carry B, Fe, Se or W), and it never predicts
+  hydrogens or charges (the neutralized comparison applies, as for
+  all methods).  No weights or code were retrained or patched; the
+  run is fully scripted (`run_yuelbond.py`) and its sidecars record
+  the checkpoint hash.
 
 ### 3.5 Benchmark methodology
 
@@ -544,6 +572,7 @@ mean +/- std:
 | OpenBabel | 207/300 (69.0%) | 69.0 +/- 10.1 | 194/300 (64.7%) | 64.7 +/- 8.1 |
 | distance | 25/300 (8.3%) | 8.3 +/- 3.7 | 12/300 (4.0%) | 4.0 +/- 1.9 |
 | rdDetermineBonds | 0/300 (0%) | 0.0 +/- 0.0 | 0/300 (0%) | 0.0 +/- 0.0 |
+| YuelBond | 111/300 (37.0%) | 37.0 +/- 3.6 | 83/300 (27.7%) | 27.7 +/- 3.5 |
 
 Metric breakdown (held-out pooled, main / lowres): bope formula
 247/300 / 242/300, graph 231/300 / 227/300, exact 230/300 / 221/300,
@@ -553,6 +582,27 @@ placed a movable H differently than the CCD canonical SMILES records
 (Section 5.1).  AddHs succeeding on all 600 entries in both tiers is
 the unconditional over-valence guarantee the perception fixes bought
 (Section 3.5).
+
+**YuelBond does not transfer to deposited coordinates.**  The trained
+GNN that reports ~98% F1 on clean GEOM geometries (Section 2.2)
+recovers the exact CCD bond graph on 37.0% of main-tier and 27.7% of
+low-res-tier PDB ligands (metric breakdown: formula 127/300 and
+98/300, graph 111/300 and 83/300, exact 110/300 and 80/300, AddHs
+300/300 both tiers).  Two facts localize the failure.  First, only
+58.7% (main) / 60.7% (lowres) of its outputs survive RDKit
+sanitization at all - the model produces over-valent or
+aromaticity-inconsistent molecules on nearly 40% of experimental
+inputs, something its GEOM evaluation never shows because those
+geometries are ideal.  Second, the resolution sensitivity is much
+steeper than any rule-based method's: main-to-lowres degradation is
+-9.3 points for YuelBond versus -1.3 for bope geometry and -4.3 for
+OpenBabel - the learned distance statistics do not smooth over the
+coordinate noise the way calibrated thresholds do.  Twelve of the
+1,200 ligands carry elements outside the model's 9-atom vocabulary
+(B, Fe, Se, W), which its own code silently maps to Cl; those entries
+are included and counted as failures.  This is, to our knowledge, the
+first evaluation of any ML bond-perception model on experimental PDB
+coordinates against CCD ground truth.
 
 The per-bucket spread is the honest part: main-tier geometry ranges
 73.3-83.3% across buckets (OpenBabel 56.7-80.0%), so a single sample
@@ -567,14 +617,22 @@ metric is generated by the committed `stats_pass.py`
 300 ligands per tier as independent draws (Wilson): the geometry
 tier's recovery is 77.0% (95% CI 71.9-81.4) on main and 75.7%
 (70.5-80.2) on lowres; OpenBabel's is 69.0% (63.6-74.0) and 64.7%
-(59.1-69.9).  The design's honest error is the between-bucket one -
-the 60-ligand bucket is the experimental unit - and the t-based CI
-(df = 4) is correspondingly wider: 77.0% (70.7-83.3) and 75.7%
-(64.2-87.2).  On that error the main-tier edge over OpenBabel (8.0
-points) has 95% CI -1.2 to 17.2 - not distinguishable from zero at
-the bucket level, though the pooled binomial model (which ignores
-the cluster effect) reaches significance (0.9-15.1); the lowres edge
-(11.0 points) has CI -0.4 to 22.4 (binomial 3.7-18.3).
+(59.1-69.9); YuelBond's is 37.0% (31.7-42.6) and 27.7% (22.9-33.0).
+The design's honest error is the between-bucket one - the 60-ligand
+bucket is the experimental unit - and the t-based CI (df = 4) is
+correspondingly wider: 77.0% (70.7-83.3) and 75.7% (64.2-87.2) for
+geometry, 37.0% (32.5-41.5) and 27.7% (23.4-32.0) for YuelBond.
+Head-to-head edges (per-bucket paired, t-CI): on the main tier the
+edge over OpenBabel (8.0 points) has 95% CI -1.2 to 17.2 - not
+distinguishable from zero at the bucket level, though the pooled
+binomial model (which ignores the cluster effect) reaches
+significance (0.9-15.1); the lowres edge (11.0 points) has CI -0.4
+to 22.4 (binomial 3.7-18.3).  The edges over YuelBond are larger
+and significant under both models in both tiers: 40.0 points
+(t-CI 36.4-43.6, binomial 32.8-47.2) on main, 48.0 (t-CI 37.7-58.3,
+binomial 41.0-55.0) on lowres.  Edges over distance and
+rdDetermineBonds are significant everywhere (full table in
+`results_stats.md`).
 
 ### 4.4 Held-out benchmark: stereochemistry
 
@@ -807,14 +865,24 @@ per-ligand exact recovery on real coordinates is, to our knowledge,
 the best reported).  The held-out numbers (77.0%) remain the best
 never-seen-data report we know of, but the 11-point honesty gap is
 the number we want reviewers to see first.  Against the ML methods,
-the position is: YuelBond and Uni-Bond report ~98% on computed
-geometries but publish no code and evaluate on no experimental
-coordinates; Knodle's ~3.9% error rate on PDBBind is the closest
-real-coordinate comparison, on a different metric and a domain its
-training set overlaps.  bope's geometry tier is parameter-light,
-deterministic and auditable - every threshold in it is a documented
-element-pair table in the source - and its evaluation is
-reproducible end to end.
+the position is now empirical rather than positional: YuelBond is
+the only one of the recent GNNs that releases weights, so we ran it
+head-to-head on the same never-seen PDB input - it recovers 37.0% /
+27.7% (main / low-res), 40-48 points below bope's geometry tier,
+and its output is unsanitizable on ~40% of experimental inputs
+(Section 4.3).  Its own ~98% F1 is a GEOM-domain number: computed,
+idealized geometries hide exactly the coordinate noise and
+in-vocabulary-atom mismatch that PDB ligands expose, which the
+per-resolution-tier design of this benchmark makes visible.  Of the
+remaining works, Uni-Bond reports ~19x error reduction on GEOM but
+publishes no code or weights; CoTAR evaluates on condensed-phase MD
+trajectories, not crystals; Knodle's ~3.9% error rate on PDBBind is
+the closest real-coordinate number, on a different metric and a
+domain its training set overlaps - none is independently runnable,
+so their numbers are cited, not re-measured.  bope's geometry tier
+is parameter-light, deterministic and auditable - every threshold in
+it is a documented element-pair table in the source - and its
+evaluation is reproducible end to end.
 
 ## 7. Conclusion
 
@@ -825,7 +893,9 @@ against the RCSB Chemical Component Dictionary on 202 tuning and
 (two held-out generations), with a synthetic noise sweep.  On
 never-seen data it recovers the exact CCD bond chemistry in 77.0% of
 main-tier and 75.7% of low-res-tier ligands (vs 69.0%/64.7% OpenBabel,
-0% rdDetermineBonds), and its stereo layer assigns CCD-declared R/S
+37.0%/27.7% for the ML model YuelBond run head-to-head - a domain
+transfer the GEOM-trained network does not make - and 0%
+rdDetermineBonds), and its stereo layer assigns CCD-declared R/S
 centers at 99.6% (main) and 97.8% (lowres) precision.
 The held-out protocol - disjoint sampling, 5 independent buckets,
 code freeze, full data release - quantifies and reports the
