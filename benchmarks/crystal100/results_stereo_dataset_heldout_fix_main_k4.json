@@ -1,70 +1,70 @@
 {
- "dataset": "dataset",
- "dataset_file": "dataset.json",
- "total": 101,
- "stereo_entries": 66,
- "coverage_pct": 65.3,
+ "dataset": "dataset_heldout_fix_main_k4",
+ "dataset_file": "dataset_heldout_fix_main_k4.json",
+ "total": 60,
+ "stereo_entries": 31,
+ "coverage_pct": 51.7,
  "methods": {
   "geometry": {
    "no_mol": 0,
-   "graph_mismatch": 8,
+   "graph_mismatch": 7,
    "mapping_ambiguous": 0,
    "centers": {
-    "correct": 233,
-    "wrong": 0,
+    "correct": 86,
+    "wrong": 1,
     "unassigned": 0,
-    "phosphate_p": 5,
-    "extra": 4
+    "phosphate_p": 1,
+    "extra": 0
    },
    "ez": {
-    "correct": 13,
+    "correct": 2,
     "wrong": 0,
     "extra": 0
    },
-   "full": 51,
-   "comparable": 58
+   "full": 22,
+   "comparable": 24
   },
   "openbabel": {
-   "no_mol": 3,
+   "no_mol": 2,
+   "graph_mismatch": 9,
+   "mapping_ambiguous": 0,
+   "centers": {
+    "correct": 76,
+    "wrong": 1,
+    "unassigned": 0,
+    "phosphate_p": 2,
+    "extra": 0
+   },
+   "ez": {
+    "correct": 3,
+    "wrong": 0,
+    "extra": 0
+   },
+   "full": 17,
+   "comparable": 20
+  },
+  "distance": {
+   "no_mol": 13,
    "graph_mismatch": 15,
    "mapping_ambiguous": 0,
    "centers": {
-    "correct": 189,
-    "wrong": 0,
-    "unassigned": 0,
-    "phosphate_p": 5,
-    "extra": 2
-   },
-   "ez": {
-    "correct": 10,
-    "wrong": 0,
-    "extra": 0
-   },
-   "full": 43,
-   "comparable": 48
-  },
-  "distance": {
-   "no_mol": 30,
-   "graph_mismatch": 28,
-   "mapping_ambiguous": 0,
-   "centers": {
-    "correct": 41,
-    "wrong": 0,
+    "correct": 13,
+    "wrong": 1,
     "unassigned": 0,
     "phosphate_p": 0,
     "extra": 0
    },
    "ez": {
-    "correct": 4,
+    "correct": 0,
     "wrong": 0,
     "extra": 0
    },
-   "full": 8,
-   "comparable": 8
+   "full": 2,
+   "comparable": 3
   },
   "rdDetermineBonds": {
-   "no_mol": 61,
-   "graph_mismatch": 5,
+   "no_mol": 28,
+   "graph_mismatch": 3,
    "mapping_ambiguous": 0,
    "centers": {
     "correct": 0,

@@ -1,6 +1,6 @@
 {
- "dataset": "dataset",
- "dataset_file": "dataset.json",
+ "dataset": "dataset_fix_main",
+ "dataset_file": "dataset_fix_main.json",
  "total": 101,
  "res_band": "1.0-2.0 A",
  "methods": {

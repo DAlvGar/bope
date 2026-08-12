@@ -1,70 +1,70 @@
 {
- "dataset": "dataset_res250-300",
- "dataset_file": "dataset_res250-300.json",
- "total": 101,
- "stereo_entries": 57,
- "coverage_pct": 56.4,
+ "dataset": "dataset_heldout_fix_main_k5",
+ "dataset_file": "dataset_heldout_fix_main_k5.json",
+ "total": 60,
+ "stereo_entries": 36,
+ "coverage_pct": 60.0,
  "methods": {
   "geometry": {
    "no_mol": 0,
-   "graph_mismatch": 14,
+   "graph_mismatch": 6,
    "mapping_ambiguous": 0,
    "centers": {
-    "correct": 167,
+    "correct": 106,
     "wrong": 0,
     "unassigned": 0,
-    "phosphate_p": 5,
-    "extra": 4
-   },
-   "ez": {
-    "correct": 1,
-    "wrong": 1,
-    "extra": 1
-   },
-   "full": 34,
-   "comparable": 43
-  },
-  "openbabel": {
-   "no_mol": 1,
-   "graph_mismatch": 18,
-   "mapping_ambiguous": 0,
-   "centers": {
-    "correct": 114,
-    "wrong": 1,
-    "unassigned": 0,
-    "phosphate_p": 3,
+    "phosphate_p": 0,
     "extra": 4
    },
    "ez": {
     "correct": 2,
-    "wrong": 1,
-    "extra": 1
+    "wrong": 0,
+    "extra": 0
    },
-   "full": 30,
-   "comparable": 38
+   "full": 29,
+   "comparable": 30
+  },
+  "openbabel": {
+   "no_mol": 1,
+   "graph_mismatch": 7,
+   "mapping_ambiguous": 0,
+   "centers": {
+    "correct": 105,
+    "wrong": 0,
+    "unassigned": 0,
+    "phosphate_p": 0,
+    "extra": 4
+   },
+   "ez": {
+    "correct": 1,
+    "wrong": 0,
+    "extra": 0
+   },
+   "full": 27,
+   "comparable": 28
   },
   "distance": {
-   "no_mol": 38,
-   "graph_mismatch": 10,
+   "no_mol": 14,
+   "graph_mismatch": 16,
    "mapping_ambiguous": 0,
    "centers": {
     "correct": 28,
     "wrong": 0,
     "unassigned": 0,
     "phosphate_p": 0,
-    "extra": 0
+    "extra": 4
    },
    "ez": {
-    "correct": 1,
-    "wrong": 1,
-    "extra": 1
+    "correct": 0,
+    "wrong": 0,
+    "extra": 0
    },
-   "full": 7,
-   "comparable": 9
+   "full": 5,
+   "comparable": 6
   },
   "rdDetermineBonds": {
-   "no_mol": 56,
-   "graph_mismatch": 1,
+   "no_mol": 33,
+   "graph_mismatch": 3,
    "mapping_ambiguous": 0,
    "centers": {
     "correct": 0,

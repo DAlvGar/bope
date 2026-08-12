@@ -26,10 +26,15 @@ codes have zero overlap with the tuning sets.
 Re-run with::
 
     uv run python benchmarks/crystal100/summarize_heldout.py
+
+Use ``--prefix`` and ``--out`` for labeled re-runs of the held-out sets
+(e.g. after perception fixes): ``--prefix dataset_heldout_fix
+--out results_heldout_fix.md``.
 """
 
 from __future__ import annotations
 
+import argparse
 import json
 import os
 import statistics
@@ -113,7 +118,7 @@ def stereo_fractions(sidecar: dict, method: str) -> dict:
     }
 
 
-def verify_exclusion() -> tuple[set, set]:
+def verify_exclusion(prefix: str = "dataset_heldout") -> tuple[set, set]:
     """(overlapping pdb ids, overlapping het codes) between held-out and
     tuning - must be empty for the protocol to hold."""
     tuning_pdbs, tuning_hets = set(), set()
@@ -124,25 +129,32 @@ def verify_exclusion() -> tuple[set, set]:
     ho_pdbs, ho_hets = set(), set()
     for tier in TIERS:
         for k in range(1, BUCKETS + 1):
-            for e in load_json(f"dataset_heldout_{tier}_k{k}.json"):
+            for e in load_json(f"{prefix}_{tier}_k{k}.json"):
                 ho_pdbs.add(e["pdb"])
                 ho_hets.add(e["het"])
     return ho_pdbs & tuning_pdbs, ho_hets & tuning_hets
 
 
 def main() -> None:
+    ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
+    ap.add_argument("--prefix", default="dataset_heldout",
+                    help="held-out dataset basename (default: %(default)s)")
+    ap.add_argument("--out", default="results_heldout.md",
+                    help="summary output file (default: %(default)s)")
+    args = ap.parse_args()
+    prefix = args.prefix
     env = _env_info()
-    bond = {t: [load_json(f"results_dataset_heldout_{t}_k{k}.json")
+    bond = {t: [load_json(f"results_{prefix}_{t}_k{k}.json")
                 for k in range(1, BUCKETS + 1)] for t in TIERS}
-    stereo = {t: [load_json(f"results_stereo_dataset_heldout_{t}_k{k}.json")
+    stereo = {t: [load_json(f"results_stereo_{prefix}_{t}_k{k}.json")
                   for k in range(1, BUCKETS + 1)] for t in TIERS}
-    manifests = {t: load_json(f"dataset_heldout_{t}_manifest.json")
+    manifests = {t: load_json(f"{prefix}_{t}_manifest.json")
                  for t in TIERS}
     for t in TIERS:
         if any(s is None for s in bond[t] + stereo[t]):
             raise SystemExit(f"missing held-out sidecars for tier {t} - "
                              "run benchmark.py and stereo_benchmark.py on "
-                             "all dataset_heldout_*_k*.json first")
+                             f"all {prefix}_*_k*.json first")
     tuning_bond = {t: load_json(TUNING_STEMS[t][0]) for t in TIERS}
     tuning_stereo = {t: load_json(TUNING_STEMS[t][1]) for t in TIERS}
     if any(v is None for v in tuning_bond.values()) or \
@@ -151,7 +163,7 @@ def main() -> None:
               "stereo_benchmark.py on dataset.json / dataset_res250-300.json "
               "to include the tuning-vs-held-out comparison")
 
-    overlap_pdbs, overlap_hets = verify_exclusion()
+    overlap_pdbs, overlap_hets = verify_exclusion(prefix)
 
     lines = []
     w = lines.append
@@ -306,7 +318,7 @@ def main() -> None:
               f"{f1(gf['rs'])} | {s['stereo_entries']}/{s['total']} |")
         w("")
 
-    out = os.path.join(HERE, "results_heldout.md")
+    out = os.path.join(HERE, args.out)
     with open(out, "w", encoding="utf-8") as fh:
         fh.write("\n".join(lines) + "\n")
 
