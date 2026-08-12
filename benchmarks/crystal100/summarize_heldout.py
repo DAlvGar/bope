@@ -46,6 +46,8 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 
 TIERS = ("main", "lowres")
 BUCKETS = 5
+#: canonical method order - the same in benchmark.py / stereo_benchmark.py
+METHODS_ORDER = ("geometry", "openbabel", "distance", "rdDetermineBonds")
 TUNING_DATASETS = ("dataset.json", "dataset_res250-300.json")
 TUNING_STEMS = {  # tier -> bond sidecar, stereo sidecar
     "main": ("results.json", "results_stereo.json"),
@@ -87,6 +89,8 @@ def fms(v: float | None, s: float | None) -> str:
 
 
 def pct(ok: int, total: int) -> str:
+    if total == 0:
+        return "0/0 (-)"
     return f"{ok}/{total} ({frac(ok, total):.1f}%)"
 
 
@@ -179,7 +183,7 @@ def main() -> None:
         mn = manifests[t]
         w(f"| {t} | {TIER_LABEL[t]} | {mn['search_total']} | "
           f"{mn['excluded_by_tuning_pdb']} | {mn['accepted']} | "
-          f"{mn['buckets']} x {mn['size']} | {mn['seed']} |")
+          f"{mn['buckets']} x {mn['bucket_size']} | {mn['seed']} |")
     w("")
     w("Skip reasons (top, per tier):")
     w("")
@@ -200,7 +204,7 @@ def main() -> None:
     w("| tier | method | tuning | held-out pooled | per-bucket mean +/- std (5 x 60) |")
     w("|---|---|---|---|---|")
     for t in TIERS:
-        for m in ("geometry", "openbabel", "distance"):
+        for m in METHODS_ORDER:
             pooled_ok = sum(b["methods"][m]["recovery"] for b in bond[t])
             pooled_tot = sum(b["total"] for b in bond[t])
             per_bucket = [bond_fraction(b, m, "recovery") for b in bond[t]]
@@ -217,7 +221,7 @@ def main() -> None:
     w("| tier | method | formula | graph | exact | AddHs |")
     w("|---|---|---|---|---|---|")
     for t in TIERS:
-        for m in ("geometry", "openbabel", "distance"):
+        for m in METHODS_ORDER:
             tot = sum(b["total"] for b in bond[t])
             cells = [f"{sum(b['methods'][m][k] for b in bond[t])}/{tot}"
                      for k in ("formula", "graph", "exact", "addh")]
@@ -228,9 +232,9 @@ def main() -> None:
     w("| tier | method | tuning | held-out pooled | per-bucket mean +/- std |")
     w("|---|---|---|---|---|")
     for t in TIERS:
-        for m in ("geometry", "openbabel", "distance"):
+        for m in METHODS_ORDER:
             fs = [stereo_fractions(s, m) for s in stereo[t]]
-            pooled_full = sum(f["full"] * f["comparable"] for f in fs)
+            pooled_full = sum(s["methods"][m]["full"] for s in stereo[t])
             pooled_comp = sum(f["comparable"] for f in fs)
             mmean, mstd = mean_std([f["full"] for f in fs])
             ts = tuning_stereo[t]
@@ -256,7 +260,7 @@ def main() -> None:
       "per-bucket precision mean +/- std |")
     w("|---|---|---|---|---|---|---|")
     for t in TIERS:
-        for m in ("geometry", "openbabel", "distance"):
+        for m in METHODS_ORDER:
             fs = [stereo_fractions(s, m) for s in stereo[t]]
             cs = [sum(s["methods"][m]["centers"]["correct"] for s in stereo[t]),
                   sum(s["methods"][m]["centers"]["wrong"] for s in stereo[t]),
@@ -272,7 +276,7 @@ def main() -> None:
       "per-bucket precision mean +/- std |")
     w("|---|---|---|---|---|---|")
     for t in TIERS:
-        for m in ("geometry", "openbabel", "distance"):
+        for m in METHODS_ORDER:
             fs = [stereo_fractions(s, m) for s in stereo[t]]
             ez = [sum(s["methods"][m]["ez"]["correct"] for s in stereo[t]),
                   sum(s["methods"][m]["ez"]["wrong"] for s in stereo[t])]
@@ -311,7 +315,7 @@ def main() -> None:
           f"{len(overlap_hets)} HET codes (must be 0)")
     print("\n== bond-order recovery ==")
     for t in TIERS:
-        for m in ("geometry", "openbabel", "distance"):
+        for m in METHODS_ORDER:
             pooled_ok = sum(b["methods"][m]["recovery"] for b in bond[t])
             pooled_tot = sum(b["total"] for b in bond[t])
             mmean, mstd = mean_std([bond_fraction(b, m, "recovery")
@@ -320,16 +324,16 @@ def main() -> None:
                   f"mean={fms(mmean, mstd)}")
     print("\n== stereo full-molecule recovery ==")
     for t in TIERS:
-        for m in ("geometry", "openbabel", "distance"):
+        for m in METHODS_ORDER:
             fs = [stereo_fractions(s, m) for s in stereo[t]]
-            pooled_full = sum(f["full"] * f["comparable"] for f in fs)
+            pooled_full = sum(s["methods"][m]["full"] for s in stereo[t])
             pooled_comp = sum(f["comparable"] for f in fs)
             mmean, mstd = mean_std([f["full"] for f in fs])
             print(f"  {t:7s} {m:10s} pooled={pct(int(pooled_full), pooled_comp)} "
                   f"mean={fms(mmean, mstd)}")
     print("\n== per-center R/S precision ==")
     for t in TIERS:
-        for m in ("geometry", "openbabel", "distance"):
+        for m in METHODS_ORDER:
             fs = [stereo_fractions(s, m) for s in stereo[t]]
             c = [sum(s["methods"][m]["centers"]["correct"] for s in stereo[t]),
                  sum(s["methods"][m]["centers"]["wrong"] for s in stereo[t]),

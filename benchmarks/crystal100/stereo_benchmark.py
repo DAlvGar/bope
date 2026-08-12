@@ -65,7 +65,7 @@ from rdkit import Chem, RDLogger
 RDLogger.DisableLog("rdApp.*")
 
 import bope as perception
-from benchmark import _env_info, _neutral, load_dataset, pct, run_geometry, run_openbabel, run_distance  # noqa: E402
+from benchmark import _env_info, _neutral, load_dataset, pct, run_geometry, run_openbabel, run_distance, run_rdb  # noqa: E402
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 
@@ -73,14 +73,17 @@ METHODS = {
     "geometry": run_geometry,
     "openbabel": run_openbabel,
     "distance": run_distance,
+    "rdDetermineBonds": run_rdb,
 }
 #: geometry / distance assign stereo after perception; OpenBabel's SDF
 #: round trip carries its own stereo already (verified: E/Z + tetrahedral
-#: tags survive into the RDKit mol).
+#: tags survive into the RDKit mol); rdDetermineBonds' mols get RDKit
+#: stereo like geometry (its own embedChiral defaults off).
 _OPS = {
     "geometry": "rdkit-3d",
     "openbabel": "openbabel-sdf",
     "distance": "rdkit-3d",
+    "rdDetermineBonds": "rdkit-3d",
 }
 
 

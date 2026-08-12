@@ -40,7 +40,14 @@ they did or did not evaluate.
   molecules (near-100% recovery of the bond-order matrix).  Practical
   caveats: needs the molecular charge, and requires hydrogens to be
   reliable - both unavailable for typical PDB ligand coordinates.
-  Ported into RDKit as `rdDetermineBonds`.
+  Ported into RDKit as `rdDetermineBonds`, which this work evaluates on
+  the crystal benchmark: it recovers **0/600** held-out ligands (0/202
+  tuning) - without hydrogens its connect-the-dots connectivity and
+  valence assignment fail before the bond-order stage, and its outputs
+  cannot be sanitized (13% even on the main tier).  The finding
+  mirrors the synthetic benchmark (2% at zero noise) and is structural,
+  not tunable: the RDKit route assumes a hydrogen-complete input that
+  PDB ligands never have.
 - **Indigo** [7] - EPAM's open-source toolkit assigns ground-state bond
   orders and formal charges (energy-based Lewis-structure search; a
   temperature parameter interpolates resonance states).  No published
@@ -82,20 +89,28 @@ they did or did not evaluate.
   distances, trained on the GEOM dataset (450k+ computed geometries).
   ~98% accuracy on clean coordinates, ~93% at 0.2 A noise.  Not
   evaluated on experimental PDB coordinates; GEOM geometries are
-  idealized, mostly neutral drug-like molecules.
+  idealized, mostly neutral drug-like molecules.  No public code or
+  weights as of Aug 2026 (checked), so it cannot be independently run.
 - **Uni-Bond 2026** [13] - Uni-Mol encoder + pairwise classification
   head; ~19x error reduction over baselines on GEOM scaffold split;
   zero-shot transfer to peptides/clusters.  Same evaluation domain
-  caveat as YuelBond.
+  caveat as YuelBond; no public code or weights found either.
 - **CoTAR** [14] - hybrid GNN/HMM reconstructing topology, formal
   charges and unpaired electrons from element types + coordinates.
+- **Knodle 2016** [11] - the only ML method designed for exactly this
+  input (PDB-like coordinates, no hydrogens); its published numbers
+  (5-6 errors on Labute's 179-complex set, ~3.9% on PDBBind) are the
+  field's reference.  Not independently runnable here: the INRIA
+  release is a research binary (no public repo, no pip package, not
+  Python-3 compatible), so its numbers are cited, not re-measured.
 - Position: ML perception is a genuine alternative but is trained and
   evaluated on computed, idealized geometries; none of these works
   reports accuracy on experimental PDB ligand coordinates against CCD
-  ground truth.  The trained models also embed their training-domain
-  biases (charge assignment, metal handling, protonation), which is
-  exactly what a deposit-derived ligand is worst at.  bope's geometry
-  tier is parameter-light, deterministic and explainable - properties a
+  ground truth, and none of the 2025-26 models publishes runnable
+  code.  The trained models also embed their training-domain biases
+  (charge assignment, metal handling, protonation), which is exactly
+  what a deposit-derived ligand is worst at.  bope's geometry tier is
+  parameter-light, deterministic and explainable - properties a
   publication reader can audit without a training corpus.
 
 ## 4. Stereo perception from 3D
@@ -155,6 +170,7 @@ Existing perception evaluations, summarized:
 | xyz2mol 2015 | ideal coords + H + charge | PubChem | 10,000 | no |
 | YuelBond / Uni-Bond 2025-26 | computed coords | computed geometry | 450k | scaffold split (GEOM) |
 | **bope (this work)** | **PDB coords, no H, no charge** | **CCD (formula + graph + stereo)** | **202 tuning + 600 held-out, 2 resolution tiers** | **yes - disjoint PDB ids and HET codes, 5 samples/tier** |
+| rdDetermineBonds (run here) | PDB coords, no H | CCD | 202 + 600 | same held-out protocol - 0/802 recovered |
 
 What no prior work does:
 

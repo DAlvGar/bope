@@ -152,6 +152,54 @@ uv run python benchmarks/crystal100/stereo_benchmark.py                # stereo,
 uv run python benchmarks/crystal100/stereo_benchmark.py --dataset dataset_res250-300.json
 ```
 
+**Held out, never seen** - the tables above were measured on the set the
+geometry tier was tuned against, so they are optimistic.  To get
+generalization numbers the benchmark was re-run on 600 fresh ligands (300
+per tier), sampled from the same RCSB universes minus every entry whose
+PDB id or HET code appears in either tuning set, as 5 independent
+seeded buckets of 60 per tier.  Each bucket is a simple random sample, so
+the per-bucket spread is genuine sampling variation - reported as mean +/-
+std (n = 5), with pooled counts alongside.  All held-out runs executed
+the exact committed perception code; the protocol and per-bucket detail
+are in [`results_heldout.md`](benchmarks/crystal100/results_heldout.md).
+
+**Real crystal ligands, held out - bond-order recovery** (formula AND
+graph AND AddHs, 300 ligands per tier):
+
+| method | main tuning | main held-out | lowres tuning | lowres held-out |
+|---|---|---|---|---|
+| **bope geometry** | 87/101 (86%) | **223/300 (74.3% +/- 6.3)** | 71/101 (70%) | **221/300 (73.7% +/- 1.8)** |
+| OpenBabel `PerceiveBondOrders` | 72/101 (71%) | 206/300 (68.7% +/- 7.9) | 63/101 (62%) | 194/300 (64.7% +/- 9.2) |
+| distance baseline | 12/101 (12%) | 38/300 (12.7% +/- 2.5) | 11/101 (11%) | 32/300 (10.7% +/- 3.5) |
+| RDKit `rdDetermineBonds` | 0/101 (0%) | 0/300 (0%) | 0/101 (0%) | 0/300 (0%) |
+
+Two honest caveats from the held-out numbers.  First, the main-tier
+tuning set was optimistic for geometry: 86.1% on tuning vs 74.3% held
+out (OpenBabel: 71.3% vs 68.7%).  The geometry advantage over OpenBabel
+shrinks from 15 points to about 6 on never-seen main-tier data, and
+stays about 9 points on the low-res tier - real, but smaller than the
+tuning tables suggested.  Second, the low-res tier held up (70.3% ->
+73.7%): the low-res tuning set happened to be harder than its universe
+average, not easier.
+
+**Real crystal ligands, held out - stereo recovery** (of the CCD
+stereo-declaring subset; full-string on entries whose perceived bond
+graph matches the CCD):
+
+| method | full main | full lowres | R/S centers main | R/S centers lowres |
+|---|---|---|---|---|
+| **bope geometry + RDKit** | **114/121 (94.2% +/- 2.6)** | **103/125 (82.4% +/- 9.1)** | **384/386 (99.5%)** | **395/396 (99.7%)** |
+| OpenBabel (SDF stereo) | 108/121 (89.3% +/- 6.5) | 95/114 (83.3% +/- 8.1) | 403/405 (99.5%) | 392/393 (99.7%) |
+| distance + RDKit | 18/22 (81.8%) | 22/22 (100%) | 96/98 (98.0%) | 108/108 (100%) |
+
+Stereo generalizes well: full-string recovery is as good or better held
+out than on the tuning set, and per-center R/S stays above 99% on both
+tiers.  The only E/Z miss on the main tier (11/12) is one of the
+coordinate-vs-CCD conflicts the tuning set already showed - the deposit's
+geometry contradicts its declared stereo, and every method reads the
+coordinates.  `rdDetermineBonds` cannot perceive stereo at all on
+hydrogen-less PDB input (0 stereo-comparable entries in all 600).
+
 ## Known limitations
 
 **Coordinate-artifact class (H4)** - entries where the deposited model

@@ -27,6 +27,14 @@
    "exact": 12,
    "addh": 52,
    "recovery": 12
+  },
+  "rdDetermineBonds": {
+   "sanitize": 10,
+   "formula": 0,
+   "graph": 0,
+   "exact": 0,
+   "addh": 10,
+   "recovery": 0
   }
  }
 }

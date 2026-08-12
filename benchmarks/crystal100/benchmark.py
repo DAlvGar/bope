@@ -83,7 +83,7 @@ sys.path.insert(
 )
 
 from rdkit import Chem, RDLogger
-from rdkit.Chem import rdMolDescriptors
+from rdkit.Chem import rdDetermineBonds, rdMolDescriptors
 
 RDLogger.DisableLog("rdApp.*")
 
@@ -247,14 +247,35 @@ def run_distance(entry):
     return perception.perceive_bond_orders_distance(elements, coords), None
 
 
+def run_rdb(entry):
+    """RDKit's rdDetermineBonds (the xyz2mol port): perceives bond
+    orders from coordinates via the connect-the-dots covalent-radius
+    method, then a valence/charge-constrained assignment.  Identical
+    call to the synthetic benchmark (defaults, charge=0), plus a finite
+    iteration bound: its default maxIterations=0 means no limit, and a
+    pathological PDB ligand made the assignment loop indefinitely (the
+    exception is then recorded as a failed perception)."""
+    elements = [el for el, _xyz in entry["atoms"]]
+    coords = [xyz for _el, xyz in entry["atoms"]]
+    mol = _build_rwmol(elements, coords).GetMol()
+    try:
+        rdDetermineBonds.DetermineBonds(mol, charge=0, maxIterations=5000)
+        return mol, None
+    except Exception as exc:  # noqa: BLE001 - a failed perception is a metric
+        return None, f"{type(exc).__name__}: {exc}"
+
+
 METHODS = {
     "geometry": run_geometry,
     "openbabel": run_openbabel,
     "distance": run_distance,
+    "rdDetermineBonds": run_rdb,
 }
 
 
 def pct(ok: int, total: int) -> str:
+    if total == 0:
+        return "0/0 (-)"
     return f"{ok}/{total} ({100.0 * ok / total:.0f}%)"
 
 
