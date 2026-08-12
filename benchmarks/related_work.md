@@ -1,8 +1,8 @@
 # Related work: bond-order and stereo perception from 3D coordinates
 
 Hand-written working survey (2026-08-12) for the bope paper's
-related-work section.  Every claim is sourced; items marked [verify]
-need a final citation check at paper-writing time.
+related-work section.  Every claim is sourced; all citations verified
+2026-08-12.
 
 The problem: protein-bound ligands are deposited as bare coordinates -
 the PDB does not require bond orders or stereo in the coordinate files,
@@ -89,14 +89,17 @@ they did or did not evaluate.
   distances, trained on the GEOM dataset (450k+ computed geometries).
   ~98% accuracy on clean coordinates, ~93% at 0.2 A noise.  Not
   evaluated on experimental PDB coordinates; GEOM geometries are
-  idealized, mostly neutral drug-like molecules.  No public code or
-  weights as of Aug 2026 (checked), so it cannot be independently run.
+  idealized, mostly neutral drug-like molecules.  Publishes its
+  implementation on Bitbucket (dokhlab/yuel_bond); no pretrained
+  weights found (checked Aug 2026).
 - **Uni-Bond 2026** [13] - Uni-Mol encoder + pairwise classification
   head; ~19x error reduction over baselines on GEOM scaffold split;
   zero-shot transfer to peptides/clusters.  Same evaluation domain
-  caveat as YuelBond; no public code or weights found either.
-- **CoTAR** [14] - hybrid GNN/HMM reconstructing topology, formal
-  charges and unpaired electrons from element types + coordinates.
+  caveat as YuelBond; no public code or weights found (ICML 2026
+  page, checked Aug 2026).
+- **CoTAR 2026** [14] - hybrid GNN/HMM reconstructing topology, formal
+  charges and unpaired electrons from element types + coordinates;
+  evaluated on condensed-phase MD trajectories, not crystals.
 - **Knodle 2016** [11] - the only ML method designed for exactly this
   input (PDB-like coordinates, no hydrogens); its published numbers
   (5-6 errors on Labute's 179-complex set, ~3.9% on PDBBind) are the
@@ -106,12 +109,14 @@ they did or did not evaluate.
 - Position: ML perception is a genuine alternative but is trained and
   evaluated on computed, idealized geometries; none of these works
   reports accuracy on experimental PDB ligand coordinates against CCD
-  ground truth, and none of the 2025-26 models publishes runnable
-  code.  The trained models also embed their training-domain biases
-  (charge assignment, metal handling, protonation), which is exactly
-  what a deposit-derived ligand is worst at.  bope's geometry tier is
-  parameter-light, deterministic and explainable - properties a
-  publication reader can audit without a training corpus.
+  ground truth, and of the 2025-26 models only YuelBond publishes its
+  implementation (none publishes pretrained weights; none was
+  independently run here).  The trained models also embed their
+  training-domain biases (charge assignment, metal handling,
+  protonation), which is exactly what a deposit-derived ligand is
+  worst at.  bope's geometry tier is parameter-light, deterministic
+  and explainable - properties a publication reader can audit without
+  a training corpus.
 
 ## 4. Stereo perception from 3D
 
@@ -169,8 +174,8 @@ Existing perception evaluations, summarized:
 | Knodle 2016 | PDBBind coords | hand/PDB annotation | 3,000 | no - trained on PDBBind, tested on PDBBind |
 | xyz2mol 2015 | ideal coords + H + charge | PubChem | 10,000 | no |
 | YuelBond / Uni-Bond 2025-26 | computed coords | computed geometry | 450k | scaffold split (GEOM) |
-| **bope (this work)** | **PDB coords, no H, no charge** | **CCD (formula + graph + stereo)** | **202 tuning + 600 held-out, 2 resolution tiers** | **yes - disjoint PDB ids and HET codes, 5 samples/tier** |
-| rdDetermineBonds (run here) | PDB coords, no H | CCD | 202 + 600 | same held-out protocol - 0/802 recovered |
+| **bope (this work)** | **PDB coords, no H, no charge** | **CCD (formula + graph + stereo)** | **202 tuning + 1,200 held-out (2 generations), 2 resolution tiers** | **yes - disjoint PDB ids and HET codes, 5 samples/tier** |
+| rdDetermineBonds (run here) | PDB coords, no H | CCD | 202 + 1,200 | same held-out protocol - 0/1,402 recovered |
 
 What no prior work does:
 
@@ -197,7 +202,8 @@ What no prior work does:
    molecules. Daylight European MUG Meeting 2001 (unrefereed).
 2. Baber, J. C.; Hodgkin, E. E. Automatic assignment of chemical
    connectivity to organic molecules in the Cambridge Structural
-   Database. J. Chem. Inf. Comput. Sci. 1992. [verify: volume/pages]
+   Database. J. Chem. Inf. Comput. Sci. 1992, 32(5), 401-406.
+   DOI 10.1021/ci00009a001.
 3. O'Boyle, N. M.; Banck, M.; James, C. A.; Morley, C.; Vandermeersch,
    T.; Hutchison, G. R. Open Babel: an open chemical toolbox.
    J. Cheminform. 2011, 3, 33. DOI 10.1186/1758-2946-3-33.
@@ -225,13 +231,17 @@ What no prior work does:
     automatic perception of organic molecules from 3D coordinates.
     J. Chem. Inf. Model. 2016, 56(8), 1410-1419.
     DOI 10.1021/acs.jcim.5b00512.
-12. YuelBond: bond reconstruction with graph neural networks from 3D
-    coordinates. bioRxiv 2025. DOI 10.1101/2025.05.06.652517
-    [verify: author list].
-13. Uni-Bond: learning chemical bonds from atomic coordinates.
-    ICML 2026 [verify: authors/pages].
-14. CoTAR: hybrid GNN-HMM for molecular topology, formal charges and
-    unpaired electrons [verify: full citation].
+12. Wang, J.; Dokholyan, N. V. Multimodal Bond Reconstruction toward
+    Generative Molecular Design. J. Chem. Inf. Model. 2026, 66(2),
+    1003-1012. DOI 10.1021/acs.jcim.5c03052 (preprint: bioRxiv
+    2025.05.06.652517; code: bitbucket.org/dokhlab/yuel_bond).
+13. Pavlenko, S.; Maslov, P.; Alexandrovich, I. B.; Tsypin, A.;
+    Telepov, A.; Ushenin, K.; Khrabrov, K.; Potapov, D.; Kadurin, A.
+    Uni-Bond: Learning Chemical Bonds from Atomic Coordinates.
+    In Proceedings of the 43rd International Conference on Machine
+    Learning (ICML 2026), Seoul, Republic of Korea, 2026.
+14. Mori, H.; Kikkawa, T.; Miyazaki, Y. CoTAR: Topology and Atomic
+    State Reconstruction in Condensed Phases. arXiv:2606.27636, 2026.
 15. RDKit `AssignStereochemistryFrom3D`;
     https://www.rdkit.org/docs/source/rdkit.Chem.rdMolDescriptors.html
 16. Westbrook, J. D.; Shao, C.; Feng, Z.; Zhuravleva, M.; Velankar, S.;
