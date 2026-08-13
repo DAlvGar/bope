@@ -738,7 +738,6 @@ class _GeometricPerceiver:
         if mol is None:
             mol, err = self._assemble(
                 exo_force_all=False,
-                arom_rings_arg=[],
                 arom_atoms_arg=set(),
                 arom_bonds_arg=set(),
             )
@@ -749,7 +748,6 @@ class _GeometricPerceiver:
     def _assemble(
         self,
         exo_force_all: bool,
-        arom_rings_arg: list[list[int]] | None = None,
         arom_atoms_arg: set[int] | None = None,
         arom_bonds_arg: set[tuple[int, int]] | None = None,
     ) -> tuple[Any | None, str | None]:
