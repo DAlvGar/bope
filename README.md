@@ -269,6 +269,18 @@ pins, on the current RDKit / ETKDG seed-42 geometries:
   PubChem-verified expectations (`C[C@H](O)CC` -> S, `C[C@@H](O)CC` ->
   R), E/Z double bonds, full-pipeline integration with the geometry
   strategy, and the no-conformer / no-RDKit degradations.
+- **Smoke tests** - `tests/test_smoke.py` re-runs the geometry tier
+  over both committed crystal100 fix datasets (coordinates embedded,
+  fully offline) and asserts the aggregate metrics still match the
+  committed sidecars (`benchmarks/crystal100/results_dataset_fix_*.json`),
+  so any perception change that shifts recovery on real deposited
+  coordinates fails the suite in seconds instead of requiring a full
+  evaluation re-run.  The sidecar is the source of truth: a deliberate,
+  validated change regenerates it with the harness and commits both
+  together.  `benchmarks/crystal100/perf_smoke.py` (a script, not a
+  pytest test - wall-clock asserts would be flaky) times the tier
+  against the recorded 1.78 ms/perception baseline and exits nonzero
+  on an order-of-magnitude regression.
 
 ## Project structure
 
@@ -286,7 +298,8 @@ bope/
 │   └── _deps.py       # lazy-imported optional dependencies
 ├── tests/             # offline test suite (+ crystal fixtures)
 ├── benchmarks/        # synthetic noise sweep + crystal100 (bond orders
-│                      # and stereo vs CCD, both resolution tiers)
+│                      # and stereo vs CCD, both resolution tiers);
+│                      # perf_smoke.py = wall-clock regression guard
 └── pyproject.toml
 ```
 
