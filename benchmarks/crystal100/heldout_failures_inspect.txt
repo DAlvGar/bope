@@ -1,20 +1,5 @@
 
-### 13x [None]
-  5MUY MGT (main k1) ob_ok=False dist_ok=False
-  7RS8 7EI (main k2) ob_ok=False dist_ok=False
-  7FOZ WD0 (main k3) ob_ok=False dist_ok=False
-  2QG0 A94 (main k5) ob_ok=False dist_ok=False
-  2QES ADE (main k5) ob_ok=False dist_ok=False
-  4L9Q 9TP (lowres k1) ob_ok=True dist_ok=False
-  5ME6 M7G (lowres k1) ob_ok=False dist_ok=False
-  5KYA 6Y4 (lowres k2) ob_ok=True dist_ok=False
-  6S7B KYH (lowres k2) ob_ok=False dist_ok=False
-  5GHV X5G (lowres k3) ob_ok=False dist_ok=False
-  1GSF EAA (lowres k3) ob_ok=True dist_ok=False
-  7T2X EMY (lowres k3) ob_ok=False dist_ok=False
-  5OOB MGT (lowres k5) ob_ok=False dist_ok=False
-
-### 9x [graph | NH0->1 | NH1->0]
+### 8x [graph | NH0->1 | NH1->0]
   8OV7 W3W (main k1) ob_ok=False dist_ok=False
     (no bond diffs - H-only case)
   2F4J VX6 (main k1) ob_ok=False dist_ok=False
@@ -31,22 +16,6 @@
     (no bond diffs - H-only case)
   4E20 0MY (lowres k2) ob_ok=False dist_ok=False
     (no bond diffs - H-only case)
-  5NEV 72L (lowres k5) ob_ok=False dist_ok=False
-    (no bond diffs - H-only case)
-
-### 6x [formula | NO 2.0->1.0 | OH0->1]
-  6SUH LVE (main k1) ob_ok=True dist_ok=False
-    diff NO 2.0->1.0  measured 1.364 A (atoms 14,16)
-  3B67 B67 (main k1) ob_ok=True dist_ok=False
-    diff NO 2.0->1.0  measured 1.420 A (atoms 7,9)
-  4EK8 16K (main k2) ob_ok=False dist_ok=False
-    diff NO 2.0->1.0  measured 1.214 A (atoms 10,3)
-  2YOH WMJ (main k3) ob_ok=True dist_ok=False
-    diff NO 2.0->1.0  measured 1.382 A (atoms 26,27)
-  8BGA QQL (main k4) ob_ok=False dist_ok=False
-    diff NO 2.0->1.0  measured 1.221 A (atoms 22,23)
-  7ENE J7R (lowres k5) ob_ok=True dist_ok=False
-    diff NO 2.0->1.0  measured 1.179 A (atoms 26,30)
 
 ### 6x [formula | CC 2.0->1.0 | CH0->1 | CH1->2]
   4Y9G MKU (main k3) ob_ok=True dist_ok=False
@@ -78,28 +47,13 @@
   5TRG 7HJ (lowres k4) ob_ok=True dist_ok=False
     diff CC 2.0->1.0  measured 1.519 A (atoms 3,2)
 
-### 4x [formula | OP 2.0->1.0 | OH0->1 | PH0->1]
-  1TPB PGH (main k2) ob_ok=True dist_ok=True
-    diff OP 2.0->1.0  measured 1.701 A (atoms 9,7)
-  3C21 2BA (lowres k1) ob_ok=True dist_ok=False
-    diff OP 2.0->1.0  measured 1.515 A (atoms 0,2)
-    ring COPOCCCOPOCC n=12 rms=0.413 A bonds=1.413,1.565,1.441,1.377,1.513,1.516,1.411,1.621,1.628,1.446,1.508,1.526
-  2VF5 GLP (lowres k4) ob_ok=True dist_ok=False
-    diff OP 2.0->1.0  measured 1.591 A (atoms 12,13)
-  2I22 I22 (lowres k4) ob_ok=True dist_ok=True
-    diff OP 2.0->1.0  measured 1.604 A (atoms 0,1)
-
-### 3x [graph | CN 1.0->2.0 | CO 2.0->1.0 | NH1->0 | OH0->1]
-  4DPI 0N1 (main k1) ob_ok=True dist_ok=False
-    diff CN 1.0->2.0  measured 1.365 A (atoms 7,38)
-    diff CO 2.0->1.0  measured 1.437 A (atoms 7,39)
-    ring CCCCCNCCCCCOCCN n=15 rms=0.430 A bonds=1.495,1.393,1.394,1.487,1.365,1.437,1.532,1.520,1.343,1.514,1.454,1.447,1.513,1.441,1.331
-  3PD3 A3T (main k3) ob_ok=True dist_ok=False
-    diff CN 1.0->2.0  measured 1.331 A (atoms 12,0)
-    diff CO 2.0->1.0  measured 1.359 A (atoms 0,2)
-  1FD7 AI1 (main k5) ob_ok=True dist_ok=False
-    diff CN 1.0->2.0  measured 1.258 A (atoms 18,20)
-    diff CO 2.0->1.0  measured 1.304 A (atoms 18,19)
+### 3x [formula | CO 1.0->2.0 | CH1->0 | OH1->0]
+  2QXG K7I (lowres k3) ob_ok=True dist_ok=False
+    diff CO 1.0->2.0  measured 1.298 A (atoms 20,8)
+  6OP0 A7A (lowres k4) ob_ok=True dist_ok=False
+    diff CO 1.0->2.0  measured 1.395 A (atoms 1,0)
+  7OTY 1IX (lowres k4) ob_ok=True dist_ok=False
+    diff CO 1.0->2.0  measured 1.391 A (atoms 16,32)
 
 ### 2x [formula | CN 1.0->2.0 | CH1->0 | NH1->0]
   5STO W9U (main k1) ob_ok=True dist_ok=False
@@ -109,15 +63,22 @@
     diff CN 1.0->2.0  measured 1.210 A (atoms 2,7)
     ring NCNCC n=5 rms=0.222 A bonds=1.210,1.444,1.466,1.549,1.459
 
-### 2x [formula | CO 1.0->2.0 | CO 2.0->1.0 | NO 2.0->1.0 | OH0->1 | OH0->1 | OH1->0]
-  6G6V EO8 (main k5) ob_ok=True dist_ok=False
-    diff NO 2.0->1.0  measured 1.221 A (atoms 18,20)
-    diff CO 2.0->1.0  measured 1.261 A (atoms 14,16)
-    diff CO 1.0->2.0  measured 1.259 A (atoms 14,15)
-  2F9B N1H (lowres k5) ob_ok=False dist_ok=False
-    diff CO 2.0->1.0  measured 1.222 A (atoms 14,16)
-    diff CO 1.0->2.0  measured 1.221 A (atoms 14,15)
-    diff NO 2.0->1.0  measured 1.465 A (atoms 26,27)
+### 2x [graph | CO 1.0->2.0 | NH0->1 | OH1->0]
+  5SPM S4O (main k1) ob_ok=False dist_ok=False
+    diff CO 1.0->2.0  measured 1.395 A (atoms 16,18)
+    ring NNCCC n=5 rms=0.002 A bonds=1.272,1.351,1.619,1.318,1.354
+  2ETK HFS (lowres k1) ob_ok=False dist_ok=False
+    diff CO 1.0->2.0  measured 1.252 A (atoms 1,0)
+    ring CNCCCC n=6 rms=0.001 A bonds=1.343,1.348,1.399,1.393,1.487,1.489
+
+### 2x [graph | CN 1.0->2.0 | CO 2.0->1.0 | NH1->0 | OH0->1]
+  4DPI 0N1 (main k1) ob_ok=True dist_ok=False
+    diff CN 1.0->2.0  measured 1.365 A (atoms 7,38)
+    diff CO 2.0->1.0  measured 1.437 A (atoms 7,39)
+    ring CCCCCNCCCCCOCCN n=15 rms=0.430 A bonds=1.495,1.393,1.394,1.487,1.365,1.437,1.532,1.520,1.343,1.514,1.454,1.447,1.513,1.441,1.331
+  1FD7 AI1 (main k5) ob_ok=True dist_ok=False
+    diff CN 1.0->2.0  measured 1.258 A (atoms 18,20)
+    diff CO 2.0->1.0  measured 1.304 A (atoms 18,19)
 
 ### 2x [formula | CN 2.0->1.0 | CH0->1 | NH0->1]
   8E9Y WE9 (lowres k1) ob_ok=False dist_ok=False
@@ -149,36 +110,6 @@
   7LID EOL (lowres k5) ob_ok=False dist_ok=False
     diff CC 2.0->1.0  measured 1.525 A (atoms 9,10)
 
-### 1x [formula | CC 1.5a->1.0 | CC 1.5a->1.0 | CN 1.5a->1.0 | CN 1.5a->2.0 | NN 1.5a->1.0 | CH0->1 | CH0->1]
-  8QIY VCC (main k1) ob_ok=True dist_ok=False
-    diff CN 1.5a->1.0  measured 1.263 A (atoms 11,4)
-    diff NN 1.5a->1.0  measured 1.294 A (atoms 11,10)
-    diff CC 1.5a->1.0  measured 1.401 A (atoms 4,5)
-    diff CC 1.5a->1.0  measured 1.397 A (atoms 5,9)
-    diff CN 1.5a->2.0  measured 1.293 A (atoms 9,10)
-    ring NNCCC n=5 rms=0.014 A bonds=1.294,1.263,1.401,1.397,1.293
-
-### 1x [formula | CC 1.5a->1.0 | CC 1.5a->1.0 | CN 1.5a->1.0 | CN 1.5a->1.0 | CN 1.5a->1.0 | CN 1.5a->1.0 | CN 1.5a->1.0 | CN 1.5a->1.0 | CN 1.5a->2.0 | CN 1.5a->2.0 | OP 1.0->2.0 | OP 1.0->2.0 | OP 2.0->1.0 | OP 2.0->1.0 | CH0->1 | CH0->1 | OH0->1 | OH0->1 | OH1->0 | OH1->0]
-  3U4H C8R (main k1) ob_ok=True dist_ok=False
-    diff CC 1.5a->1.0  measured 1.471 A (atoms 3,4)
-    diff CN 1.5a->1.0  measured 1.360 A (atoms 3,2)
-    diff CN 1.5a->1.0  measured 1.330 A (atoms 3,10)
-    diff CC 1.5a->1.0  measured 1.468 A (atoms 4,5)
-    diff CN 1.5a->1.0  measured 1.348 A (atoms 4,7)
-    diff CN 1.5a->1.0  measured 1.407 A (atoms 5,0)
-    diff CN 1.5a->1.0  measured 1.345 A (atoms 0,1)
-    diff CN 1.5a->2.0  measured 1.345 A (atoms 1,2)
-    diff OP 2.0->1.0  measured 1.526 A (atoms 12,15)
-    diff OP 1.0->2.0  measured 1.515 A (atoms 12,20)
-    diff OP 2.0->1.0  measured 1.507 A (atoms 11,14)
-    diff OP 1.0->2.0  measured 1.500 A (atoms 11,19)
-    diff CN 1.5a->1.0  measured 1.337 A (atoms 10,8)
-    diff CN 1.5a->2.0  measured 1.337 A (atoms 8,7)
-    ring COPOPOCCOCNCNCNCOC n=18 rms=0.482 A bonds=1.423,1.596,1.632,1.623,1.616,1.437,1.533,1.439,1.435,1.475,1.345,1.345,1.360,1.330,1.465,1.433,1.431,1.524
-    ring CNCOCCOPOPOCCOCNCC n=18 rms=0.505 A bonds=1.407,1.475,1.435,1.439,1.533,1.437,1.616,1.623,1.632,1.596,1.423,1.524,1.431,1.433,1.465,1.330,1.471,1.468
-    ring CNCNCC n=6 rms=0.003 A bonds=1.407,1.345,1.345,1.360,1.471,1.468
-    ring CNCCN n=5 rms=0.005 A bonds=1.337,1.348,1.471,1.330,1.337
-
 ### 1x [formula | CN 1.0->1.5a | CN 1.0->1.5a | CN 1.0->1.5a | CN 1.0->1.5a | CN 1.0->1.5a | CN 1.0->1.5a | CH1->0 | NH1->0]
   1R4U OXC (main k1) ob_ok=False dist_ok=False
     diff CN 1.0->1.5a  measured 1.364 A (atoms 0,1)
@@ -188,6 +119,15 @@
     diff CN 1.0->1.5a  measured 1.343 A (atoms 4,5)
     diff CN 1.0->1.5a  measured 1.453 A (atoms 5,6)
     ring CNCNCN n=6 rms=0.011 A bonds=1.373,1.325,1.343,1.453,1.364,1.364
+
+### 1x [formula | CC 1.0->2.0 | OP 1.0->2.0 | OP 1.0->2.0 | OP 2.0->1.0 | OP 2.0->1.0 | CH1->0 | CH1->0 | OH0->1 | OH0->1 | OH1->0 | OH1->0]
+  5MUY MGT (main k1) ob_ok=False dist_ok=False
+    diff CC 1.0->2.0  measured 1.296 A (atoms 16,14)
+    diff OP 2.0->1.0  measured 1.517 A (atoms 9,11)
+    diff OP 1.0->2.0  measured 1.516 A (atoms 9,10)
+    diff OP 2.0->1.0  measured 1.515 A (atoms 0,2)
+    diff OP 1.0->2.0  measured 1.511 A (atoms 0,1)
+    ring OCCCC n=5 rms=0.138 A bonds=1.318,1.530,1.528,1.296,1.628
 
 ### 1x [formula | AsO 2.0->1.0 | OH0->1 | +CH4 | -CH3]
   1BEH CAC (main k1) ob_ok=False dist_ok=False
@@ -217,28 +157,14 @@
     diff CC 1.5a->2.0  measured 1.352 A (atoms 5,6)
     ring CCNCCC n=6 rms=0.009 A bonds=1.400,1.256,1.323,1.352,1.354,1.391
 
-### 1x [formula | CC 1.5a->1.0 | CN 1.0->2.0 | CN 1.5a->1.0 | CN 1.5a->2.0 | CO 2.0->1.0 | CS 1.5a->1.0 | CS 1.5a->1.0 | NO 2.0->1.0 | NS 1.0->2.0 | OS 2.0->1.0 | CH0->1 | CH0->1 | NH2->1 | NH2->1 | OH0->1 | OH0->1 | OH0->1]
-  3QTX X43 (main k1) ob_ok=False dist_ok=False
-    diff NS 1.0->2.0  measured 1.559 A (atoms 24,27)
-    diff OS 2.0->1.0  measured 1.639 A (atoms 24,25)
-    diff CS 1.5a->1.0  measured 1.729 A (atoms 13,12)
-    diff CN 1.5a->2.0  measured 1.336 A (atoms 13,0)
-    diff CS 1.5a->1.0  measured 1.726 A (atoms 12,3)
-    diff CC 1.5a->1.0  measured 1.401 A (atoms 3,1)
-    diff CN 1.5a->1.0  measured 1.340 A (atoms 1,0)
-    diff CN 1.0->2.0  measured 1.353 A (atoms 1,2)
-    diff CO 2.0->1.0  measured 1.358 A (atoms 4,11)
-    diff NO 2.0->1.0  measured 1.330 A (atoms 16,17)
-    ring CNCSC n=5 rms=0.010 A bonds=1.340,1.336,1.729,1.726,1.401
-
 ### 1x [formula | NH1->0]
   5RKH LPZ (main k1) ob_ok=False dist_ok=False
     (no bond diffs - H-only case)
 
-### 1x [formula | CC 1.5a->1.0 | CC 1.5a->1.0 | CC 1.5a->1.0 | CC 1.5a->2.0 | CN 1.5a->1.0 | CN 1.5a->1.0 | CO 2.0->1.0 | CO 2.0->1.0 | CO 2.0->1.0 | CH0->1 | CH0->1 | CH1->2 | NH1->0 | NH1->0 | OH0->1 | OH0->1 | OH0->1]
+### 1x [formula | CC 1.5a->1.0 | CC 1.5a->1.0 | CC 1.5a->2.0 | CC 1.5a->2.0 | CN 1.5a->1.0 | CN 1.5a->1.0 | CO 2.0->1.0 | CO 2.0->1.0 | CO 2.0->1.0 | CH1->2 | NH1->0 | NH1->0 | OH0->1 | OH0->1 | OH0->1]
   7N44 06I (main k1) ob_ok=False dist_ok=False
     diff CO 2.0->1.0  measured 1.384 A (atoms 0,30)
-    diff CC 1.5a->1.0  measured 1.380 A (atoms 0,1)
+    diff CC 1.5a->2.0  measured 1.380 A (atoms 0,1)
     diff CN 1.5a->1.0  measured 1.348 A (atoms 0,3)
     diff CC 1.5a->1.0  measured 1.390 A (atoms 1,12)
     diff CC 1.5a->1.0  measured 1.398 A (atoms 12,13)
@@ -287,31 +213,12 @@
     diff OP 1.0->2.0  measured 1.518 A (atoms 4,5)
     ring OCCCC n=5 rms=0.095 A bonds=1.409,1.309,1.544,1.476,1.450
 
-### 1x [formula | CC 1.0->1.5a | CC 1.0->1.5a | CO 1.0->1.5a | CO 1.0->1.5a | CH1->0 | CH2->1]
-  5ST6 V0X (main k2) ob_ok=True dist_ok=False
-    diff CC 1.0->1.5a  measured 1.476 A (atoms 4,3)
-    diff CC 1.0->1.5a  measured 1.521 A (atoms 3,0)
-    diff CO 1.0->1.5a  measured 1.380 A (atoms 0,9)
-    diff CO 1.0->1.5a  measured 1.313 A (atoms 9,5)
-    ring CCCCCC n=6 rms=0.006 A bonds=1.371,1.381,1.344,1.365,1.356,1.340
-    ring CCOCC n=5 rms=0.017 A bonds=1.521,1.380,1.313,1.356,1.476
-
 ### 1x [formula | CC 1.0->2.0 | OP 1.0->2.0 | OP 2.0->1.0 | CH2->1 | CH2->1 | OH0->1 | OH1->0]
   7WQI 80I (main k2) ob_ok=False dist_ok=False
     diff OP 2.0->1.0  measured 1.510 A (atoms 32,37)
     diff OP 1.0->2.0  measured 1.510 A (atoms 37,34)
     diff CC 1.0->2.0  measured 1.355 A (atoms 18,5)
     ring CCCNC n=5 rms=0.114 A bonds=1.635,1.384,1.427,1.573,1.355
-
-### 1x [formula | CN 1.5a->1.0 | CN 1.5a->1.0 | CN 1.5a->1.0 | CN 1.5a->1.0 | CS 1.0->2.0 | NN 1.5a->2.0 | CH1->2 | SH0->1]
-  7FOY W5C (main k2) ob_ok=True dist_ok=False
-    diff CS 1.0->2.0  measured 1.687 A (atoms 13,10)
-    diff CN 1.5a->1.0  measured 1.378 A (atoms 10,14)
-    diff CN 1.5a->1.0  measured 1.353 A (atoms 10,3)
-    diff CN 1.5a->1.0  measured 1.393 A (atoms 14,5)
-    diff CN 1.5a->1.0  measured 1.359 A (atoms 5,0)
-    diff NN 1.5a->2.0  measured 1.326 A (atoms 0,3)
-    ring NCNNC n=5 rms=0.002 A bonds=1.393,1.359,1.326,1.353,1.378
 
 ### 1x [formula | CC 1.5a->2.0 | CC 1.5a->2.0 | CC 1.5a->2.0 | CO 1.0->2.0 | CO 2.0->1.0 | CS 1.5a->1.0 | CS 1.5a->1.0 | CH1->0 | CH1->0 | OH0->1 | OH1->0]
   8CCC UCT (main k2) ob_ok=True dist_ok=False
@@ -383,18 +290,6 @@
     diff CO 2.0->1.0  measured 1.395 A (atoms 2,26)
     ring SCCNC n=5 rms=0.002 A bonds=1.709,1.403,1.361,1.339,1.692
 
-### 1x [graph | CC 1.5a->1.0 | CC 1.5a->2.0 | CC 1.5a->2.0 | CO 1.0->2.0 | CO 2.0->1.0 | CS 1.5a->1.0 | CS 1.5a->2.0 | CH1->0 | OH0->1 | OH1->0 | SH0->1]
-  2XDA JPS (main k2) ob_ok=True dist_ok=False
-    diff CC 1.5a->2.0  measured 1.346 A (atoms 3,4)
-    diff CS 1.5a->1.0  measured 1.646 A (atoms 3,5)
-    diff CC 1.5a->2.0  measured 1.355 A (atoms 4,7)
-    diff CC 1.5a->1.0  measured 1.397 A (atoms 7,6)
-    diff CS 1.5a->2.0  measured 1.669 A (atoms 6,5)
-    diff CO 2.0->1.0  measured 1.250 A (atoms 9,11)
-    diff CO 1.0->2.0  measured 1.232 A (atoms 9,10)
-    ring CCCCCC n=6 rms=0.229 A bonds=1.554,1.397,1.494,1.521,1.549,1.541
-    ring SCCCC n=5 rms=0.002 A bonds=1.669,1.397,1.355,1.346,1.646
-
 ### 1x [formula | CC 1.0->2.0 | CC 2.0->1.0 | CC 2.0->1.0 | CH0->1 | CH0->1 | CH0->1 | CH1->0 | CH1->0 | CH1->2]
   1KT7 RTL (main k2) ob_ok=True dist_ok=False
     diff CC 2.0->1.0  measured 1.431 A (atoms 4,5)
@@ -413,6 +308,19 @@
     diff OP 2.0->1.0  measured 1.610 A (atoms 0,2)
     diff OP 1.0->2.0  measured 1.482 A (atoms 0,1)
 
+### 1x [formula | CC 1.0->1.5a | CC 1.0->1.5a | CC 1.0->1.5a | CC 1.0->1.5a | CC 2.0->1.5a | CC 2.0->1.5a | CN 1.0->2.0 | CS 1.0->2.0 | CH1->0 | CH1->0 | CH2->0 | NH1->0 | SH0->1]
+  7FOZ WD0 (main k3) ob_ok=False dist_ok=False
+    diff CN 1.0->2.0  measured 1.172 A (atoms 0,15)
+    diff CC 1.0->1.5a  measured 1.312 A (atoms 1,2)
+    diff CC 1.0->1.5a  measured 1.279 A (atoms 1,7)
+    diff CC 2.0->1.5a  measured 1.337 A (atoms 2,3)
+    diff CS 1.0->2.0  measured 1.622 A (atoms 14,15)
+    diff CC 1.0->1.5a  measured 1.392 A (atoms 3,8)
+    diff CC 1.0->1.5a  measured 1.392 A (atoms 8,6)
+    diff CC 2.0->1.5a  measured 1.338 A (atoms 6,7)
+    ring CCCCCC n=6 rms=0.017 A bonds=1.392,1.337,1.312,1.279,1.338,1.392
+    ring NCCSC n=5 rms=0.006 A bonds=1.305,1.312,1.598,1.622,1.172
+
 ### 1x [formula | NH3->2]
   8A0I CNZ (main k3) ob_ok=False dist_ok=False
     (no bond diffs - H-only case)
@@ -430,28 +338,31 @@
     diff CO 1.0->2.0  measured 1.247 A (atoms 10,11)
     diff CC 2.0->1.0  measured 1.534 A (atoms 16,17)
 
-### 1x [formula | CC 1.5a->1.0 | CC 1.5a->1.0 | CC 1.5a->2.0 | CC 1.5a->2.0 | CC 1.5a->2.0 | CC 1.5a->2.0 | CH1->0 | CH1->0 | CH1->0 | CH1->2]
-  7FPJ V2L (main k3) ob_ok=True dist_ok=False
-    diff CC 1.5a->2.0  measured 1.266 A (atoms 9,10)
-    diff CC 1.5a->1.0  measured 1.319 A (atoms 9,8)
-    diff CC 1.5a->2.0  measured 1.325 A (atoms 10,5)
-    diff CC 1.5a->2.0  measured 1.313 A (atoms 5,13)
-    diff CC 1.5a->2.0  measured 1.304 A (atoms 13,6)
-    diff CC 1.5a->1.0  measured 1.387 A (atoms 6,8)
-    ring CCCCCC n=6 rms=0.011 A bonds=1.325,1.313,1.304,1.387,1.319,1.266
+### 1x [formula | CC 1.5a->1.0 | CC 1.5a->1.0 | CC 1.5a->1.0 | CC 1.5a->1.0 | CC 1.5a->1.0 | CC 1.5a->1.0 | CC 1.5a->1.0 | CC 1.5a->1.0 | CC 1.5a->1.0 | CC 1.5a->1.0 | CC 1.5a->2.0 | CN 1.0->2.0 | CN 1.5a->1.0 | CN 1.5a->1.0 | CN 1.5a->1.0 | CN 1.5a->1.0 | CN 1.5a->1.0 | CN 1.5a->1.0 | CH0->1 | CH0->1 | CH1->2 | CH1->2 | CH1->2 | CH1->2 | CH1->2 | CH1->2 | CH1->2 | CH1->2 | NH0->1 | NH1->0]
+  3C1K T15 (main k3) ob_ok=True dist_ok=False
+    diff CC 1.5a->1.0  measured 1.396 A (atoms 1,0)
+    diff CC 1.5a->1.0  measured 1.400 A (atoms 1,2)
+    diff CC 1.5a->1.0  measured 1.391 A (atoms 0,5)
+    diff CC 1.5a->1.0  measured 1.399 A (atoms 5,4)
+    diff CC 1.5a->1.0  measured 1.396 A (atoms 4,3)
+    diff CC 1.5a->1.0  measured 1.389 A (atoms 3,2)
+    diff CN 1.0->2.0  measured 1.355 A (atoms 8,18)
+    diff CC 1.5a->1.0  measured 1.452 A (atoms 18,9)
+    diff CC 1.5a->1.0  measured 1.393 A (atoms 18,13)
+    diff CN 1.5a->1.0  measured 1.400 A (atoms 9,10)
+    diff CN 1.5a->1.0  measured 1.337 A (atoms 10,11)
+    diff CC 1.5a->1.0  measured 1.389 A (atoms 11,12)
+    diff CC 1.5a->1.0  measured 1.390 A (atoms 12,13)
+    diff CN 1.5a->1.0  measured 1.343 A (atoms 20,21)
+    diff CC 1.5a->2.0  measured 1.372 A (atoms 20,24)
+    diff CN 1.5a->1.0  measured 1.380 A (atoms 21,22)
+    diff CN 1.5a->1.0  measured 1.370 A (atoms 22,23)
+    diff CN 1.5a->1.0  measured 1.358 A (atoms 23,24)
+    ring CCCCCN n=6 rms=0.002 A bonds=1.389,1.390,1.393,1.452,1.400,1.337
+    ring CCCCCC n=6 rms=0.001 A bonds=1.396,1.391,1.399,1.396,1.389,1.400
+    ring CNCNC n=5 rms=0.005 A bonds=1.358,1.370,1.380,1.343,1.372
 
-### 1x [formula | CC 1.5a->1.0 | CC 1.5a->1.0 | CC 1.5a->1.0 | CC 1.5a->1.0 | CC 1.5a->1.0 | CC 1.5a->1.0 | CH0->1 | CH0->1 | CH1->2 | CH1->2 | CH1->2 | CH1->2]
-  1HSH MK1 (main k3) ob_ok=True dist_ok=False
-    diff CC 1.5a->1.0  measured 1.559 A (atoms 32,37)
-    diff CC 1.5a->1.0  measured 1.387 A (atoms 32,33)
-    diff CC 1.5a->1.0  measured 1.398 A (atoms 37,36)
-    diff CC 1.5a->1.0  measured 1.409 A (atoms 36,35)
-    diff CC 1.5a->1.0  measured 1.406 A (atoms 35,34)
-    diff CC 1.5a->1.0  measured 1.395 A (atoms 34,33)
-    ring CCCCCC n=6 rms=0.005 A bonds=1.409,1.406,1.395,1.387,1.559,1.398
-    ring CCCCC n=5 rms=0.119 A bonds=1.506,1.559,1.544,1.548,1.506
-
-### 1x [formula | CC 1.5a->1.0 | CC 1.5a->1.0 | CN 1.5a->2.0 | CO 1.5a->1.0 | NO 1.5a->1.0 | NO 2.0->1.0 | CH0->1 | CH1->2 | OH0->1]
+### 1x [formula | CC 1.5a->1.0 | CC 1.5a->1.0 | CN 1.5a->2.0 | CO 1.5a->1.0 | NO 1.0->2.0 | NO 1.5a->1.0 | NO 2.0->1.0 | CH0->1 | CH1->2 | OH0->1 | OH1->0]
   4B7P 9UN (main k3) ob_ok=True dist_ok=False
     diff CO 1.5a->1.0  measured 1.334 A (atoms 18,19)
     diff CC 1.5a->1.0  measured 1.393 A (atoms 18,22)
@@ -459,14 +370,28 @@
     diff CN 1.5a->2.0  measured 1.328 A (atoms 20,21)
     diff CC 1.5a->1.0  measured 1.395 A (atoms 21,22)
     diff NO 2.0->1.0  measured 1.229 A (atoms 15,17)
+    diff NO 1.0->2.0  measured 1.223 A (atoms 15,16)
     ring CCNOC n=5 rms=0.009 A bonds=1.395,1.328,1.485,1.334,1.393
 
-### 1x [formula | CC 1.5a->1.0 | CC 1.5a->1.0 | CS 1.5a->1.0 | CS 1.5a->2.0 | CH0->1 | SH0->1]
+### 1x [formula | CC 1.5a->1.0 | CC 1.5a->1.0 | CC 1.5a->1.0 | CC 1.5a->1.0 | CC 1.5a->1.0 | CC 1.5a->1.0 | CC 1.5a->1.0 | CC 1.5a->1.0 | CC 1.5a->1.0 | CC 1.5a->1.0 | CC 1.5a->1.0 | CC 1.5a->1.0 | CO 1.5a->1.0 | CO 1.5a->1.0 | CS 1.5a->2.0 | CS 1.5a->2.0 | CH0->1 | CH0->1 | CH0->1 | CH0->1 | CH0->1 | CH1->2 | CH1->2 | CH1->2 | CH1->2 | CH1->2]
   5U2E 837 (main k3) ob_ok=False dist_ok=False
+    diff CO 1.5a->1.0  measured 1.452 A (atoms 20,19)
+    diff CC 1.5a->1.0  measured 1.497 A (atoms 20,21)
+    diff CO 1.5a->1.0  measured 1.469 A (atoms 19,18)
     diff CC 1.5a->1.0  measured 1.531 A (atoms 18,16)
+    diff CC 1.5a->1.0  measured 1.436 A (atoms 18,2)
     diff CC 1.5a->1.0  measured 1.446 A (atoms 16,1)
+    diff CC 1.5a->1.0  measured 1.390 A (atoms 14,0)
+    diff CC 1.5a->1.0  measured 1.383 A (atoms 14,13)
+    diff CC 1.5a->1.0  measured 1.389 A (atoms 0,15)
+    diff CC 1.5a->1.0  measured 1.392 A (atoms 15,11)
+    diff CC 1.5a->1.0  measured 1.386 A (atoms 11,12)
+    diff CC 1.5a->1.0  measured 1.395 A (atoms 12,13)
     diff CS 1.5a->2.0  measured 1.654 A (atoms 1,17)
-    diff CS 1.5a->1.0  measured 1.635 A (atoms 17,2)
+    diff CS 1.5a->2.0  measured 1.635 A (atoms 17,2)
+    diff CC 1.5a->1.0  measured 1.455 A (atoms 2,3)
+    diff CC 1.5a->1.0  measured 1.432 A (atoms 3,21)
+    ring CCCCCC n=6 rms=0.005 A bonds=1.386,1.395,1.383,1.390,1.389,1.392
     ring CCCOCC n=6 rms=0.062 A bonds=1.432,1.497,1.452,1.469,1.436,1.455
     ring CCCCS n=5 rms=0.008 A bonds=1.446,1.531,1.436,1.635,1.654
 
@@ -475,19 +400,24 @@
     diff CO 2.0->1.0  measured 1.363 A (atoms 7,4)
     diff CO 2.0->1.0  measured 1.310 A (atoms 5,1)
 
-### 1x [formula | CC 1.0->1.5a | CC 1.0->1.5a | CC 1.0->1.5a | CO 1.0->1.5a | CO 1.0->1.5a | CO 2.0->1.0 | CH0->1 | CH1->0 | CH1->0 | CH1->0 | CH1->0 | OH0->1]
-  1WQW BT5 (main k4) ob_ok=True dist_ok=False
-    diff CC 1.0->1.5a  measured 1.524 A (atoms 27,25)
-    diff CO 1.0->1.5a  measured 1.424 A (atoms 27,22)
-    diff CC 1.0->1.5a  measured 1.523 A (atoms 25,23)
-    diff CC 1.0->1.5a  measured 1.507 A (atoms 23,21)
-    diff CO 1.0->1.5a  measured 1.422 A (atoms 21,22)
-    diff CO 2.0->1.0  measured 1.272 A (atoms 0,2)
-    ring OCCCC n=5 rms=0.009 A bonds=1.424,1.524,1.523,1.507,1.422
-
 ### 1x [formula | CC 1.0->2.0 | CH2->1 | CH3->2]
   5P9L 7G9 (main k4) ob_ok=False dist_ok=False
     diff CC 1.0->2.0  measured 1.359 A (atoms 27,28)
+
+### 1x [formula | CC 1.5a->1.0 | CC 1.5a->1.0 | CC 1.5a->1.0 | CC 1.5a->1.0 | CN 1.5a->1.0 | CN 1.5a->1.0 | CN 1.5a->1.0 | CN 1.5a->1.0 | CN 1.5a->2.0 | NN 1.5a->1.0 | CH0->1 | CH0->1 | CH0->1 | CH1->2 | CH1->2 | NH0->1]
+  5JQ8 I73 (main k4) ob_ok=True dist_ok=False
+    diff CN 1.5a->2.0  measured 1.358 A (atoms 9,20)
+    diff CC 1.5a->1.0  measured 1.405 A (atoms 9,10)
+    diff CN 1.5a->1.0  measured 1.386 A (atoms 20,19)
+    diff CN 1.5a->1.0  measured 1.323 A (atoms 19,12)
+    diff CC 1.5a->1.0  measured 1.362 A (atoms 19,15)
+    diff CN 1.5a->1.0  measured 1.341 A (atoms 12,11)
+    diff NN 1.5a->1.0  measured 1.420 A (atoms 12,13)
+    diff CC 1.5a->1.0  measured 1.431 A (atoms 11,10)
+    diff CN 1.5a->1.0  measured 1.381 A (atoms 13,14)
+    diff CC 1.5a->1.0  measured 1.413 A (atoms 14,15)
+    ring CCNCNC n=6 rms=0.004 A bonds=1.405,1.358,1.386,1.323,1.341,1.431
+    ring CCNNC n=5 rms=0.015 A bonds=1.413,1.381,1.420,1.323,1.362
 
 ### 1x [formula | CS 1.0->2.0 | CS 1.0->2.0 | CS 1.0->2.0 | CH2->1 | CH2->1 | CH3->2 | SH1->0]
   5H5F SAM (main k4) ob_ok=True dist_ok=False
@@ -598,11 +528,6 @@
     diff OP 1.0->2.0  measured 1.485 A (atoms 44,47)
     ring CCCCNC n=6 rms=0.097 A bonds=1.528,1.496,1.340,1.454,1.454,1.362
 
-### 1x [graph | CN 1.0->2.0 | NH0->1 | NH1->0]
-  7FNL VWR (main k5) ob_ok=True dist_ok=False
-    diff CN 1.0->2.0  measured 1.358 A (atoms 9,10)
-    ring NNNNC n=5 rms=0.001 A bonds=1.370,1.287,1.345,1.364,1.415
-
 ### 1x [formula | CC 1.5a->1.0 | CC 1.5a->1.0 | CC 1.5a->1.0 | CC 1.5a->1.0 | CC 1.5a->2.0 | CC 1.5a->2.0 | CN 1.0->2.0 | CN 1.5a->1.0 | CN 1.5a->1.0 | CN 1.5a->1.0 | CN 1.5a->2.0 | NH1->0 | NH1->0]
   6S9X L1W (lowres k1) ob_ok=True dist_ok=False
     diff CC 1.5a->1.0  measured 1.386 A (atoms 26,27)
@@ -623,13 +548,6 @@
   3KOC DHI (lowres k1) ob_ok=False dist_ok=False
     diff CO 2.0->1.0  measured 1.237 A (atoms 2,10)
     diff CO 1.0->2.0  measured 1.236 A (atoms 2,3)
-
-### 1x [formula | CC 2.0->1.0 | CO 1.0->2.0 | CO 2.0->1.0 | CH0->1 | CH0->1 | OH0->1 | OH1->0]
-  8JZ7 FI7 (lowres k1) ob_ok=False dist_ok=False
-    diff CC 2.0->1.0  measured 1.361 A (atoms 3,4)
-    diff CO 2.0->1.0  measured 1.282 A (atoms 5,27)
-    diff CO 1.0->2.0  measured 1.203 A (atoms 5,26)
-    ring CCCCCC n=6 rms=0.222 A bonds=1.500,1.504,1.500,1.494,1.484,1.361
 
 ### 1x [formula | CC 2.0->1.0 | CC 2.0->1.0 | CH0->1 | CH1->2 | CH1->2 | CH1->2]
   2QN2 0MA (lowres k1) ob_ok=False dist_ok=False
@@ -663,19 +581,9 @@
     ring CCCCNC n=6 rms=0.000 A bonds=1.491,1.503,1.524,1.487,1.500,1.520
     ring CCCCCC n=6 rms=0.001 A bonds=1.537,1.536,1.540,1.527,1.541,1.534
 
-### 1x [graph | CO 1.0->2.0 | NH0->1 | OH1->0]
-  2ETK HFS (lowres k1) ob_ok=False dist_ok=False
-    diff CO 1.0->2.0  measured 1.252 A (atoms 1,0)
-    ring CNCCCC n=6 rms=0.001 A bonds=1.343,1.348,1.399,1.393,1.487,1.489
-
-### 1x [formula | CC 1.0->1.5a | CC 2.0->1.5a | CN 1.0->1.5a | CN 1.0->1.5a | CN 1.0->1.5a | CN 1.0->1.5a | CH1->0 | NH0->1 | NH1->0 | NH1->0]
+### 1x [formula | CC 2.0->1.0 | CH0->1 | CH0->1 | NH0->1 | NH1->0]
   5HE2 F0S (lowres k1) ob_ok=False dist_ok=False
-    diff CC 2.0->1.5a  measured 1.468 A (atoms 12,13)
-    diff CC 1.0->1.5a  measured 1.489 A (atoms 12,19)
-    diff CN 1.0->1.5a  measured 1.343 A (atoms 13,15)
-    diff CN 1.0->1.5a  measured 1.341 A (atoms 15,16)
-    diff CN 1.0->1.5a  measured 1.346 A (atoms 16,18)
-    diff CN 1.0->1.5a  measured 1.485 A (atoms 18,19)
+    diff CC 2.0->1.0  measured 1.468 A (atoms 12,13)
     ring NCNCCC n=6 rms=0.055 A bonds=1.346,1.341,1.343,1.468,1.489,1.485
 
 ### 1x [formula | CC 3.0->2.0 | CH0->1 | CH0->1]
@@ -687,6 +595,22 @@
     diff CN 1.0->3.0  measured 1.134 A (atoms 24,25)
     diff CO 2.0->1.0  measured 1.413 A (atoms 4,5)
 
+### 1x [formula | OP 2.0->1.0 | OH0->1 | PH0->1]
+  3C21 2BA (lowres k1) ob_ok=True dist_ok=False
+    diff OP 2.0->1.0  measured 1.515 A (atoms 0,2)
+    ring COPOCCCOPOCC n=12 rms=0.413 A bonds=1.413,1.565,1.441,1.377,1.513,1.516,1.411,1.621,1.628,1.446,1.508,1.526
+
+### 1x [formula | CN 1.5a->1.0 | CN 1.5a->1.0 | CN 1.5a->1.0 | CN 1.5a->1.0 | OP 1.0->2.0 | OP 2.0->1.0 | CH1->2 | OH0->1 | OH1->0]
+  5ME6 M7G (lowres k1) ob_ok=False dist_ok=False
+    diff CN 1.5a->1.0  measured 1.476 A (atoms 17,18)
+    diff CN 1.5a->1.0  measured 1.307 A (atoms 17,28)
+    diff CN 1.5a->1.0  measured 1.450 A (atoms 18,19)
+    diff CN 1.5a->1.0  measured 1.334 A (atoms 19,21)
+    diff OP 2.0->1.0  measured 1.527 A (atoms 5,7)
+    diff OP 1.0->2.0  measured 1.517 A (atoms 5,8)
+    ring NCNCCC n=6 rms=0.007 A bonds=1.357,1.370,1.346,1.471,1.474,1.335
+    ring NCNCC n=5 rms=0.003 A bonds=1.450,1.476,1.307,1.474,1.334
+
 ### 1x [formula | CC 1.0->2.0 | CN 1.0->2.0 | CN 1.0->2.0 | CS 1.0->2.0 | CS 1.0->2.0 | CH1->0 | CH1->0 | CH1->0 | CH2->1 | CH2->1 | CH2->1 | NH1->0 | NH1->0]
   3RIR BT5 (lowres k1) ob_ok=False dist_ok=False
     diff CC 1.0->2.0  measured 1.369 A (atoms 3,4)
@@ -697,20 +621,10 @@
     ring SCCCC n=5 rms=0.414 A bonds=1.699,1.452,1.424,1.484,1.713
     ring NCCNC n=5 rms=0.003 A bonds=1.243,1.424,1.341,1.422,1.342
 
-### 1x [formula | CC 1.5a->1.0 | CC 1.5a->1.0 | CO 1.5a->1.0 | CO 1.5a->1.0 | CO 2.0->1.0 | CH0->1 | OH0->1]
-  6LN1 EKU (lowres k1) ob_ok=False dist_ok=False
-    diff CO 1.5a->1.0  measured 1.402 A (atoms 11,15)
-    diff CC 1.5a->1.0  measured 1.497 A (atoms 2,3)
-    diff CC 1.5a->1.0  measured 1.468 A (atoms 3,4)
-    diff CO 2.0->1.0  measured 1.399 A (atoms 3,18)
-    diff CO 1.5a->1.0  measured 1.406 A (atoms 5,15)
-    ring CCCOCC n=6 rms=0.007 A bonds=1.468,1.431,1.406,1.402,1.393,1.497
-    ring CCCCCC n=6 rms=0.005 A bonds=1.415,1.389,1.366,1.358,1.393,1.386
-    ring CCCCCC n=6 rms=0.002 A bonds=1.365,1.328,1.360,1.417,1.431,1.410
-
-### 1x [formula | CN 2.0->1.0 | NO 2.0->1.0 | CH2->3 | NH0->1 | OH0->1]
+### 1x [formula | CN 2.0->1.0 | NO 1.0->2.0 | NO 2.0->1.0 | CH2->3 | NH0->1 | OH0->1 | OH1->0]
   5DV6 B4H (lowres k1) ob_ok=False dist_ok=False
     diff NO 2.0->1.0  measured 1.390 A (atoms 0,1)
+    diff NO 1.0->2.0  measured 1.381 A (atoms 1,2)
     diff CN 2.0->1.0  measured 1.508 A (atoms 11,12)
 
 ### 1x [formula | CC 1.0->1.5a | CC 1.0->1.5a | CC 1.0->2.0 | CC 1.5a->1.0 | CC 1.5a->1.0 | CC 1.5a->2.0 | CC 2.0->1.0 | CC 2.0->1.5a | CN 1.0->1.5a | CN 1.5a->1.0 | CN 1.5a->2.0 | CN 2.0->1.5a | CO 1.0->2.0 | CO 2.0->1.0 | NH1->0 | OH0->1 | OH1->0]
@@ -739,13 +653,8 @@
     diff CO 1.0->2.0  measured 1.233 A (atoms 6,7)
     ring CCCCCC n=6 rms=0.224 A bonds=1.387,1.531,1.544,1.527,1.502,1.523
 
-### 1x [formula | CC 1.0->1.5a | CC 1.0->1.5a | CC 1.0->1.5a | CC 1.0->1.5a | CC 1.0->1.5a | CC 2.0->1.5a | CC 2.0->1.5a | CN 1.0->1.5a | CN 1.0->1.5a | CO 1.0->1.5a | CO 1.0->1.5a | OP 1.0->2.0 | OP 1.0->2.0 | OP 2.0->1.0 | OP 2.0->1.0 | CH1->0 | CH1->0 | CH1->0 | CH1->0 | CH2->1 | OH0->1 | OH0->1 | OH1->0 | OH1->0]
+### 1x [formula | CC 1.0->1.5a | CC 1.0->1.5a | CC 2.0->1.5a | CC 2.0->1.5a | CN 1.0->1.5a | CN 1.0->1.5a | OP 1.0->2.0 | OP 1.0->2.0 | OP 2.0->1.0 | OP 2.0->1.0 | CH2->1 | OH0->1 | OH0->1 | OH1->0 | OH1->0]
   9J0F NAI (lowres k2) ob_ok=False dist_ok=False
-    diff CC 1.0->1.5a  measured 1.519 A (atoms 11,9)
-    diff CO 1.0->1.5a  measured 1.426 A (atoms 11,6)
-    diff CC 1.0->1.5a  measured 1.513 A (atoms 9,7)
-    diff CC 1.0->1.5a  measured 1.517 A (atoms 7,5)
-    diff CO 1.0->1.5a  measured 1.427 A (atoms 5,6)
     diff OP 2.0->1.0  measured 1.508 A (atoms 0,2)
     diff OP 1.0->2.0  measured 1.506 A (atoms 0,1)
     diff OP 2.0->1.0  measured 1.505 A (atoms 23,25)
@@ -757,7 +666,6 @@
     diff CC 1.0->1.5a  measured 1.452 A (atoms 41,42)
     diff CC 2.0->1.5a  measured 1.386 A (atoms 42,43)
     ring CCCCNC n=6 rms=0.001 A bonds=1.506,1.452,1.386,1.334,1.333,1.387
-    ring OCCCC n=5 rms=0.048 A bonds=1.427,1.517,1.513,1.519,1.426
 
 ### 1x [formula | CC 1.0->1.5a | CC 1.0->1.5a | CC 1.0->1.5a | CC 1.0->1.5a | CC 1.0->1.5a | CH2->1 | CH2->1 | CH2->1 | CH2->1]
   2XUH TZ4 (lowres k2) ob_ok=False dist_ok=False
@@ -778,10 +686,8 @@
     diff CN 1.5a->1.0  measured 1.204 A (atoms 11,10)
     ring NCSCC n=5 rms=0.014 A bonds=1.232,1.582,1.686,1.344,1.204
 
-### 1x [formula | CC 1.5a->1.0 | CC 1.5a->1.0 | CC 1.5a->1.0 | CC 1.5a->1.0 | CC 1.5a->1.0 | CC 1.5a->1.0 | OS 2.0->1.0 | OS 2.0->1.0 | CH0->1 | CH0->1 | CH1->2 | CH1->2 | CH1->2 | CH1->2 | OH0->1 | OH0->1]
+### 1x [formula | CC 1.5a->1.0 | CC 1.5a->1.0 | CC 1.5a->1.0 | CC 1.5a->1.0 | CC 1.5a->1.0 | CC 1.5a->1.0 | CH0->1 | CH0->1 | CH1->2 | CH1->2 | CH1->2 | CH1->2]
   2O9I 444 (lowres k2) ob_ok=True dist_ok=False
-    diff OS 2.0->1.0  measured 1.603 A (atoms 1,0)
-    diff OS 2.0->1.0  measured 1.595 A (atoms 1,2)
     diff CC 1.5a->1.0  measured 1.538 A (atoms 15,16)
     diff CC 1.5a->1.0  measured 1.477 A (atoms 15,18)
     diff CC 1.5a->1.0  measured 1.424 A (atoms 16,17)
@@ -806,6 +712,28 @@
     ring CCCCNC n=6 rms=0.174 A bonds=1.358,1.475,1.386,1.351,1.484,1.491
     ring CCCCCC n=6 rms=0.011 A bonds=1.383,1.383,1.386,1.374,1.386,1.381
 
+### 1x [formula | CC 1.5a->1.0 | CC 1.5a->1.0 | CN 1.5a->1.0 | CN 1.5a->1.0 | CN 1.5a->1.0 | CN 1.5a->1.0 | CN 1.5a->1.0 | CN 1.5a->2.0 | CN 1.5a->2.0 | NN 1.5a->1.0 | CH0->1 | CH0->1 | CH0->1 | NH0->1]
+  8GTG CW9 (lowres k2) ob_ok=False dist_ok=False
+    diff CN 1.5a->1.0  measured 1.345 A (atoms 0,20)
+    diff CN 1.5a->1.0  measured 1.330 A (atoms 0,19)
+    diff CN 1.5a->1.0  measured 1.368 A (atoms 20,15)
+    diff CC 1.5a->1.0  measured 1.415 A (atoms 15,12)
+    diff CN 1.5a->1.0  measured 1.297 A (atoms 15,22)
+    diff CC 1.5a->1.0  measured 1.402 A (atoms 12,3)
+    diff CN 1.5a->2.0  measured 1.347 A (atoms 3,21)
+    diff NN 1.5a->1.0  measured 1.422 A (atoms 21,22)
+    diff CN 1.5a->1.0  measured 1.375 A (atoms 22,7)
+    diff CN 1.5a->2.0  measured 1.330 A (atoms 7,19)
+    ring CNCNCN n=6 rms=0.005 A bonds=1.375,1.297,1.368,1.345,1.330,1.330
+    ring CCCNN n=5 rms=0.004 A bonds=1.402,1.415,1.297,1.422,1.347
+
+### 1x [formula | CC 1.0->2.0 | CN 1.0->2.0 | CN 2.0->1.0 | CH1->0 | CH1->0 | NH1->2 | NH2->1]
+  6S7B KYH (lowres k2) ob_ok=False dist_ok=False
+    diff CC 1.0->2.0  measured 1.253 A (atoms 11,12)
+    diff CN 2.0->1.0  measured 1.348 A (atoms 18,26)
+    diff CN 1.0->2.0  measured 1.326 A (atoms 18,27)
+    ring COCCC n=5 rms=0.202 A bonds=1.510,1.285,1.634,1.253,1.567
+
 ### 1x [graph | CC 1.5a->1.0 | CN 1.5a->1.0 | CN 1.5a->1.0 | CN 1.5a->1.0 | CN 1.5a->2.0 | CO 1.0->2.0 | CH0->1 | NH0->1 | NH1->0 | OH1->0]
   2WMT ZYT (lowres k2) ob_ok=False dist_ok=False
     diff CN 1.5a->1.0  measured 1.323 A (atoms 2,4)
@@ -826,6 +754,43 @@
 ### 1x [formula | CH1->0 | CH1->0]
   6LW1 EX3 (lowres k2) ob_ok=False dist_ok=False
     (no bond diffs - H-only case)
+
+### 1x [formula | CC 1.5a->1.0 | CC 1.5a->1.0 | CC 1.5a->1.0 | CC 1.5a->1.0 | CC 1.5a->1.0 | CC 1.5a->1.0 | CC 1.5a->1.0 | CC 1.5a->1.0 | CC 1.5a->1.0 | CC 1.5a->1.0 | CC 1.5a->1.0 | CC 1.5a->1.0 | CC 1.5a->1.0 | CC 1.5a->1.0 | CC 1.5a->1.0 | CC 1.5a->1.0 | CC 1.5a->1.0 | CC 1.5a->1.0 | CC 1.5a->1.0 | CC 1.5a->1.0 | CC 1.5a->1.0 | CC 1.5a->1.0 | CC 1.5a->1.0 | CC 1.5a->1.0 | CC 1.5a->1.0 | CN 1.5a->1.0 | CN 1.5a->1.0 | CN 1.5a->1.0 | CN 1.5a->2.0 | CH0->1 | CH0->1 | CH0->1 | CH0->1 | CH0->1 | CH0->1 | CH0->1 | CH0->1 | CH0->1 | CH1->2 | CH1->2 | CH1->2 | CH1->2 | CH1->2 | CH1->2 | CH1->2 | CH1->2 | CH1->2 | CH1->2 | CH1->2 | CH1->2 | CH1->2 | CH1->2 | CH1->2 | NH0->1 | NH1->0]
+  6HHI G4N (lowres k2) ob_ok=False dist_ok=False
+    diff CC 1.5a->1.0  measured 1.389 A (atoms 33,35)
+    diff CC 1.5a->1.0  measured 1.389 A (atoms 33,34)
+    diff CC 1.5a->1.0  measured 1.390 A (atoms 35,36)
+    diff CC 1.5a->1.0  measured 1.389 A (atoms 36,37)
+    diff CC 1.5a->1.0  measured 1.389 A (atoms 37,38)
+    diff CC 1.5a->1.0  measured 1.388 A (atoms 38,34)
+    diff CC 1.5a->1.0  measured 1.391 A (atoms 22,21)
+    diff CC 1.5a->1.0  measured 1.387 A (atoms 22,19)
+    diff CC 1.5a->1.0  measured 1.391 A (atoms 21,20)
+    diff CC 1.5a->1.0  measured 1.392 A (atoms 20,17)
+    diff CC 1.5a->1.0  measured 1.394 A (atoms 17,18)
+    diff CC 1.5a->1.0  measured 1.386 A (atoms 18,19)
+    diff CN 1.5a->1.0  measured 1.343 A (atoms 16,15)
+    diff CC 1.5a->1.0  measured 1.407 A (atoms 16,6)
+    diff CN 1.5a->1.0  measured 1.341 A (atoms 15,14)
+    diff CC 1.5a->1.0  measured 1.389 A (atoms 14,13)
+    diff CC 1.5a->1.0  measured 1.387 A (atoms 14,8)
+    diff CC 1.5a->1.0  measured 1.388 A (atoms 13,12)
+    diff CN 1.5a->2.0  measured 1.321 A (atoms 12,11)
+    diff CN 1.5a->1.0  measured 1.401 A (atoms 11,9)
+    diff CC 1.5a->1.0  measured 1.393 A (atoms 9,8)
+    diff CC 1.5a->1.0  measured 1.387 A (atoms 8,7)
+    diff CC 1.5a->1.0  measured 1.389 A (atoms 7,6)
+    diff CC 1.5a->1.0  measured 1.387 A (atoms 5,0)
+    diff CC 1.5a->1.0  measured 1.396 A (atoms 5,4)
+    diff CC 1.5a->1.0  measured 1.390 A (atoms 0,1)
+    diff CC 1.5a->1.0  measured 1.389 A (atoms 1,2)
+    diff CC 1.5a->1.0  measured 1.389 A (atoms 2,3)
+    diff CC 1.5a->1.0  measured 1.387 A (atoms 3,4)
+    ring CCCCCC n=6 rms=0.001 A bonds=1.388,1.389,1.389,1.390,1.389,1.389
+    ring CCCCCC n=6 rms=0.005 A bonds=1.391,1.392,1.394,1.386,1.387,1.391
+    ring NCCCCC n=6 rms=0.001 A bonds=1.341,1.387,1.387,1.389,1.407,1.343
+    ring CCNCCC n=6 rms=0.000 A bonds=1.388,1.321,1.401,1.393,1.387,1.389
+    ring CCCCCC n=6 rms=0.005 A bonds=1.390,1.389,1.389,1.387,1.396,1.387
 
 ### 1x [formula | CC 1.0->3.0 | CH2->0 | CH3->1]
   8U6M VW2 (lowres k2) ob_ok=False dist_ok=False
@@ -867,33 +832,27 @@
     diff CO 2.0->1.0  measured 1.375 A (atoms 6,7)
     ring CNCCCN n=6 rms=0.001 A bonds=1.345,1.365,1.441,1.385,1.379,1.363
 
+### 1x [formula | CC 1.5a->1.0 | CC 1.5a->1.0 | CN 1.5a->1.0 | CN 1.5a->1.0 | CN 1.5a->1.0 | CN 1.5a->2.0 | CH0->1 | NH0->1 | +CH0 | +CH0 | +CH1 | +CH1 | +CH1 | +CH1 | +CH1 | +CH1 | +OH1 | +SH0 | -CH0 | -CH0 | -CH1 | -CH1 | -CH1 | -CH1 | -CH1 | -CH2 | -OH0 | -SH0]
+  7T2X EMY (lowres k3) ob_ok=False dist_ok=False
+    diff CC 1.5a->1.0  measured 1.594 A (atoms 19,2)
+    diff CN 1.5a->1.0  measured 1.332 A (atoms 19,0)
+    diff CC 1.5a->1.0  measured 1.607 A (atoms 2,4)
+    diff CN 1.5a->1.0  measured 1.178 A (atoms 4,21)
+    diff CN 1.5a->2.0  measured 1.038 A (atoms 21,3)
+    diff CN 1.5a->1.0  measured 1.114 A (atoms 3,0)
+    ring CCNCNC n=6 rms=0.005 A bonds=1.607,1.178,1.038,1.114,1.332,1.594
+
 ### 1x [formula | CN 1.0->2.0 | CH2->1 | NH1->0]
   1J0B 5PA (lowres k3) ob_ok=False dist_ok=False
     diff CN 1.0->2.0  measured 1.323 A (atoms 15,1)
 
-### 1x [formula | CO 1.0->2.0 | CH1->0 | OH1->0]
-  2QXG K7I (lowres k3) ob_ok=True dist_ok=False
-    diff CO 1.0->2.0  measured 1.298 A (atoms 20,8)
-
-### 1x [formula | CC 1.5a->1.0 | CC 1.5a->1.0 | CN 1.5a->1.0 | CN 1.5a->1.0 | CN 1.5a->1.0 | CN 1.5a->1.0 | CN 1.5a->1.0 | CN 1.5a->2.0 | CN 1.5a->2.0 | CN 1.5a->2.0 | CO 2.0->1.0 | OP 1.0->2.0 | OP 2.0->1.0 | CH0->1 | CH1->2 | NH1->0 | OH0->1 | OH0->1 | OH1->0]
+### 1x [graph | CO 2.0->1.0 | OP 1.0->2.0 | OP 2.0->1.0 | NH1->0 | OH0->1 | OH0->1 | OH1->0]
   9WN1 4BW (lowres k3) ob_ok=False dist_ok=False
-    diff CN 1.5a->1.0  measured 1.363 A (atoms 35,36)
-    diff CN 1.5a->1.0  measured 1.448 A (atoms 35,39)
-    diff CN 1.5a->1.0  measured 1.389 A (atoms 36,37)
-    diff CN 1.5a->2.0  measured 1.363 A (atoms 37,38)
-    diff CC 1.5a->1.0  measured 1.538 A (atoms 38,39)
-    diff CC 1.5a->1.0  measured 1.449 A (atoms 38,43)
-    diff CN 1.5a->1.0  measured 1.426 A (atoms 39,40)
-    diff CN 1.5a->2.0  measured 1.319 A (atoms 40,41)
-    diff CN 1.5a->1.0  measured 1.310 A (atoms 41,42)
-    diff CN 1.5a->2.0  measured 1.295 A (atoms 42,43)
     diff OP 2.0->1.0  measured 1.488 A (atoms 18,20)
     diff OP 1.0->2.0  measured 1.487 A (atoms 18,21)
     diff CO 2.0->1.0  measured 1.390 A (atoms 1,0)
     ring COPOCCCOPOCC n=12 rms=0.501 A bonds=1.395,1.635,1.624,1.438,1.471,1.472,1.384,1.624,1.634,1.454,1.472,1.484
     ring CNCCCN n=6 rms=0.003 A bonds=1.406,1.363,1.470,1.459,1.392,1.349
-    ring CNCNCC n=6 rms=0.000 A bonds=1.295,1.310,1.319,1.426,1.538,1.449
-    ring CNCCN n=5 rms=0.001 A bonds=1.363,1.448,1.538,1.363,1.389
 
 ### 1x [formula | CN 2.0->1.0 | CH1->2 | NH0->1]
   2ITW ITQ (lowres k3) ob_ok=True dist_ok=False
@@ -1009,12 +968,12 @@
     diff CC 1.0->2.0  measured 1.367 A (atoms 18,4)
     ring CCCCC n=5 rms=0.167 A bonds=1.611,1.328,1.677,1.367,1.576
 
-### 1x [formula | CC 2.0->1.0 | CN 1.0->2.0 | CN 2.0->1.0 | CS 1.0->2.0 | CH1->2 | NH0->1 | NH1->0 | SH0->1]
+### 1x [formula | CC 2.0->1.0 | CN 2.0->1.0 | CS 1.0->2.0 | CS 1.0->2.0 | CH1->2 | NH0->1]
   3NR9 NR9 (lowres k5) ob_ok=True dist_ok=False
     diff CC 2.0->1.0  measured 1.396 A (atoms 10,11)
     diff CS 1.0->2.0  measured 1.719 A (atoms 11,15)
     diff CN 2.0->1.0  measured 1.349 A (atoms 13,14)
-    diff CN 1.0->2.0  measured 1.321 A (atoms 14,17)
+    diff CS 1.0->2.0  measured 1.696 A (atoms 14,15)
     ring CNCSC n=5 rms=0.002 A bonds=1.351,1.349,1.696,1.719,1.396
 
 ### 1x [formula | CN 1.5a->1.0 | CN 1.5a->1.0 | CN 1.5a->1.0 | CN 1.5a->1.0 | CN 1.5a->1.0 | CN 1.5a->1.0 | CN 1.5a->1.0 | CN 1.5a->1.0 | OP 1.0->2.0 | OP 1.0->2.0 | OP 2.0->1.0 | OP 2.0->1.0 | CH1->2 | CH1->2 | NH0->1 | NH0->1 | OH0->1 | OH0->1 | OH1->0 | OH1->0]
@@ -1037,17 +996,22 @@
     ring NCCNC n=5 rms=0.002 A bonds=1.539,1.387,1.300,1.262,1.379
     ring CNCCN n=5 rms=0.002 A bonds=1.256,1.309,1.370,1.548,1.381
 
+### 1x [formula | CN 1.5a->1.0 | CN 1.5a->1.0 | CN 1.5a->2.0 | CN 1.5a->2.0 | CH1->0 | NH1->0]
+  5NEV 72L (lowres k5) ob_ok=False dist_ok=False
+    diff CN 1.5a->1.0  measured 1.322 A (atoms 12,9)
+    diff CN 1.5a->1.0  measured 1.475 A (atoms 13,14)
+    diff CN 1.5a->2.0  measured 1.331 A (atoms 14,0)
+    diff CN 1.5a->2.0  measured 1.354 A (atoms 0,9)
+    ring NCCCNC n=6 rms=0.003 A bonds=1.363,1.394,1.392,1.363,1.348,1.347
+    ring NCCNC n=5 rms=0.004 A bonds=1.475,1.392,1.322,1.354,1.331
+
 ### 1x [formula | CC 2.0->1.0 | CC 2.0->1.0 | CH1->2 | CH1->2 | CH2->3 | CH2->3]
   3R5M MLO (lowres k5) ob_ok=False dist_ok=False
     diff CC 2.0->1.0  measured 1.440 A (atoms 5,1)
     diff CC 2.0->1.0  measured 1.389 A (atoms 4,0)
 
-### 1x [formula | CC 1.5a->1.0 | CC 1.5a->1.0 | CC 1.5a->1.0 | CC 1.5a->1.0 | CC 1.5a->1.0 | CC 1.5a->1.0 | CH0->1 | CH0->1 | CH0->1 | CH1->2 | CH1->2 | CH1->2]
-  3OPD E0G (lowres k5) ob_ok=True dist_ok=False
-    diff CC 1.5a->1.0  measured 1.415 A (atoms 8,9)
-    diff CC 1.5a->1.0  measured 1.406 A (atoms 8,4)
-    diff CC 1.5a->1.0  measured 1.393 A (atoms 9,1)
-    diff CC 1.5a->1.0  measured 1.536 A (atoms 1,2)
-    diff CC 1.5a->1.0  measured 1.464 A (atoms 2,20)
-    diff CC 1.5a->1.0  measured 1.404 A (atoms 20,4)
-    ring CCCCCC n=6 rms=0.024 A bonds=1.404,1.464,1.536,1.393,1.415,1.406
+### 1x [formula | CO 1.0->2.0 | CO 2.0->1.0 | NO 2.0->1.0 | OH0->1 | OH0->1 | OH1->0]
+  2F9B N1H (lowres k5) ob_ok=False dist_ok=False
+    diff CO 2.0->1.0  measured 1.222 A (atoms 14,16)
+    diff CO 1.0->2.0  measured 1.221 A (atoms 14,15)
+    diff NO 2.0->1.0  measured 1.465 A (atoms 26,27)

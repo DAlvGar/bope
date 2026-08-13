@@ -47,233 +47,32 @@
  {
   "tier": "main",
   "bucket": 1,
-  "pdb": "8QIY",
-  "het": "VCC",
+  "pdb": "5SPM",
+  "het": "S4O",
   "name": "",
-  "kind": "formula",
+  "kind": "graph",
   "err": null,
-  "formula_per": "C11H10F3N3O2",
-  "formula_ref": "C11H8F3N3O2",
-  "per_smiles": "Nc1ccccc1N1N=CC(C(=O)O)C1C(F)(F)F",
-  "ref_smiles": "Nc1ccccc1-n1ncc(C(=O)O)c1C(F)(F)F",
-  "ob_ok": true,
+  "formula_per": "C13H13N3O5",
+  "formula_ref": "C13H13N3O5",
+  "per_smiles": "Cn1[nH]c(=O)c2c1CN(C(=O)c1cc(O)cc(=O)o1)CC2",
+  "ref_smiles": "Cn1nc(O)c2c1CN(C(=O)c1cc(O)cc(=O)o1)CC2",
+  "ob_ok": false,
   "dist_ok": false,
   "detail": {
-   "mcs_n": 19,
+   "mcs_n": 21,
    "bond_diffs": [
     {
      "els": [
       "C",
-      "N"
-     ],
-     "per": "1.0",
-     "ref": "1.5a"
-    },
-    {
-     "els": [
-      "N",
-      "N"
-     ],
-     "per": "1.0",
-     "ref": "1.5a"
-    },
-    {
-     "els": [
-      "C",
-      "C"
-     ],
-     "per": "1.0",
-     "ref": "1.5a"
-    },
-    {
-     "els": [
-      "C",
-      "C"
-     ],
-     "per": "1.0",
-     "ref": "1.5a"
-    },
-    {
-     "els": [
-      "C",
-      "N"
+      "O"
      ],
      "per": "2.0",
-     "ref": "1.5a"
+     "ref": "1.0"
     }
    ],
    "h_diffs": [
     {
-     "el": "C",
-     "per": 1,
-     "ref": 0
-    },
-    {
-     "el": "C",
-     "per": 1,
-     "ref": 0
-    }
-   ],
-   "unmapped_per": [],
-   "unmapped_ref": [],
-   "charges": [],
-   "note": ""
-  },
-  "sig": "formula | CC 1.5a->1.0 | CC 1.5a->1.0 | CN 1.5a->1.0 | CN 1.5a->2.0 | NN 1.5a->1.0 | CH0->1 | CH0->1"
- },
- {
-  "tier": "main",
-  "bucket": 1,
-  "pdb": "3U4H",
-  "het": "C8R",
-  "name": "",
-  "kind": "formula",
-  "err": null,
-  "formula_per": "C15H23N5O14P2",
-  "formula_ref": "C15H21N5O14P2",
-  "per_smiles": "NC1=NC2C(=O)N3C=NC2N1C1OC(COP(=O)(O)OP(=O)(O)OCC2OC3C(O)C2O)C(O)C1O",
-  "ref_smiles": "Nc1nc2c(=O)n3cnc2n1C1OC(COP(=O)(O)OP(=O)(O)OCC2OC3C(O)C2O)C(O)C1O",
-  "ob_ok": true,
-  "dist_ok": false,
-  "detail": {
-   "mcs_n": 36,
-   "bond_diffs": [
-    {
-     "els": [
-      "C",
-      "C"
-     ],
-     "per": "1.0",
-     "ref": "1.5a"
-    },
-    {
-     "els": [
-      "C",
-      "N"
-     ],
-     "per": "1.0",
-     "ref": "1.5a"
-    },
-    {
-     "els": [
-      "C",
-      "N"
-     ],
-     "per": "1.0",
-     "ref": "1.5a"
-    },
-    {
-     "els": [
-      "C",
-      "C"
-     ],
-     "per": "1.0",
-     "ref": "1.5a"
-    },
-    {
-     "els": [
-      "C",
-      "N"
-     ],
-     "per": "1.0",
-     "ref": "1.5a"
-    },
-    {
-     "els": [
-      "C",
-      "N"
-     ],
-     "per": "1.0",
-     "ref": "1.5a"
-    },
-    {
-     "els": [
-      "C",
-      "N"
-     ],
-     "per": "1.0",
-     "ref": "1.5a"
-    },
-    {
-     "els": [
-      "C",
-      "N"
-     ],
-     "per": "2.0",
-     "ref": "1.5a"
-    },
-    {
-     "els": [
-      "O",
-      "P"
-     ],
-     "per": "1.0",
-     "ref": "2.0"
-    },
-    {
-     "els": [
-      "O",
-      "P"
-     ],
-     "per": "2.0",
-     "ref": "1.0"
-    },
-    {
-     "els": [
-      "O",
-      "P"
-     ],
-     "per": "1.0",
-     "ref": "2.0"
-    },
-    {
-     "els": [
-      "O",
-      "P"
-     ],
-     "per": "2.0",
-     "ref": "1.0"
-    },
-    {
-     "els": [
-      "C",
-      "N"
-     ],
-     "per": "1.0",
-     "ref": "1.5a"
-    },
-    {
-     "els": [
-      "C",
-      "N"
-     ],
-     "per": "2.0",
-     "ref": "1.5a"
-    }
-   ],
-   "h_diffs": [
-    {
-     "el": "C",
-     "per": 1,
-     "ref": 0
-    },
-    {
-     "el": "C",
-     "per": 1,
-     "ref": 0
-    },
-    {
-     "el": "O",
-     "per": 1,
-     "ref": 0
-    },
-    {
-     "el": "O",
-     "per": 0,
-     "ref": 1
-    },
-    {
-     "el": "O",
+     "el": "N",
      "per": 1,
      "ref": 0
     },
@@ -288,7 +87,7 @@
    "charges": [],
    "note": ""
   },
-  "sig": "formula | CC 1.5a->1.0 | CC 1.5a->1.0 | CN 1.5a->1.0 | CN 1.5a->1.0 | CN 1.5a->1.0 | CN 1.5a->1.0 | CN 1.5a->1.0 | CN 1.5a->1.0 | CN 1.5a->2.0 | CN 1.5a->2.0 | OP 1.0->2.0 | OP 1.0->2.0 | OP 2.0->1.0 | OP 2.0->1.0 | CH0->1 | CH0->1 | OH0->1 | OH0->1 | OH1->0 | OH1->0"
+  "sig": "graph | CO 1.0->2.0 | NH0->1 | OH1->0"
  },
  {
   "tier": "main",
@@ -434,15 +233,96 @@
   "pdb": "5MUY",
   "het": "MGT",
   "name": "",
-  "kind": "None",
-  "err": "santize: Can't kekulize mol.  Unkekulized atoms: 22 25 28 29 31 32",
-  "formula_per": null,
+  "kind": "formula",
+  "err": null,
+  "formula_per": "C11H18N5O14P3",
   "formula_ref": "C11H20N5O14P3",
-  "per_smiles": null,
+  "per_smiles": "CN1CN(C2OC(COP(=O)(O)OP(=O)(O)OP(=O)(O)O)=C(O)C2O)c2nc(N)[nH]c(=O)c21",
   "ref_smiles": "CN1CN(C2OC(COP(=O)(O)OP(=O)(O)OP(=O)(O)O)C(O)C2O)c2nc(N)[nH]c(=O)c21",
   "ob_ok": false,
   "dist_ok": false,
-  "sig": "None"
+  "detail": {
+   "mcs_n": 33,
+   "bond_diffs": [
+    {
+     "els": [
+      "C",
+      "C"
+     ],
+     "per": "2.0",
+     "ref": "1.0"
+    },
+    {
+     "els": [
+      "O",
+      "P"
+     ],
+     "per": "1.0",
+     "ref": "2.0"
+    },
+    {
+     "els": [
+      "O",
+      "P"
+     ],
+     "per": "2.0",
+     "ref": "1.0"
+    },
+    {
+     "els": [
+      "O",
+      "P"
+     ],
+     "per": "1.0",
+     "ref": "2.0"
+    },
+    {
+     "els": [
+      "O",
+      "P"
+     ],
+     "per": "2.0",
+     "ref": "1.0"
+    }
+   ],
+   "h_diffs": [
+    {
+     "el": "C",
+     "per": 0,
+     "ref": 1
+    },
+    {
+     "el": "C",
+     "per": 0,
+     "ref": 1
+    },
+    {
+     "el": "O",
+     "per": 1,
+     "ref": 0
+    },
+    {
+     "el": "O",
+     "per": 0,
+     "ref": 1
+    },
+    {
+     "el": "O",
+     "per": 1,
+     "ref": 0
+    },
+    {
+     "el": "O",
+     "per": 0,
+     "ref": 1
+    }
+   ],
+   "unmapped_per": [],
+   "unmapped_ref": [],
+   "charges": [],
+   "note": ""
+  },
+  "sig": "formula | CC 1.0->2.0 | OP 1.0->2.0 | OP 1.0->2.0 | OP 2.0->1.0 | OP 2.0->1.0 | CH1->0 | CH1->0 | OH0->1 | OH0->1 | OH1->0 | OH1->0"
  },
  {
   "tier": "main",
@@ -734,148 +614,6 @@
  {
   "tier": "main",
   "bucket": 1,
-  "pdb": "3QTX",
-  "het": "X43",
-  "name": "",
-  "kind": "formula",
-  "err": null,
-  "formula_per": "C16H17N5O5S2",
-  "formula_ref": "C16H14N5O5S2",
-  "per_smiles": "N=C1N=C(Nc2ccc(S(=N)(=O)O)cc2)SC1C(O)c1cccc(N(O)O)c1",
-  "ref_smiles": "Nc1nc(Nc2ccc(S(N)(=O)=O)cc2)sc1C(=O)c1cccc(N(=O)O)c1",
-  "ob_ok": false,
-  "dist_ok": false,
-  "detail": {
-   "mcs_n": 28,
-   "bond_diffs": [
-    {
-     "els": [
-      "N",
-      "S"
-     ],
-     "per": "2.0",
-     "ref": "1.0"
-    },
-    {
-     "els": [
-      "O",
-      "S"
-     ],
-     "per": "1.0",
-     "ref": "2.0"
-    },
-    {
-     "els": [
-      "C",
-      "S"
-     ],
-     "per": "1.0",
-     "ref": "1.5a"
-    },
-    {
-     "els": [
-      "C",
-      "N"
-     ],
-     "per": "2.0",
-     "ref": "1.5a"
-    },
-    {
-     "els": [
-      "C",
-      "S"
-     ],
-     "per": "1.0",
-     "ref": "1.5a"
-    },
-    {
-     "els": [
-      "C",
-      "C"
-     ],
-     "per": "1.0",
-     "ref": "1.5a"
-    },
-    {
-     "els": [
-      "C",
-      "N"
-     ],
-     "per": "1.0",
-     "ref": "1.5a"
-    },
-    {
-     "els": [
-      "C",
-      "N"
-     ],
-     "per": "2.0",
-     "ref": "1.0"
-    },
-    {
-     "els": [
-      "C",
-      "O"
-     ],
-     "per": "1.0",
-     "ref": "2.0"
-    },
-    {
-     "els": [
-      "N",
-      "O"
-     ],
-     "per": "1.0",
-     "ref": "2.0"
-    }
-   ],
-   "h_diffs": [
-    {
-     "el": "N",
-     "per": 1,
-     "ref": 2
-    },
-    {
-     "el": "C",
-     "per": 1,
-     "ref": 0
-    },
-    {
-     "el": "N",
-     "per": 1,
-     "ref": 2
-    },
-    {
-     "el": "C",
-     "per": 1,
-     "ref": 0
-    },
-    {
-     "el": "O",
-     "per": 1,
-     "ref": 0
-    },
-    {
-     "el": "O",
-     "per": 1,
-     "ref": 0
-    },
-    {
-     "el": "O",
-     "per": 1,
-     "ref": 0
-    }
-   ],
-   "unmapped_per": [],
-   "unmapped_ref": [],
-   "charges": [],
-   "note": ""
-  },
-  "sig": "formula | CC 1.5a->1.0 | CN 1.0->2.0 | CN 1.5a->1.0 | CN 1.5a->2.0 | CO 2.0->1.0 | CS 1.5a->1.0 | CS 1.5a->1.0 | NO 2.0->1.0 | NS 1.0->2.0 | OS 2.0->1.0 | CH0->1 | CH0->1 | NH2->1 | NH2->1 | OH0->1 | OH0->1 | OH0->1"
- },
- {
-  "tier": "main",
-  "bucket": 1,
   "pdb": "5RKH",
   "het": "LPZ",
   "name": "",
@@ -903,46 +641,6 @@
    "note": ""
   },
   "sig": "formula | NH1->0"
- },
- {
-  "tier": "main",
-  "bucket": 1,
-  "pdb": "6SUH",
-  "het": "LVE",
-  "name": "",
-  "kind": "formula",
-  "err": null,
-  "formula_per": "C15H15NO5",
-  "formula_ref": "C15H14NO5",
-  "per_smiles": "COc1cc(C(=O)c2ccc(C)cc2)cc(N(O)O)c1O",
-  "ref_smiles": "COc1cc(C(=O)c2ccc(C)cc2)cc(N(=O)O)c1O",
-  "ob_ok": true,
-  "dist_ok": false,
-  "detail": {
-   "mcs_n": 21,
-   "bond_diffs": [
-    {
-     "els": [
-      "N",
-      "O"
-     ],
-     "per": "1.0",
-     "ref": "2.0"
-    }
-   ],
-   "h_diffs": [
-    {
-     "el": "O",
-     "per": 1,
-     "ref": 0
-    }
-   ],
-   "unmapped_per": [],
-   "unmapped_ref": [],
-   "charges": [],
-   "note": ""
-  },
-  "sig": "formula | NO 2.0->1.0 | OH0->1"
  },
  {
   "tier": "main",
@@ -988,9 +686,9 @@
   "name": "",
   "kind": "formula",
   "err": null,
-  "formula_per": "C25H22ClN5O4S",
+  "formula_per": "C25H20ClN5O4S",
   "formula_ref": "C25H18ClN5O4S",
-  "per_smiles": "Cc1scnc1COc1cc(Cl)cc(C2CC(c3cnc(O)nc3O)=CN(c3cccnc3)C2O)c1",
+  "per_smiles": "Cc1scnc1COc1cc(Cl)cc(C2=C(O)N(c3cccnc3)C=C(c3cnc(O)nc3O)C2)c1",
   "ref_smiles": "Cc1scnc1COc1cc(Cl)cc(-c2cc(-c3c[nH]c(=O)[nH]c3=O)cn(-c3cccnc3)c2=O)c1",
   "ob_ok": false,
   "dist_ok": false,
@@ -1010,7 +708,7 @@
       "C",
       "C"
      ],
-     "per": "1.0",
+     "per": "2.0",
      "ref": "1.5a"
     },
     {
@@ -1072,17 +770,7 @@
    ],
    "h_diffs": [
     {
-     "el": "C",
-     "per": 1,
-     "ref": 0
-    },
-    {
      "el": "O",
-     "per": 1,
-     "ref": 0
-    },
-    {
-     "el": "C",
      "per": 1,
      "ref": 0
     },
@@ -1117,7 +805,7 @@
    "charges": [],
    "note": ""
   },
-  "sig": "formula | CC 1.5a->1.0 | CC 1.5a->1.0 | CC 1.5a->1.0 | CC 1.5a->2.0 | CN 1.5a->1.0 | CN 1.5a->1.0 | CO 2.0->1.0 | CO 2.0->1.0 | CO 2.0->1.0 | CH0->1 | CH0->1 | CH1->2 | NH1->0 | NH1->0 | OH0->1 | OH0->1 | OH0->1"
+  "sig": "formula | CC 1.5a->1.0 | CC 1.5a->1.0 | CC 1.5a->2.0 | CC 1.5a->2.0 | CN 1.5a->1.0 | CN 1.5a->1.0 | CO 2.0->1.0 | CO 2.0->1.0 | CO 2.0->1.0 | CH1->2 | NH1->0 | NH1->0 | OH0->1 | OH0->1 | OH0->1"
  },
  {
   "tier": "main",
@@ -1163,46 +851,6 @@
    "note": ""
   },
   "sig": "formula | CN 1.0->2.0 | CH1->0 | NH1->0"
- },
- {
-  "tier": "main",
-  "bucket": 1,
-  "pdb": "3B67",
-  "het": "B67",
-  "name": "",
-  "kind": "formula",
-  "err": null,
-  "formula_per": "C17H12F8N2O5",
-  "formula_ref": "C17H11F8N2O5",
-  "per_smiles": "CC(O)(COc1c(F)c(F)c(F)c(F)c1F)C(=O)Nc1ccc(N(O)O)c(C(F)(F)F)c1",
-  "ref_smiles": "CC(O)(COc1c(F)c(F)c(F)c(F)c1F)C(=O)Nc1ccc(N(=O)O)c(C(F)(F)F)c1",
-  "ob_ok": true,
-  "dist_ok": false,
-  "detail": {
-   "mcs_n": 32,
-   "bond_diffs": [
-    {
-     "els": [
-      "N",
-      "O"
-     ],
-     "per": "1.0",
-     "ref": "2.0"
-    }
-   ],
-   "h_diffs": [
-    {
-     "el": "O",
-     "per": 1,
-     "ref": 0
-    }
-   ],
-   "unmapped_per": [],
-   "unmapped_ref": [],
-   "charges": [],
-   "note": ""
-  },
-  "sig": "formula | NO 2.0->1.0 | OH0->1"
  },
  {
   "tier": "main",
@@ -1274,46 +922,6 @@
    "note": ""
   },
   "sig": "formula | CN 2.0->1.0 | CO 1.0->2.0 | CO 2.0->1.0 | CH0->1 | NH1->2 | OH0->1 | OH1->0"
- },
- {
-  "tier": "main",
-  "bucket": 2,
-  "pdb": "4EK8",
-  "het": "16K",
-  "name": "",
-  "kind": "formula",
-  "err": null,
-  "formula_per": "C15H15N5O2S",
-  "formula_ref": "C15H14N5O2S",
-  "per_smiles": "Cc1nc(C)c(-c2ccnc(Nc3cccc(N(O)O)c3)n2)s1",
-  "ref_smiles": "Cc1nc(C)c(-c2ccnc(Nc3cccc(N(=O)O)c3)n2)s1",
-  "ob_ok": false,
-  "dist_ok": false,
-  "detail": {
-   "mcs_n": 23,
-   "bond_diffs": [
-    {
-     "els": [
-      "N",
-      "O"
-     ],
-     "per": "1.0",
-     "ref": "2.0"
-    }
-   ],
-   "h_diffs": [
-    {
-     "el": "O",
-     "per": 1,
-     "ref": 0
-    }
-   ],
-   "unmapped_per": [],
-   "unmapped_ref": [],
-   "charges": [],
-   "note": ""
-  },
-  "sig": "formula | NO 2.0->1.0 | OH0->1"
  },
  {
   "tier": "main",
@@ -1558,22 +1166,6 @@
  {
   "tier": "main",
   "bucket": 2,
-  "pdb": "7RS8",
-  "het": "7EI",
-  "name": "",
-  "kind": "None",
-  "err": "santize: Can't kekulize mol.  Unkekulized atoms: 0 12 14 30 39",
-  "formula_per": null,
-  "formula_ref": "C34H37F3N2O6S",
-  "per_smiles": null,
-  "ref_smiles": "COc1ccc(N(CC(F)(F)F)S(=O)(=O)C2CC3OC2C(c2ccc(OCCN4CCCCC4)cc2)=C3c2ccc(O)cc2)cc1",
-  "ob_ok": false,
-  "dist_ok": false,
-  "sig": "None"
- },
- {
-  "tier": "main",
-  "bucket": 2,
   "pdb": "6VCO",
   "het": "APC",
   "name": "",
@@ -1645,75 +1237,6 @@
  {
   "tier": "main",
   "bucket": 2,
-  "pdb": "5ST6",
-  "het": "V0X",
-  "name": "",
-  "kind": "formula",
-  "err": null,
-  "formula_per": "C8H7NO",
-  "formula_ref": "C8H9NO",
-  "per_smiles": "Nc1coc2ccccc12",
-  "ref_smiles": "NC1COc2ccccc21",
-  "ob_ok": true,
-  "dist_ok": false,
-  "detail": {
-   "mcs_n": 10,
-   "bond_diffs": [
-    {
-     "els": [
-      "C",
-      "C"
-     ],
-     "per": "1.5a",
-     "ref": "1.0"
-    },
-    {
-     "els": [
-      "C",
-      "C"
-     ],
-     "per": "1.5a",
-     "ref": "1.0"
-    },
-    {
-     "els": [
-      "C",
-      "O"
-     ],
-     "per": "1.5a",
-     "ref": "1.0"
-    },
-    {
-     "els": [
-      "C",
-      "O"
-     ],
-     "per": "1.5a",
-     "ref": "1.0"
-    }
-   ],
-   "h_diffs": [
-    {
-     "el": "C",
-     "per": 0,
-     "ref": 1
-    },
-    {
-     "el": "C",
-     "per": 1,
-     "ref": 2
-    }
-   ],
-   "unmapped_per": [],
-   "unmapped_ref": [],
-   "charges": [],
-   "note": ""
-  },
-  "sig": "formula | CC 1.0->1.5a | CC 1.0->1.5a | CO 1.0->1.5a | CO 1.0->1.5a | CH1->0 | CH2->1"
- },
- {
-  "tier": "main",
-  "bucket": 2,
   "pdb": "7WQI",
   "het": "80I",
   "name": "",
@@ -1781,91 +1304,6 @@
    "note": ""
   },
   "sig": "formula | CC 1.0->2.0 | OP 1.0->2.0 | OP 2.0->1.0 | CH2->1 | CH2->1 | OH0->1 | OH1->0"
- },
- {
-  "tier": "main",
-  "bucket": 2,
-  "pdb": "7FOY",
-  "het": "W5C",
-  "name": "",
-  "kind": "formula",
-  "err": null,
-  "formula_per": "C11H13N3OS",
-  "formula_ref": "C11H11N3OS",
-  "per_smiles": "CN1CN=NC1=[SH]CC(=O)c1ccccc1",
-  "ref_smiles": "Cn1cnnc1SCC(=O)c1ccccc1",
-  "ob_ok": true,
-  "dist_ok": false,
-  "detail": {
-   "mcs_n": 16,
-   "bond_diffs": [
-    {
-     "els": [
-      "C",
-      "S"
-     ],
-     "per": "2.0",
-     "ref": "1.0"
-    },
-    {
-     "els": [
-      "C",
-      "N"
-     ],
-     "per": "1.0",
-     "ref": "1.5a"
-    },
-    {
-     "els": [
-      "C",
-      "N"
-     ],
-     "per": "1.0",
-     "ref": "1.5a"
-    },
-    {
-     "els": [
-      "C",
-      "N"
-     ],
-     "per": "1.0",
-     "ref": "1.5a"
-    },
-    {
-     "els": [
-      "C",
-      "N"
-     ],
-     "per": "1.0",
-     "ref": "1.5a"
-    },
-    {
-     "els": [
-      "N",
-      "N"
-     ],
-     "per": "2.0",
-     "ref": "1.5a"
-    }
-   ],
-   "h_diffs": [
-    {
-     "el": "S",
-     "per": 1,
-     "ref": 0
-    },
-    {
-     "el": "C",
-     "per": 2,
-     "ref": 1
-    }
-   ],
-   "unmapped_per": [],
-   "unmapped_ref": [],
-   "charges": [],
-   "note": ""
-  },
-  "sig": "formula | CN 1.5a->1.0 | CN 1.5a->1.0 | CN 1.5a->1.0 | CN 1.5a->1.0 | CS 1.0->2.0 | NN 1.5a->2.0 | CH1->2 | SH0->1"
  },
  {
   "tier": "main",
@@ -2485,51 +1923,6 @@
  {
   "tier": "main",
   "bucket": 2,
-  "pdb": "1TPB",
-  "het": "PGH",
-  "name": "",
-  "kind": "formula",
-  "err": null,
-  "formula_per": "C2H8NO6P",
-  "formula_ref": "C2H6NO6P",
-  "per_smiles": "O=C(CO[PH](O)(O)O)NO",
-  "ref_smiles": "O=C(COP(=O)(O)O)NO",
-  "ob_ok": true,
-  "dist_ok": true,
-  "detail": {
-   "mcs_n": 10,
-   "bond_diffs": [
-    {
-     "els": [
-      "O",
-      "P"
-     ],
-     "per": "1.0",
-     "ref": "2.0"
-    }
-   ],
-   "h_diffs": [
-    {
-     "el": "P",
-     "per": 1,
-     "ref": 0
-    },
-    {
-     "el": "O",
-     "per": 1,
-     "ref": 0
-    }
-   ],
-   "unmapped_per": [],
-   "unmapped_ref": [],
-   "charges": [],
-   "note": ""
-  },
-  "sig": "formula | OP 2.0->1.0 | OH0->1 | PH0->1"
- },
- {
-  "tier": "main",
-  "bucket": 2,
   "pdb": "6DGL",
   "het": "GEV",
   "name": "",
@@ -2655,109 +2048,6 @@
    "note": ""
   },
   "sig": "formula | CC 1.0->1.5a | CC 2.0->1.0 | CN 1.0->1.5a | CN 1.0->1.5a | CO 2.0->1.0 | CO 2.0->1.0 | CO 2.0->1.0 | CS 1.0->1.5a | CS 1.0->1.5a | CH0->1 | CH1->2 | NH1->0 | OH0->1 | OH0->1 | OH0->1"
- },
- {
-  "tier": "main",
-  "bucket": 2,
-  "pdb": "2XDA",
-  "het": "JPS",
-  "name": "",
-  "kind": "graph",
-  "err": null,
-  "formula_per": "C14H18O5S",
-  "formula_ref": "C14H18O5S",
-  "per_smiles": "O=C(O)C1(O)CC(O)C(O)C2=[SH]C(CCC3CC3)=C=C21",
-  "ref_smiles": "O=C(O)C1(O)CC(O)C(O)c2sc(CCC3CC3)cc21",
-  "ob_ok": true,
-  "dist_ok": false,
-  "detail": {
-   "mcs_n": 20,
-   "bond_diffs": [
-    {
-     "els": [
-      "C",
-      "C"
-     ],
-     "per": "2.0",
-     "ref": "1.5a"
-    },
-    {
-     "els": [
-      "C",
-      "S"
-     ],
-     "per": "1.0",
-     "ref": "1.5a"
-    },
-    {
-     "els": [
-      "C",
-      "C"
-     ],
-     "per": "2.0",
-     "ref": "1.5a"
-    },
-    {
-     "els": [
-      "C",
-      "C"
-     ],
-     "per": "1.0",
-     "ref": "1.5a"
-    },
-    {
-     "els": [
-      "C",
-      "S"
-     ],
-     "per": "2.0",
-     "ref": "1.5a"
-    },
-    {
-     "els": [
-      "C",
-      "O"
-     ],
-     "per": "1.0",
-     "ref": "2.0"
-    },
-    {
-     "els": [
-      "C",
-      "O"
-     ],
-     "per": "2.0",
-     "ref": "1.0"
-    }
-   ],
-   "h_diffs": [
-    {
-     "el": "C",
-     "per": 0,
-     "ref": 1
-    },
-    {
-     "el": "S",
-     "per": 1,
-     "ref": 0
-    },
-    {
-     "el": "O",
-     "per": 1,
-     "ref": 0
-    },
-    {
-     "el": "O",
-     "per": 0,
-     "ref": 1
-    }
-   ],
-   "unmapped_per": [],
-   "unmapped_ref": [],
-   "charges": [],
-   "note": ""
-  },
-  "sig": "graph | CC 1.5a->1.0 | CC 1.5a->2.0 | CC 1.5a->2.0 | CO 1.0->2.0 | CO 2.0->1.0 | CS 1.5a->1.0 | CS 1.5a->2.0 | CH1->0 | OH0->1 | OH1->0 | SH0->1"
  },
  {
   "tier": "main",
@@ -2964,34 +2254,110 @@
  {
   "tier": "main",
   "bucket": 3,
-  "pdb": "2YOH",
-  "het": "WMJ",
+  "pdb": "7FOZ",
+  "het": "WD0",
   "name": "",
   "kind": "formula",
   "err": null,
-  "formula_per": "C17H21N5O7",
-  "formula_ref": "C17H20N5O7",
-  "per_smiles": "Cc1cn(C2CC(O)C(CNC(=O)Nc3ccc(N(O)O)cc3)O2)c(=O)[nH]c1=O",
-  "ref_smiles": "Cc1cn(C2CC(O)C(CNC(=O)Nc3ccc(N(=O)O)cc3)O2)c(=O)[nH]c1=O",
-  "ob_ok": true,
+  "formula_per": "C11H12N2O2S",
+  "formula_ref": "C11H16N2O2S",
+  "per_smiles": "COCCNC(=O)c1ccc2c(c1)[SH]=C=N2",
+  "ref_smiles": "COCCNC(=O)C1C=CC2NCSC2=C1",
+  "ob_ok": false,
   "dist_ok": false,
   "detail": {
-   "mcs_n": 29,
+   "mcs_n": 16,
    "bond_diffs": [
     {
      "els": [
-      "N",
-      "O"
+      "C",
+      "N"
      ],
-     "per": "1.0",
+     "per": "2.0",
+     "ref": "1.0"
+    },
+    {
+     "els": [
+      "C",
+      "C"
+     ],
+     "per": "1.5a",
+     "ref": "1.0"
+    },
+    {
+     "els": [
+      "C",
+      "C"
+     ],
+     "per": "1.5a",
+     "ref": "1.0"
+    },
+    {
+     "els": [
+      "C",
+      "C"
+     ],
+     "per": "1.5a",
+     "ref": "2.0"
+    },
+    {
+     "els": [
+      "C",
+      "S"
+     ],
+     "per": "2.0",
+     "ref": "1.0"
+    },
+    {
+     "els": [
+      "C",
+      "C"
+     ],
+     "per": "1.5a",
+     "ref": "1.0"
+    },
+    {
+     "els": [
+      "C",
+      "C"
+     ],
+     "per": "1.5a",
+     "ref": "1.0"
+    },
+    {
+     "els": [
+      "C",
+      "C"
+     ],
+     "per": "1.5a",
      "ref": "2.0"
     }
    ],
    "h_diffs": [
     {
-     "el": "O",
+     "el": "N",
+     "per": 0,
+     "ref": 1
+    },
+    {
+     "el": "C",
+     "per": 0,
+     "ref": 1
+    },
+    {
+     "el": "S",
      "per": 1,
      "ref": 0
+    },
+    {
+     "el": "C",
+     "per": 0,
+     "ref": 2
+    },
+    {
+     "el": "C",
+     "per": 0,
+     "ref": 1
     }
    ],
    "unmapped_per": [],
@@ -2999,23 +2365,7 @@
    "charges": [],
    "note": ""
   },
-  "sig": "formula | NO 2.0->1.0 | OH0->1"
- },
- {
-  "tier": "main",
-  "bucket": 3,
-  "pdb": "7FOZ",
-  "het": "WD0",
-  "name": "",
-  "kind": "None",
-  "err": "over-valent N 0 no double to demote",
-  "formula_per": null,
-  "formula_ref": "C11H16N2O2S",
-  "per_smiles": null,
-  "ref_smiles": "COCCNC(=O)C1C=CC2NCSC2=C1",
-  "ob_ok": false,
-  "dist_ok": false,
-  "sig": "None"
+  "sig": "formula | CC 1.0->1.5a | CC 1.0->1.5a | CC 1.0->1.5a | CC 1.0->1.5a | CC 2.0->1.5a | CC 2.0->1.5a | CN 1.0->2.0 | CS 1.0->2.0 | CH1->0 | CH1->0 | CH2->0 | NH1->0 | SH0->1"
  },
  {
   "tier": "main",
@@ -3185,26 +2535,26 @@
  {
   "tier": "main",
   "bucket": 3,
-  "pdb": "7FPJ",
-  "het": "V2L",
+  "pdb": "3C1K",
+  "het": "T15",
   "name": "",
   "kind": "formula",
   "err": null,
-  "formula_per": "C11H11N3",
-  "formula_ref": "C11H13N3",
-  "per_smiles": "NCc1nccn1CC1=C=C=C=CC1",
-  "ref_smiles": "NCc1nccn1Cc1ccccc1",
+  "formula_per": "C26H44N6O5S",
+  "formula_ref": "C26H34N6O5S",
+  "per_smiles": "CC1=C(CNC(=O)CN2C(=O)C(=NS(=O)(=O)CC3CCCCC3)CCC2C)N(CC(=O)NC(C)(C)C)CN1",
+  "ref_smiles": "Cc1ncn(CC(=O)NC(C)(C)C)c1CNC(=O)Cn1c(C)ccc(NS(=O)(=O)Cc2ccccc2)c1=O",
   "ob_ok": true,
   "dist_ok": false,
   "detail": {
-   "mcs_n": 14,
+   "mcs_n": 38,
    "bond_diffs": [
     {
      "els": [
       "C",
       "C"
      ],
-     "per": "2.0",
+     "per": "1.0",
      "ref": "1.5a"
     },
     {
@@ -3220,7 +2570,95 @@
       "C",
       "C"
      ],
+     "per": "1.0",
+     "ref": "1.5a"
+    },
+    {
+     "els": [
+      "C",
+      "C"
+     ],
+     "per": "1.0",
+     "ref": "1.5a"
+    },
+    {
+     "els": [
+      "C",
+      "C"
+     ],
+     "per": "1.0",
+     "ref": "1.5a"
+    },
+    {
+     "els": [
+      "C",
+      "C"
+     ],
+     "per": "1.0",
+     "ref": "1.5a"
+    },
+    {
+     "els": [
+      "C",
+      "N"
+     ],
      "per": "2.0",
+     "ref": "1.0"
+    },
+    {
+     "els": [
+      "C",
+      "C"
+     ],
+     "per": "1.0",
+     "ref": "1.5a"
+    },
+    {
+     "els": [
+      "C",
+      "C"
+     ],
+     "per": "1.0",
+     "ref": "1.5a"
+    },
+    {
+     "els": [
+      "C",
+      "N"
+     ],
+     "per": "1.0",
+     "ref": "1.5a"
+    },
+    {
+     "els": [
+      "C",
+      "N"
+     ],
+     "per": "1.0",
+     "ref": "1.5a"
+    },
+    {
+     "els": [
+      "C",
+      "C"
+     ],
+     "per": "1.0",
+     "ref": "1.5a"
+    },
+    {
+     "els": [
+      "C",
+      "C"
+     ],
+     "per": "1.0",
+     "ref": "1.5a"
+    },
+    {
+     "els": [
+      "C",
+      "N"
+     ],
+     "per": "1.0",
      "ref": "1.5a"
     },
     {
@@ -3234,15 +2672,23 @@
     {
      "els": [
       "C",
-      "C"
+      "N"
      ],
-     "per": "2.0",
+     "per": "1.0",
      "ref": "1.5a"
     },
     {
      "els": [
       "C",
-      "C"
+      "N"
+     ],
+     "per": "1.0",
+     "ref": "1.5a"
+    },
+    {
+     "els": [
+      "C",
+      "N"
      ],
      "per": "1.0",
      "ref": "1.5a"
@@ -3251,23 +2697,63 @@
    "h_diffs": [
     {
      "el": "C",
-     "per": 0,
-     "ref": 1
-    },
-    {
-     "el": "C",
-     "per": 0,
-     "ref": 1
-    },
-    {
-     "el": "C",
-     "per": 0,
+     "per": 2,
      "ref": 1
     },
     {
      "el": "C",
      "per": 2,
      "ref": 1
+    },
+    {
+     "el": "C",
+     "per": 2,
+     "ref": 1
+    },
+    {
+     "el": "C",
+     "per": 2,
+     "ref": 1
+    },
+    {
+     "el": "C",
+     "per": 2,
+     "ref": 1
+    },
+    {
+     "el": "C",
+     "per": 1,
+     "ref": 0
+    },
+    {
+     "el": "N",
+     "per": 0,
+     "ref": 1
+    },
+    {
+     "el": "C",
+     "per": 1,
+     "ref": 0
+    },
+    {
+     "el": "C",
+     "per": 2,
+     "ref": 1
+    },
+    {
+     "el": "C",
+     "per": 2,
+     "ref": 1
+    },
+    {
+     "el": "C",
+     "per": 2,
+     "ref": 1
+    },
+    {
+     "el": "N",
+     "per": 1,
+     "ref": 0
     }
    ],
    "unmapped_per": [],
@@ -3275,7 +2761,7 @@
    "charges": [],
    "note": ""
   },
-  "sig": "formula | CC 1.5a->1.0 | CC 1.5a->1.0 | CC 1.5a->2.0 | CC 1.5a->2.0 | CC 1.5a->2.0 | CC 1.5a->2.0 | CH1->0 | CH1->0 | CH1->0 | CH1->2"
+  "sig": "formula | CC 1.5a->1.0 | CC 1.5a->1.0 | CC 1.5a->1.0 | CC 1.5a->1.0 | CC 1.5a->1.0 | CC 1.5a->1.0 | CC 1.5a->1.0 | CC 1.5a->1.0 | CC 1.5a->1.0 | CC 1.5a->1.0 | CC 1.5a->2.0 | CN 1.0->2.0 | CN 1.5a->1.0 | CN 1.5a->1.0 | CN 1.5a->1.0 | CN 1.5a->1.0 | CN 1.5a->1.0 | CN 1.5a->1.0 | CH0->1 | CH0->1 | CH1->2 | CH1->2 | CH1->2 | CH1->2 | CH1->2 | CH1->2 | CH1->2 | CH1->2 | NH0->1 | NH1->0"
  },
  {
   "tier": "main",
@@ -3361,119 +2847,14 @@
  {
   "tier": "main",
   "bucket": 3,
-  "pdb": "1HSH",
-  "het": "MK1",
-  "name": "",
-  "kind": "formula",
-  "err": null,
-  "formula_per": "C36H53N5O4",
-  "formula_ref": "C36H47N5O4",
-  "per_smiles": "CC(C)(C)NC(=O)C1CN(Cc2cccnc2)CCN1CC(O)CC(Cc1ccccc1)C(=O)NC1C(O)CC2CCCCC21",
-  "ref_smiles": "CC(C)(C)NC(=O)C1CN(Cc2cccnc2)CCN1CC(O)CC(Cc1ccccc1)C(=O)NC1c2ccccc2CC1O",
-  "ob_ok": true,
-  "dist_ok": false,
-  "detail": {
-   "mcs_n": 45,
-   "bond_diffs": [
-    {
-     "els": [
-      "C",
-      "C"
-     ],
-     "per": "1.0",
-     "ref": "1.5a"
-    },
-    {
-     "els": [
-      "C",
-      "C"
-     ],
-     "per": "1.0",
-     "ref": "1.5a"
-    },
-    {
-     "els": [
-      "C",
-      "C"
-     ],
-     "per": "1.0",
-     "ref": "1.5a"
-    },
-    {
-     "els": [
-      "C",
-      "C"
-     ],
-     "per": "1.0",
-     "ref": "1.5a"
-    },
-    {
-     "els": [
-      "C",
-      "C"
-     ],
-     "per": "1.0",
-     "ref": "1.5a"
-    },
-    {
-     "els": [
-      "C",
-      "C"
-     ],
-     "per": "1.0",
-     "ref": "1.5a"
-    }
-   ],
-   "h_diffs": [
-    {
-     "el": "C",
-     "per": 1,
-     "ref": 0
-    },
-    {
-     "el": "C",
-     "per": 1,
-     "ref": 0
-    },
-    {
-     "el": "C",
-     "per": 2,
-     "ref": 1
-    },
-    {
-     "el": "C",
-     "per": 2,
-     "ref": 1
-    },
-    {
-     "el": "C",
-     "per": 2,
-     "ref": 1
-    },
-    {
-     "el": "C",
-     "per": 2,
-     "ref": 1
-    }
-   ],
-   "unmapped_per": [],
-   "unmapped_ref": [],
-   "charges": [],
-   "note": ""
-  },
-  "sig": "formula | CC 1.5a->1.0 | CC 1.5a->1.0 | CC 1.5a->1.0 | CC 1.5a->1.0 | CC 1.5a->1.0 | CC 1.5a->1.0 | CH0->1 | CH0->1 | CH1->2 | CH1->2 | CH1->2 | CH1->2"
- },
- {
-  "tier": "main",
-  "bucket": 3,
   "pdb": "4B7P",
   "het": "9UN",
   "name": "",
   "kind": "formula",
   "err": null,
-  "formula_per": "C22H26N4O7",
+  "formula_per": "C22H25N4O7",
   "formula_ref": "C22H23N4O7",
-  "per_smiles": "CN1CCC(NC(=O)C2=NOC(c3c(O)cc(O)cc3Oc3ccc(N(O)O)cc3)C2)CC1",
+  "per_smiles": "CN1CCC(NC(=O)C2=NOC(c3c(O)cc(O)cc3Oc3ccc(N(=O)O)cc3)C2)CC1",
   "ref_smiles": "CN1CCC(NC(=O)c2cc(-c3c(O)cc(O)cc3Oc3ccc(N(=O)O)cc3)on2)CC1",
   "ob_ok": true,
   "dist_ok": false,
@@ -3527,6 +2908,14 @@
      ],
      "per": "1.0",
      "ref": "2.0"
+    },
+    {
+     "els": [
+      "N",
+      "O"
+     ],
+     "per": "2.0",
+     "ref": "1.0"
     }
    ],
    "h_diffs": [
@@ -3544,6 +2933,11 @@
      "el": "O",
      "per": 1,
      "ref": 0
+    },
+    {
+     "el": "O",
+     "per": 0,
+     "ref": 1
     }
    ],
    "unmapped_per": [],
@@ -3551,7 +2945,7 @@
    "charges": [],
    "note": ""
   },
-  "sig": "formula | CC 1.5a->1.0 | CC 1.5a->1.0 | CN 1.5a->2.0 | CO 1.5a->1.0 | NO 1.5a->1.0 | NO 2.0->1.0 | CH0->1 | CH1->2 | OH0->1"
+  "sig": "formula | CC 1.5a->1.0 | CC 1.5a->1.0 | CN 1.5a->2.0 | CO 1.5a->1.0 | NO 1.0->2.0 | NO 1.5a->1.0 | NO 2.0->1.0 | CH0->1 | CH1->2 | OH0->1 | OH1->0"
  },
  {
   "tier": "main",
@@ -3561,15 +2955,95 @@
   "name": "",
   "kind": "formula",
   "err": null,
-  "formula_per": "C20H21NO5S",
+  "formula_per": "C20H29NO5S",
   "formula_ref": "C20H19NO5S",
-  "per_smiles": "CCOC(=O)c1ccc(C2C=[SH]c3c2oc(N2CCOCC2)cc3=O)cc1",
+  "per_smiles": "CCOC(=O)C1CCC(C2C=S=C3C(=O)CC(N4CCOCC4)OC32)CC1",
   "ref_smiles": "CCOC(=O)c1ccc(-c2csc3c(=O)cc(N4CCOCC4)oc23)cc1",
   "ob_ok": false,
   "dist_ok": false,
   "detail": {
    "mcs_n": 27,
    "bond_diffs": [
+    {
+     "els": [
+      "C",
+      "O"
+     ],
+     "per": "1.0",
+     "ref": "1.5a"
+    },
+    {
+     "els": [
+      "C",
+      "C"
+     ],
+     "per": "1.0",
+     "ref": "1.5a"
+    },
+    {
+     "els": [
+      "C",
+      "O"
+     ],
+     "per": "1.0",
+     "ref": "1.5a"
+    },
+    {
+     "els": [
+      "C",
+      "C"
+     ],
+     "per": "1.0",
+     "ref": "1.5a"
+    },
+    {
+     "els": [
+      "C",
+      "C"
+     ],
+     "per": "1.0",
+     "ref": "1.5a"
+    },
+    {
+     "els": [
+      "C",
+      "C"
+     ],
+     "per": "1.0",
+     "ref": "1.5a"
+    },
+    {
+     "els": [
+      "C",
+      "C"
+     ],
+     "per": "1.0",
+     "ref": "1.5a"
+    },
+    {
+     "els": [
+      "C",
+      "C"
+     ],
+     "per": "1.0",
+     "ref": "1.5a"
+    },
+    {
+     "els": [
+      "C",
+      "C"
+     ],
+     "per": "1.0",
+     "ref": "1.5a"
+    },
+    {
+     "els": [
+      "C",
+      "C"
+     ],
+     "per": "1.0",
+     "ref": "1.5a"
+    },
     {
      "els": [
       "C",
@@ -3598,6 +3072,22 @@
      "els": [
       "C",
       "S"
+     ],
+     "per": "2.0",
+     "ref": "1.5a"
+    },
+    {
+     "els": [
+      "C",
+      "C"
+     ],
+     "per": "1.0",
+     "ref": "1.5a"
+    },
+    {
+     "els": [
+      "C",
+      "C"
      ],
      "per": "1.0",
      "ref": "1.5a"
@@ -3610,62 +3100,49 @@
      "ref": 0
     },
     {
-     "el": "S",
+     "el": "C",
      "per": 1,
      "ref": 0
-    }
-   ],
-   "unmapped_per": [],
-   "unmapped_ref": [],
-   "charges": [],
-   "note": ""
-  },
-  "sig": "formula | CC 1.5a->1.0 | CC 1.5a->1.0 | CS 1.5a->1.0 | CS 1.5a->2.0 | CH0->1 | SH0->1"
- },
- {
-  "tier": "main",
-  "bucket": 3,
-  "pdb": "3PD3",
-  "het": "A3T",
-  "name": "",
-  "kind": "graph",
-  "err": null,
-  "formula_per": "C14H21N7O5",
-  "formula_ref": "C14H21N7O5",
-  "per_smiles": "CC(O)C(N)C(O)=NC1C(CO)OC(n2cnc3c(N)ncnc32)C1O",
-  "ref_smiles": "CC(O)C(N)C(=O)NC1C(CO)OC(n2cnc3c(N)ncnc32)C1O",
-  "ob_ok": true,
-  "dist_ok": false,
-  "detail": {
-   "mcs_n": 26,
-   "bond_diffs": [
-    {
-     "els": [
-      "C",
-      "N"
-     ],
-     "per": "2.0",
-     "ref": "1.0"
     },
     {
-     "els": [
-      "C",
-      "O"
-     ],
-     "per": "1.0",
-     "ref": "2.0"
-    }
-   ],
-   "h_diffs": [
+     "el": "C",
+     "per": 1,
+     "ref": 0
+    },
     {
-     "el": "N",
-     "per": 0,
+     "el": "C",
+     "per": 1,
+     "ref": 0
+    },
+    {
+     "el": "C",
+     "per": 2,
      "ref": 1
     },
     {
-     "el": "O",
+     "el": "C",
+     "per": 2,
+     "ref": 1
+    },
+    {
+     "el": "C",
      "per": 1,
      "ref": 0
+    },
+    {
+     "el": "C",
+     "per": 2,
+     "ref": 1
+    },
+    {
+     "el": "C",
+     "per": 2,
+     "ref": 1
+    },
+    {
+     "el": "C",
+     "per": 2,
+     "ref": 1
     }
    ],
    "unmapped_per": [],
@@ -3673,7 +3150,7 @@
    "charges": [],
    "note": ""
   },
-  "sig": "graph | CN 1.0->2.0 | CO 2.0->1.0 | NH1->0 | OH0->1"
+  "sig": "formula | CC 1.5a->1.0 | CC 1.5a->1.0 | CC 1.5a->1.0 | CC 1.5a->1.0 | CC 1.5a->1.0 | CC 1.5a->1.0 | CC 1.5a->1.0 | CC 1.5a->1.0 | CC 1.5a->1.0 | CC 1.5a->1.0 | CC 1.5a->1.0 | CC 1.5a->1.0 | CO 1.5a->1.0 | CO 1.5a->1.0 | CS 1.5a->2.0 | CS 1.5a->2.0 | CH0->1 | CH0->1 | CH0->1 | CH0->1 | CH0->1 | CH1->2 | CH1->2 | CH1->2 | CH1->2 | CH1->2"
  },
  {
   "tier": "main",
@@ -3741,111 +3218,6 @@
  {
   "tier": "main",
   "bucket": 4,
-  "pdb": "1WQW",
-  "het": "BT5",
-  "name": "",
-  "kind": "formula",
-  "err": null,
-  "formula_per": "C20H26N7O9PS",
-  "formula_ref": "C20H28N7O9PS",
-  "per_smiles": "Nc1ncnc2c1ncn2-c1oc(COP(=O)(O)OC(O)CCCCC2SCC3NC(=O)NC32)c(O)c1O",
-  "ref_smiles": "Nc1ncnc2c1ncn2C1OC(COP(=O)(O)OC(=O)CCCCC2SCC3NC(=O)NC32)C(O)C1O",
-  "ob_ok": true,
-  "dist_ok": false,
-  "detail": {
-   "mcs_n": 38,
-   "bond_diffs": [
-    {
-     "els": [
-      "C",
-      "C"
-     ],
-     "per": "1.5a",
-     "ref": "1.0"
-    },
-    {
-     "els": [
-      "C",
-      "O"
-     ],
-     "per": "1.5a",
-     "ref": "1.0"
-    },
-    {
-     "els": [
-      "C",
-      "C"
-     ],
-     "per": "1.5a",
-     "ref": "1.0"
-    },
-    {
-     "els": [
-      "C",
-      "C"
-     ],
-     "per": "1.5a",
-     "ref": "1.0"
-    },
-    {
-     "els": [
-      "C",
-      "O"
-     ],
-     "per": "1.5a",
-     "ref": "1.0"
-    },
-    {
-     "els": [
-      "C",
-      "O"
-     ],
-     "per": "1.0",
-     "ref": "2.0"
-    }
-   ],
-   "h_diffs": [
-    {
-     "el": "C",
-     "per": 0,
-     "ref": 1
-    },
-    {
-     "el": "C",
-     "per": 0,
-     "ref": 1
-    },
-    {
-     "el": "C",
-     "per": 0,
-     "ref": 1
-    },
-    {
-     "el": "C",
-     "per": 0,
-     "ref": 1
-    },
-    {
-     "el": "C",
-     "per": 1,
-     "ref": 0
-    },
-    {
-     "el": "O",
-     "per": 1,
-     "ref": 0
-    }
-   ],
-   "unmapped_per": [],
-   "unmapped_ref": [],
-   "charges": [],
-   "note": ""
-  },
-  "sig": "formula | CC 1.0->1.5a | CC 1.0->1.5a | CC 1.0->1.5a | CO 1.0->1.5a | CO 1.0->1.5a | CO 2.0->1.0 | CH0->1 | CH1->0 | CH1->0 | CH1->0 | CH1->0 | OH0->1"
- },
- {
-  "tier": "main",
-  "bucket": 4,
   "pdb": "5P9L",
   "het": "7G9",
   "name": "",
@@ -3887,6 +3259,143 @@
    "note": ""
   },
   "sig": "formula | CC 1.0->2.0 | CH2->1 | CH3->2"
+ },
+ {
+  "tier": "main",
+  "bucket": 4,
+  "pdb": "5JQ8",
+  "het": "I73",
+  "name": "",
+  "kind": "formula",
+  "err": null,
+  "formula_per": "C22H36N6O",
+  "formula_ref": "C22H30N6O",
+  "per_smiles": "CC(C)C1CNN2C(NCc3ccccc3)CC(NCC3CCNCC3O)=NC12",
+  "ref_smiles": "CC(C)c1cnn2c(NCc3ccccc3)cc(NCC3CCNCC3O)nc12",
+  "ob_ok": true,
+  "dist_ok": false,
+  "detail": {
+   "mcs_n": 29,
+   "bond_diffs": [
+    {
+     "els": [
+      "C",
+      "N"
+     ],
+     "per": "2.0",
+     "ref": "1.5a"
+    },
+    {
+     "els": [
+      "C",
+      "C"
+     ],
+     "per": "1.0",
+     "ref": "1.5a"
+    },
+    {
+     "els": [
+      "C",
+      "N"
+     ],
+     "per": "1.0",
+     "ref": "1.5a"
+    },
+    {
+     "els": [
+      "C",
+      "N"
+     ],
+     "per": "1.0",
+     "ref": "1.5a"
+    },
+    {
+     "els": [
+      "C",
+      "C"
+     ],
+     "per": "1.0",
+     "ref": "1.5a"
+    },
+    {
+     "els": [
+      "C",
+      "N"
+     ],
+     "per": "1.0",
+     "ref": "1.5a"
+    },
+    {
+     "els": [
+      "N",
+      "N"
+     ],
+     "per": "1.0",
+     "ref": "1.5a"
+    },
+    {
+     "els": [
+      "C",
+      "C"
+     ],
+     "per": "1.0",
+     "ref": "1.5a"
+    },
+    {
+     "els": [
+      "C",
+      "N"
+     ],
+     "per": "1.0",
+     "ref": "1.5a"
+    },
+    {
+     "els": [
+      "C",
+      "C"
+     ],
+     "per": "1.0",
+     "ref": "1.5a"
+    }
+   ],
+   "h_diffs": [
+    {
+     "el": "C",
+     "per": 1,
+     "ref": 0
+    },
+    {
+     "el": "C",
+     "per": 1,
+     "ref": 0
+    },
+    {
+     "el": "C",
+     "per": 2,
+     "ref": 1
+    },
+    {
+     "el": "N",
+     "per": 1,
+     "ref": 0
+    },
+    {
+     "el": "C",
+     "per": 2,
+     "ref": 1
+    },
+    {
+     "el": "C",
+     "per": 1,
+     "ref": 0
+    }
+   ],
+   "unmapped_per": [],
+   "unmapped_ref": [],
+   "charges": [],
+   "note": ""
+  },
+  "sig": "formula | CC 1.5a->1.0 | CC 1.5a->1.0 | CC 1.5a->1.0 | CC 1.5a->1.0 | CN 1.5a->1.0 | CN 1.5a->1.0 | CN 1.5a->1.0 | CN 1.5a->1.0 | CN 1.5a->2.0 | NN 1.5a->1.0 | CH0->1 | CH0->1 | CH0->1 | CH1->2 | CH1->2 | NH0->1"
  },
  {
   "tier": "main",
@@ -3998,46 +3507,6 @@
    "note": ""
   },
   "sig": "formula | OV 2.0->1.0 | OH0->1"
- },
- {
-  "tier": "main",
-  "bucket": 4,
-  "pdb": "8BGA",
-  "het": "QQL",
-  "name": "",
-  "kind": "formula",
-  "err": null,
-  "formula_per": "C24H35N5O6",
-  "formula_ref": "C24H34N5O6",
-  "per_smiles": "COc1cccc2[nH]c(C(=O)NC(CC(C)C)C(=O)NC(CCN(O)O)CC3CCNC3=O)cc12",
-  "ref_smiles": "COc1cccc2[nH]c(C(=O)NC(CC(C)C)C(=O)NC(CCN(=O)O)CC3CCNC3=O)cc12",
-  "ob_ok": false,
-  "dist_ok": false,
-  "detail": {
-   "mcs_n": 35,
-   "bond_diffs": [
-    {
-     "els": [
-      "N",
-      "O"
-     ],
-     "per": "1.0",
-     "ref": "2.0"
-    }
-   ],
-   "h_diffs": [
-    {
-     "el": "O",
-     "per": 1,
-     "ref": 0
-    }
-   ],
-   "unmapped_per": [],
-   "unmapped_ref": [],
-   "charges": [],
-   "note": ""
-  },
-  "sig": "formula | NO 2.0->1.0 | OH0->1"
  },
  {
   "tier": "main",
@@ -4843,72 +4312,6 @@
  {
   "tier": "main",
   "bucket": 5,
-  "pdb": "6G6V",
-  "het": "EO8",
-  "name": "",
-  "kind": "formula",
-  "err": null,
-  "formula_per": "C15H11NO7",
-  "formula_ref": "C15H10NO7",
-  "per_smiles": "O=C(O)c1ccccc1C(=O)c1ccc(C(=O)O)c(N(O)O)c1",
-  "ref_smiles": "O=C(O)c1ccccc1C(=O)c1ccc(C(=O)O)c(N(=O)O)c1",
-  "ob_ok": true,
-  "dist_ok": false,
-  "detail": {
-   "mcs_n": 23,
-   "bond_diffs": [
-    {
-     "els": [
-      "N",
-      "O"
-     ],
-     "per": "1.0",
-     "ref": "2.0"
-    },
-    {
-     "els": [
-      "C",
-      "O"
-     ],
-     "per": "1.0",
-     "ref": "2.0"
-    },
-    {
-     "els": [
-      "C",
-      "O"
-     ],
-     "per": "2.0",
-     "ref": "1.0"
-    }
-   ],
-   "h_diffs": [
-    {
-     "el": "O",
-     "per": 1,
-     "ref": 0
-    },
-    {
-     "el": "O",
-     "per": 1,
-     "ref": 0
-    },
-    {
-     "el": "O",
-     "per": 0,
-     "ref": 1
-    }
-   ],
-   "unmapped_per": [],
-   "unmapped_ref": [],
-   "charges": [],
-   "note": ""
-  },
-  "sig": "formula | CO 1.0->2.0 | CO 2.0->1.0 | NO 2.0->1.0 | OH0->1 | OH0->1 | OH1->0"
- },
- {
-  "tier": "main",
-  "bucket": 5,
   "pdb": "5ZC5",
   "het": "09I",
   "name": "",
@@ -5055,38 +4458,6 @@
    "note": ""
   },
   "sig": "formula | CN 2.0->1.0 | CO 1.0->2.0 | CO 1.0->2.0 | CO 2.0->1.0 | CO 2.0->1.0 | CH0->1 | NH0->1 | OH0->1 | OH0->1 | OH1->0 | OH1->0"
- },
- {
-  "tier": "main",
-  "bucket": 5,
-  "pdb": "2QG0",
-  "het": "A94",
-  "name": "",
-  "kind": "None",
-  "err": "santize: Can't kekulize mol.  Unkekulized atoms: 1 2 3 4 5",
-  "formula_per": null,
-  "formula_ref": "C17H19N5O4S",
-  "per_smiles": null,
-  "ref_smiles": "Cc1cc(CNS(=O)(=O)c2cccc(NC=C3CCOC3=O)c2)nc(N)n1",
-  "ob_ok": false,
-  "dist_ok": false,
-  "sig": "None"
- },
- {
-  "tier": "main",
-  "bucket": 5,
-  "pdb": "2QES",
-  "het": "ADE",
-  "name": "",
-  "kind": "None",
-  "err": "over-valent C 4 no double to demote",
-  "formula_per": null,
-  "formula_ref": "C5H5N5",
-  "per_smiles": null,
-  "ref_smiles": "Nc1ncnc2[nH]cnc12",
-  "ob_ok": false,
-  "dist_ok": false,
-  "sig": "None"
  },
  {
   "tier": "main",
@@ -5308,51 +4679,6 @@
    "note": ""
   },
   "sig": "formula | CC 1.5a->1.0 | CC 1.5a->1.0 | CC 1.5a->2.0 | CC 1.5a->2.0 | CN 1.5a->1.0 | CN 1.5a->1.0 | OP 1.0->2.0 | OP 1.0->2.0 | OP 2.0->1.0 | OP 2.0->1.0 | CH0->1 | OH0->1 | OH0->1 | OH1->0 | OH1->0"
- },
- {
-  "tier": "main",
-  "bucket": 5,
-  "pdb": "7FNL",
-  "het": "VWR",
-  "name": "",
-  "kind": "graph",
-  "err": null,
-  "formula_per": "C8H11N5S",
-  "formula_ref": "C8H11N5S",
-  "per_smiles": "CCn1nn[nH]c1=NCc1cccs1",
-  "ref_smiles": "CCn1nnnc1NCc1cccs1",
-  "ob_ok": true,
-  "dist_ok": false,
-  "detail": {
-   "mcs_n": 14,
-   "bond_diffs": [
-    {
-     "els": [
-      "C",
-      "N"
-     ],
-     "per": "2.0",
-     "ref": "1.0"
-    }
-   ],
-   "h_diffs": [
-    {
-     "el": "N",
-     "per": 1,
-     "ref": 0
-    },
-    {
-     "el": "N",
-     "per": 0,
-     "ref": 1
-    }
-   ],
-   "unmapped_per": [],
-   "unmapped_ref": [],
-   "charges": [],
-   "note": ""
-  },
-  "sig": "graph | CN 1.0->2.0 | NH0->1 | NH1->0"
  },
  {
   "tier": "main",
@@ -5653,77 +4979,6 @@
    "note": ""
   },
   "sig": "formula | CN 2.0->1.0 | CH0->1 | NH0->1"
- },
- {
-  "tier": "lowres",
-  "bucket": 1,
-  "pdb": "8JZ7",
-  "het": "FI7",
-  "name": "",
-  "kind": "formula",
-  "err": null,
-  "formula_per": "C19H24N4O5",
-  "formula_ref": "C19H22N4O5",
-  "per_smiles": "CC(C)(Cc1nc(-c2ccc(O)cn2)no1)C(=O)NC1CCCCC1C(=O)O",
-  "ref_smiles": "CC(C)(Cc1nc(-c2ccc(O)cn2)no1)C(=O)NC1=C(C(=O)O)CCCC1",
-  "ob_ok": false,
-  "dist_ok": false,
-  "detail": {
-   "mcs_n": 28,
-   "bond_diffs": [
-    {
-     "els": [
-      "C",
-      "C"
-     ],
-     "per": "1.0",
-     "ref": "2.0"
-    },
-    {
-     "els": [
-      "C",
-      "O"
-     ],
-     "per": "1.0",
-     "ref": "2.0"
-    },
-    {
-     "els": [
-      "C",
-      "O"
-     ],
-     "per": "2.0",
-     "ref": "1.0"
-    }
-   ],
-   "h_diffs": [
-    {
-     "el": "C",
-     "per": 1,
-     "ref": 0
-    },
-    {
-     "el": "C",
-     "per": 1,
-     "ref": 0
-    },
-    {
-     "el": "O",
-     "per": 1,
-     "ref": 0
-    },
-    {
-     "el": "O",
-     "per": 0,
-     "ref": 1
-    }
-   ],
-   "unmapped_per": [],
-   "unmapped_ref": [],
-   "charges": [],
-   "note": ""
-  },
-  "sig": "formula | CC 2.0->1.0 | CO 1.0->2.0 | CO 2.0->1.0 | CH0->1 | CH0->1 | OH0->1 | OH1->0"
  },
  {
   "tier": "lowres",
@@ -6097,30 +5352,14 @@
  {
   "tier": "lowres",
   "bucket": 1,
-  "pdb": "4L9Q",
-  "het": "9TP",
-  "name": "",
-  "kind": "None",
-  "err": "over-valent O 38 no double to demote",
-  "formula_per": null,
-  "formula_ref": "C32H32O13S",
-  "per_smiles": null,
-  "ref_smiles": "COc1cc(C2c3cc4c(cc3C(OC3OC5COC(c6cccs6)OC5C(O)C3O)C3COC(=O)C23)OCO4)cc(OC)c1O",
-  "ob_ok": true,
-  "dist_ok": false,
-  "sig": "None"
- },
- {
-  "tier": "lowres",
-  "bucket": 1,
   "pdb": "5HE2",
   "het": "F0S",
   "name": "",
   "kind": "formula",
   "err": null,
-  "formula_per": "C29H25FN6O5",
+  "formula_per": "C29H29FN6O5",
   "formula_ref": "C29H27FN6O5",
-  "per_smiles": "COc1cccc(OC)c1CNC(=O)c1cc(-c2nc(=O)[nH]c(C)c2C(=O)Nc2ccc3n[nH]cc3c2)ccc1F",
+  "per_smiles": "COc1cccc(OC)c1CNC(=O)c1cc(C2NC(=O)NC(C)C2C(=O)Nc2ccc3n[nH]cc3c2)ccc1F",
   "ref_smiles": "COc1cccc(OC)c1CNC(=O)c1cc(C2NC(=O)NC(C)=C2C(=O)Nc2ccc3[nH]ncc3c2)ccc1F",
   "ob_ok": false,
   "dist_ok": false,
@@ -6132,48 +5371,8 @@
       "C",
       "C"
      ],
-     "per": "1.5a",
+     "per": "1.0",
      "ref": "2.0"
-    },
-    {
-     "els": [
-      "C",
-      "C"
-     ],
-     "per": "1.5a",
-     "ref": "1.0"
-    },
-    {
-     "els": [
-      "C",
-      "N"
-     ],
-     "per": "1.5a",
-     "ref": "1.0"
-    },
-    {
-     "els": [
-      "C",
-      "N"
-     ],
-     "per": "1.5a",
-     "ref": "1.0"
-    },
-    {
-     "els": [
-      "C",
-      "N"
-     ],
-     "per": "1.5a",
-     "ref": "1.0"
-    },
-    {
-     "els": [
-      "C",
-      "N"
-     ],
-     "per": "1.5a",
-     "ref": "1.0"
     }
    ],
    "h_diffs": [
@@ -6188,14 +5387,14 @@
      "ref": 1
     },
     {
-     "el": "N",
-     "per": 0,
-     "ref": 1
+     "el": "C",
+     "per": 1,
+     "ref": 0
     },
     {
      "el": "C",
-     "per": 0,
-     "ref": 1
+     "per": 1,
+     "ref": 0
     }
    ],
    "unmapped_per": [],
@@ -6203,7 +5402,7 @@
    "charges": [],
    "note": ""
   },
-  "sig": "formula | CC 1.0->1.5a | CC 2.0->1.5a | CN 1.0->1.5a | CN 1.0->1.5a | CN 1.0->1.5a | CN 1.0->1.5a | CH1->0 | NH0->1 | NH1->0 | NH1->0"
+  "sig": "formula | CC 2.0->1.0 | CH0->1 | CH0->1 | NH0->1 | NH1->0"
  },
  {
   "tier": "lowres",
@@ -6400,15 +5599,89 @@
   "pdb": "5ME6",
   "het": "M7G",
   "name": "",
-  "kind": "None",
-  "err": "santize: Can't kekulize mol.  Unkekulized atoms: 18 21 24 25 27 28",
-  "formula_per": null,
+  "kind": "formula",
+  "err": null,
+  "formula_per": "C11H19N5O11P2",
   "formula_ref": "C11H18N5O11P2",
-  "per_smiles": null,
+  "per_smiles": "CN1CN(C2OC(COP(=O)(O)OP(=O)(O)O)C(O)C2O)c2nc(N)[nH]c(=O)c21",
   "ref_smiles": "Cn1cn(C2OC(COP(=O)(O)OP(=O)(O)O)C(O)C2O)c2nc(N)[nH]c(=O)c21",
   "ob_ok": false,
   "dist_ok": false,
-  "sig": "None"
+  "detail": {
+   "mcs_n": 29,
+   "bond_diffs": [
+    {
+     "els": [
+      "C",
+      "N"
+     ],
+     "per": "1.0",
+     "ref": "1.5a"
+    },
+    {
+     "els": [
+      "C",
+      "N"
+     ],
+     "per": "1.0",
+     "ref": "1.5a"
+    },
+    {
+     "els": [
+      "C",
+      "N"
+     ],
+     "per": "1.0",
+     "ref": "1.5a"
+    },
+    {
+     "els": [
+      "C",
+      "N"
+     ],
+     "per": "1.0",
+     "ref": "1.5a"
+    },
+    {
+     "els": [
+      "O",
+      "P"
+     ],
+     "per": "1.0",
+     "ref": "2.0"
+    },
+    {
+     "els": [
+      "O",
+      "P"
+     ],
+     "per": "2.0",
+     "ref": "1.0"
+    }
+   ],
+   "h_diffs": [
+    {
+     "el": "C",
+     "per": 2,
+     "ref": 1
+    },
+    {
+     "el": "O",
+     "per": 1,
+     "ref": 0
+    },
+    {
+     "el": "O",
+     "per": 0,
+     "ref": 1
+    }
+   ],
+   "unmapped_per": [],
+   "unmapped_ref": [],
+   "charges": [],
+   "note": ""
+  },
+  "sig": "formula | CN 1.5a->1.0 | CN 1.5a->1.0 | CN 1.5a->1.0 | CN 1.5a->1.0 | OP 1.0->2.0 | OP 2.0->1.0 | CH1->2 | OH0->1 | OH1->0"
  },
  {
   "tier": "lowres",
@@ -6520,91 +5793,14 @@
  {
   "tier": "lowres",
   "bucket": 1,
-  "pdb": "6LN1",
-  "het": "EKU",
-  "name": "",
-  "kind": "formula",
-  "err": null,
-  "formula_per": "C13H10O6",
-  "formula_ref": "C13H8O6",
-  "per_smiles": "Oc1cc(O)c2c(c1)Oc1c(O)ccc(O)c1C2O",
-  "ref_smiles": "O=c1c2c(O)cc(O)cc2oc2c(O)ccc(O)c12",
-  "ob_ok": false,
-  "dist_ok": false,
-  "detail": {
-   "mcs_n": 19,
-   "bond_diffs": [
-    {
-     "els": [
-      "C",
-      "O"
-     ],
-     "per": "1.0",
-     "ref": "1.5a"
-    },
-    {
-     "els": [
-      "C",
-      "C"
-     ],
-     "per": "1.0",
-     "ref": "1.5a"
-    },
-    {
-     "els": [
-      "C",
-      "C"
-     ],
-     "per": "1.0",
-     "ref": "1.5a"
-    },
-    {
-     "els": [
-      "C",
-      "O"
-     ],
-     "per": "1.0",
-     "ref": "2.0"
-    },
-    {
-     "els": [
-      "C",
-      "O"
-     ],
-     "per": "1.0",
-     "ref": "1.5a"
-    }
-   ],
-   "h_diffs": [
-    {
-     "el": "C",
-     "per": 1,
-     "ref": 0
-    },
-    {
-     "el": "O",
-     "per": 1,
-     "ref": 0
-    }
-   ],
-   "unmapped_per": [],
-   "unmapped_ref": [],
-   "charges": [],
-   "note": ""
-  },
-  "sig": "formula | CC 1.5a->1.0 | CC 1.5a->1.0 | CO 1.5a->1.0 | CO 1.5a->1.0 | CO 2.0->1.0 | CH0->1 | OH0->1"
- },
- {
-  "tier": "lowres",
-  "bucket": 1,
   "pdb": "5DV6",
   "het": "B4H",
   "name": "",
   "kind": "formula",
   "err": null,
-  "formula_per": "C8H10N2O3",
+  "formula_per": "C8H9N2O3",
   "formula_ref": "C8H7N2O3",
-  "per_smiles": "CNC(=O)c1cccc(N(O)O)c1",
+  "per_smiles": "CNC(=O)c1cccc(N(=O)O)c1",
   "ref_smiles": "C=NC(=O)c1cccc(N(=O)O)c1",
   "ob_ok": false,
   "dist_ok": false,
@@ -6618,6 +5814,14 @@
      ],
      "per": "1.0",
      "ref": "2.0"
+    },
+    {
+     "els": [
+      "N",
+      "O"
+     ],
+     "per": "2.0",
+     "ref": "1.0"
     },
     {
      "els": [
@@ -6635,6 +5839,11 @@
      "ref": 0
     },
     {
+     "el": "O",
+     "per": 0,
+     "ref": 1
+    },
+    {
      "el": "N",
      "per": 1,
      "ref": 0
@@ -6650,7 +5859,7 @@
    "charges": [],
    "note": ""
   },
-  "sig": "formula | CN 2.0->1.0 | NO 2.0->1.0 | CH2->3 | NH0->1 | OH0->1"
+  "sig": "formula | CN 2.0->1.0 | NO 1.0->2.0 | NO 2.0->1.0 | CH2->3 | NH0->1 | OH0->1 | OH1->0"
  },
  {
   "tier": "lowres",
@@ -6885,55 +6094,15 @@
   "name": "",
   "kind": "formula",
   "err": null,
-  "formula_per": "C21H24N7O14P2",
+  "formula_per": "C21H28N7O14P2",
   "formula_ref": "C21H29N7O14P2",
-  "per_smiles": "NC(=O)c1cccn(C2OC(COP(=O)(O)OP(=O)(O)OCc3oc(-n4cnc5c(N)ncnc54)c(O)c3O)C(O)C2O)c1",
+  "per_smiles": "NC(=O)c1cccn(C2OC(COP(=O)(O)OP(=O)(O)OCC3OC(n4cnc5c(N)ncnc54)C(O)C3O)C(O)C2O)c1",
   "ref_smiles": "NC(=O)C1=CN(C2OC(COP(=O)(O)OP(=O)(O)OCC3OC(n4cnc5c(N)ncnc54)C(O)C3O)C(O)C2O)C=CC1",
   "ob_ok": false,
   "dist_ok": false,
   "detail": {
    "mcs_n": 44,
    "bond_diffs": [
-    {
-     "els": [
-      "C",
-      "C"
-     ],
-     "per": "1.5a",
-     "ref": "1.0"
-    },
-    {
-     "els": [
-      "C",
-      "O"
-     ],
-     "per": "1.5a",
-     "ref": "1.0"
-    },
-    {
-     "els": [
-      "C",
-      "C"
-     ],
-     "per": "1.5a",
-     "ref": "1.0"
-    },
-    {
-     "els": [
-      "C",
-      "C"
-     ],
-     "per": "1.5a",
-     "ref": "1.0"
-    },
-    {
-     "els": [
-      "C",
-      "O"
-     ],
-     "per": "1.5a",
-     "ref": "1.0"
-    },
     {
      "els": [
       "O",
@@ -7017,26 +6186,6 @@
    ],
    "h_diffs": [
     {
-     "el": "C",
-     "per": 0,
-     "ref": 1
-    },
-    {
-     "el": "C",
-     "per": 0,
-     "ref": 1
-    },
-    {
-     "el": "C",
-     "per": 0,
-     "ref": 1
-    },
-    {
-     "el": "C",
-     "per": 0,
-     "ref": 1
-    },
-    {
      "el": "O",
      "per": 1,
      "ref": 0
@@ -7067,7 +6216,7 @@
    "charges": [],
    "note": ""
   },
-  "sig": "formula | CC 1.0->1.5a | CC 1.0->1.5a | CC 1.0->1.5a | CC 1.0->1.5a | CC 1.0->1.5a | CC 2.0->1.5a | CC 2.0->1.5a | CN 1.0->1.5a | CN 1.0->1.5a | CO 1.0->1.5a | CO 1.0->1.5a | OP 1.0->2.0 | OP 1.0->2.0 | OP 2.0->1.0 | OP 2.0->1.0 | CH1->0 | CH1->0 | CH1->0 | CH1->0 | CH2->1 | OH0->1 | OH0->1 | OH1->0 | OH1->0"
+  "sig": "formula | CC 1.0->1.5a | CC 1.0->1.5a | CC 2.0->1.5a | CC 2.0->1.5a | CN 1.0->1.5a | CN 1.0->1.5a | OP 1.0->2.0 | OP 1.0->2.0 | OP 2.0->1.0 | OP 2.0->1.0 | CH2->1 | OH0->1 | OH0->1 | OH1->0 | OH1->0"
  },
  {
   "tier": "lowres",
@@ -7251,31 +6400,15 @@
   "name": "",
   "kind": "formula",
   "err": null,
-  "formula_per": "C17H20F9NO3S",
+  "formula_per": "C17H18F9NO3S",
   "formula_ref": "C17H12F9NO3S",
-  "per_smiles": "OC(C1CCC(N(CC(F)(F)F)S(O)(O)c2ccccc2)CC1)(C(F)(F)F)C(F)(F)F",
+  "per_smiles": "O=S(=O)(c1ccccc1)N(CC(F)(F)F)C1CCC(C(O)(C(F)(F)F)C(F)(F)F)CC1",
   "ref_smiles": "O=S(=O)(c1ccccc1)N(CC(F)(F)F)c1ccc(C(O)(C(F)(F)F)C(F)(F)F)cc1",
   "ob_ok": true,
   "dist_ok": false,
   "detail": {
    "mcs_n": 31,
    "bond_diffs": [
-    {
-     "els": [
-      "O",
-      "S"
-     ],
-     "per": "1.0",
-     "ref": "2.0"
-    },
-    {
-     "els": [
-      "O",
-      "S"
-     ],
-     "per": "1.0",
-     "ref": "2.0"
-    },
     {
      "els": [
       "C",
@@ -7355,16 +6488,6 @@
      "el": "C",
      "per": 2,
      "ref": 1
-    },
-    {
-     "el": "O",
-     "per": 1,
-     "ref": 0
-    },
-    {
-     "el": "O",
-     "per": 1,
-     "ref": 0
     }
    ],
    "unmapped_per": [],
@@ -7372,7 +6495,7 @@
    "charges": [],
    "note": ""
   },
-  "sig": "formula | CC 1.5a->1.0 | CC 1.5a->1.0 | CC 1.5a->1.0 | CC 1.5a->1.0 | CC 1.5a->1.0 | CC 1.5a->1.0 | OS 2.0->1.0 | OS 2.0->1.0 | CH0->1 | CH0->1 | CH1->2 | CH1->2 | CH1->2 | CH1->2 | OH0->1 | OH0->1"
+  "sig": "formula | CC 1.5a->1.0 | CC 1.5a->1.0 | CC 1.5a->1.0 | CC 1.5a->1.0 | CC 1.5a->1.0 | CC 1.5a->1.0 | CH0->1 | CH0->1 | CH1->2 | CH1->2 | CH1->2 | CH1->2"
  },
  {
   "tier": "lowres",
@@ -7517,6 +6640,133 @@
  {
   "tier": "lowres",
   "bucket": 2,
+  "pdb": "8GTG",
+  "het": "CW9",
+  "name": "",
+  "kind": "formula",
+  "err": null,
+  "formula_per": "C21H32BrN5O4",
+  "formula_ref": "C21H28BrN5O4",
+  "per_smiles": "COCCN(CCOC)C1=NC(C)NC2C(c3c(OC)cc(Br)cc3OC)C(C)=NN12",
+  "ref_smiles": "COCCN(CCOC)c1nc(C)nc2c(-c3c(OC)cc(Br)cc3OC)c(C)nn12",
+  "ob_ok": false,
+  "dist_ok": false,
+  "detail": {
+   "mcs_n": 31,
+   "bond_diffs": [
+    {
+     "els": [
+      "C",
+      "N"
+     ],
+     "per": "1.0",
+     "ref": "1.5a"
+    },
+    {
+     "els": [
+      "C",
+      "N"
+     ],
+     "per": "1.0",
+     "ref": "1.5a"
+    },
+    {
+     "els": [
+      "C",
+      "N"
+     ],
+     "per": "1.0",
+     "ref": "1.5a"
+    },
+    {
+     "els": [
+      "C",
+      "C"
+     ],
+     "per": "1.0",
+     "ref": "1.5a"
+    },
+    {
+     "els": [
+      "C",
+      "N"
+     ],
+     "per": "1.0",
+     "ref": "1.5a"
+    },
+    {
+     "els": [
+      "C",
+      "C"
+     ],
+     "per": "1.0",
+     "ref": "1.5a"
+    },
+    {
+     "els": [
+      "C",
+      "N"
+     ],
+     "per": "2.0",
+     "ref": "1.5a"
+    },
+    {
+     "els": [
+      "N",
+      "N"
+     ],
+     "per": "1.0",
+     "ref": "1.5a"
+    },
+    {
+     "els": [
+      "C",
+      "N"
+     ],
+     "per": "1.0",
+     "ref": "1.5a"
+    },
+    {
+     "els": [
+      "C",
+      "N"
+     ],
+     "per": "2.0",
+     "ref": "1.5a"
+    }
+   ],
+   "h_diffs": [
+    {
+     "el": "C",
+     "per": 1,
+     "ref": 0
+    },
+    {
+     "el": "N",
+     "per": 1,
+     "ref": 0
+    },
+    {
+     "el": "C",
+     "per": 1,
+     "ref": 0
+    },
+    {
+     "el": "C",
+     "per": 1,
+     "ref": 0
+    }
+   ],
+   "unmapped_per": [],
+   "unmapped_ref": [],
+   "charges": [],
+   "note": ""
+  },
+  "sig": "formula | CC 1.5a->1.0 | CC 1.5a->1.0 | CN 1.5a->1.0 | CN 1.5a->1.0 | CN 1.5a->1.0 | CN 1.5a->1.0 | CN 1.5a->1.0 | CN 1.5a->2.0 | CN 1.5a->2.0 | NN 1.5a->1.0 | CH0->1 | CH0->1 | CH0->1 | NH0->1"
+ },
+ {
+  "tier": "lowres",
+  "bucket": 2,
   "pdb": "8E9X",
   "het": "WEC",
   "name": "",
@@ -7562,34 +6812,73 @@
  {
   "tier": "lowres",
   "bucket": 2,
-  "pdb": "5KYA",
-  "het": "6Y4",
-  "name": "",
-  "kind": "None",
-  "err": "santize: Can't kekulize mol.  Unkekulized atoms: 1 6 7 12 19 30",
-  "formula_per": null,
-  "formula_ref": "C21H22F3N5O3S",
-  "per_smiles": null,
-  "ref_smiles": "CC(C)C1c2nn(-c3cccc(S(C)(=O)=O)c3)cc2CN1c1ncc(CO)c(C(F)(F)F)n1",
-  "ob_ok": true,
-  "dist_ok": false,
-  "sig": "None"
- },
- {
-  "tier": "lowres",
-  "bucket": 2,
   "pdb": "6S7B",
   "het": "KYH",
   "name": "",
-  "kind": "None",
-  "err": "over-valent C 11 no double to demote",
-  "formula_per": null,
+  "kind": "formula",
+  "err": null,
+  "formula_per": "C18H30N10O3",
   "formula_ref": "C18H32N10O3",
-  "per_smiles": null,
+  "per_smiles": "N=C(N)NCCCCN(CCCN)CC1OC(n2cnc3c(N)ncnc32)C(O)=C1O",
   "ref_smiles": "N=C(N)NCCCCN(CCCN)CC1OC(n2cnc3c(N)ncnc32)C(O)C1O",
   "ob_ok": false,
   "dist_ok": false,
-  "sig": "None"
+  "detail": {
+   "mcs_n": 31,
+   "bond_diffs": [
+    {
+     "els": [
+      "C",
+      "C"
+     ],
+     "per": "2.0",
+     "ref": "1.0"
+    },
+    {
+     "els": [
+      "C",
+      "N"
+     ],
+     "per": "1.0",
+     "ref": "2.0"
+    },
+    {
+     "els": [
+      "C",
+      "N"
+     ],
+     "per": "2.0",
+     "ref": "1.0"
+    }
+   ],
+   "h_diffs": [
+    {
+     "el": "C",
+     "per": 0,
+     "ref": 1
+    },
+    {
+     "el": "C",
+     "per": 0,
+     "ref": 1
+    },
+    {
+     "el": "N",
+     "per": 2,
+     "ref": 1
+    },
+    {
+     "el": "N",
+     "per": 1,
+     "ref": 2
+    }
+   ],
+   "unmapped_per": [],
+   "unmapped_ref": [],
+   "charges": [],
+   "note": ""
+  },
+  "sig": "formula | CC 1.0->2.0 | CN 1.0->2.0 | CN 2.0->1.0 | CH1->0 | CH1->0 | NH1->2 | NH2->1"
  },
  {
   "tier": "lowres",
@@ -7880,6 +7169,395 @@
  {
   "tier": "lowres",
   "bucket": 2,
+  "pdb": "6HHI",
+  "het": "G4N",
+  "name": "",
+  "kind": "formula",
+  "err": null,
+  "formula_per": "C36H59N5O3",
+  "formula_ref": "C36H35N5O3",
+  "per_smiles": "CCC(=O)NC1CCCC(C(=O)NC2CCN(CC3CCC(C4NC5CC=NC(=O)C5CC4C4CCCCC4)CC3)CC2)C1",
+  "ref_smiles": "CCC(=O)Nc1cccc(C(=O)NC2CCN(Cc3ccc(-c4nc5cc[nH]c(=O)c5cc4-c4ccccc4)cc3)CC2)c1",
+  "ob_ok": false,
+  "dist_ok": false,
+  "detail": {
+   "mcs_n": 44,
+   "bond_diffs": [
+    {
+     "els": [
+      "C",
+      "C"
+     ],
+     "per": "1.0",
+     "ref": "1.5a"
+    },
+    {
+     "els": [
+      "C",
+      "C"
+     ],
+     "per": "1.0",
+     "ref": "1.5a"
+    },
+    {
+     "els": [
+      "C",
+      "C"
+     ],
+     "per": "1.0",
+     "ref": "1.5a"
+    },
+    {
+     "els": [
+      "C",
+      "C"
+     ],
+     "per": "1.0",
+     "ref": "1.5a"
+    },
+    {
+     "els": [
+      "C",
+      "C"
+     ],
+     "per": "1.0",
+     "ref": "1.5a"
+    },
+    {
+     "els": [
+      "C",
+      "C"
+     ],
+     "per": "1.0",
+     "ref": "1.5a"
+    },
+    {
+     "els": [
+      "C",
+      "C"
+     ],
+     "per": "1.0",
+     "ref": "1.5a"
+    },
+    {
+     "els": [
+      "C",
+      "C"
+     ],
+     "per": "1.0",
+     "ref": "1.5a"
+    },
+    {
+     "els": [
+      "C",
+      "C"
+     ],
+     "per": "1.0",
+     "ref": "1.5a"
+    },
+    {
+     "els": [
+      "C",
+      "C"
+     ],
+     "per": "1.0",
+     "ref": "1.5a"
+    },
+    {
+     "els": [
+      "C",
+      "C"
+     ],
+     "per": "1.0",
+     "ref": "1.5a"
+    },
+    {
+     "els": [
+      "C",
+      "C"
+     ],
+     "per": "1.0",
+     "ref": "1.5a"
+    },
+    {
+     "els": [
+      "C",
+      "N"
+     ],
+     "per": "1.0",
+     "ref": "1.5a"
+    },
+    {
+     "els": [
+      "C",
+      "C"
+     ],
+     "per": "1.0",
+     "ref": "1.5a"
+    },
+    {
+     "els": [
+      "C",
+      "N"
+     ],
+     "per": "1.0",
+     "ref": "1.5a"
+    },
+    {
+     "els": [
+      "C",
+      "C"
+     ],
+     "per": "1.0",
+     "ref": "1.5a"
+    },
+    {
+     "els": [
+      "C",
+      "C"
+     ],
+     "per": "1.0",
+     "ref": "1.5a"
+    },
+    {
+     "els": [
+      "C",
+      "C"
+     ],
+     "per": "1.0",
+     "ref": "1.5a"
+    },
+    {
+     "els": [
+      "C",
+      "N"
+     ],
+     "per": "2.0",
+     "ref": "1.5a"
+    },
+    {
+     "els": [
+      "C",
+      "N"
+     ],
+     "per": "1.0",
+     "ref": "1.5a"
+    },
+    {
+     "els": [
+      "C",
+      "C"
+     ],
+     "per": "1.0",
+     "ref": "1.5a"
+    },
+    {
+     "els": [
+      "C",
+      "C"
+     ],
+     "per": "1.0",
+     "ref": "1.5a"
+    },
+    {
+     "els": [
+      "C",
+      "C"
+     ],
+     "per": "1.0",
+     "ref": "1.5a"
+    },
+    {
+     "els": [
+      "C",
+      "C"
+     ],
+     "per": "1.0",
+     "ref": "1.5a"
+    },
+    {
+     "els": [
+      "C",
+      "C"
+     ],
+     "per": "1.0",
+     "ref": "1.5a"
+    },
+    {
+     "els": [
+      "C",
+      "C"
+     ],
+     "per": "1.0",
+     "ref": "1.5a"
+    },
+    {
+     "els": [
+      "C",
+      "C"
+     ],
+     "per": "1.0",
+     "ref": "1.5a"
+    },
+    {
+     "els": [
+      "C",
+      "C"
+     ],
+     "per": "1.0",
+     "ref": "1.5a"
+    },
+    {
+     "els": [
+      "C",
+      "C"
+     ],
+     "per": "1.0",
+     "ref": "1.5a"
+    }
+   ],
+   "h_diffs": [
+    {
+     "el": "C",
+     "per": 1,
+     "ref": 0
+    },
+    {
+     "el": "C",
+     "per": 2,
+     "ref": 1
+    },
+    {
+     "el": "C",
+     "per": 2,
+     "ref": 1
+    },
+    {
+     "el": "C",
+     "per": 2,
+     "ref": 1
+    },
+    {
+     "el": "C",
+     "per": 1,
+     "ref": 0
+    },
+    {
+     "el": "C",
+     "per": 2,
+     "ref": 1
+    },
+    {
+     "el": "C",
+     "per": 1,
+     "ref": 0
+    },
+    {
+     "el": "C",
+     "per": 2,
+     "ref": 1
+    },
+    {
+     "el": "C",
+     "per": 2,
+     "ref": 1
+    },
+    {
+     "el": "C",
+     "per": 1,
+     "ref": 0
+    },
+    {
+     "el": "C",
+     "per": 2,
+     "ref": 1
+    },
+    {
+     "el": "C",
+     "per": 2,
+     "ref": 1
+    },
+    {
+     "el": "C",
+     "per": 1,
+     "ref": 0
+    },
+    {
+     "el": "N",
+     "per": 1,
+     "ref": 0
+    },
+    {
+     "el": "C",
+     "per": 1,
+     "ref": 0
+    },
+    {
+     "el": "C",
+     "per": 2,
+     "ref": 1
+    },
+    {
+     "el": "N",
+     "per": 0,
+     "ref": 1
+    },
+    {
+     "el": "C",
+     "per": 1,
+     "ref": 0
+    },
+    {
+     "el": "C",
+     "per": 2,
+     "ref": 1
+    },
+    {
+     "el": "C",
+     "per": 1,
+     "ref": 0
+    },
+    {
+     "el": "C",
+     "per": 1,
+     "ref": 0
+    },
+    {
+     "el": "C",
+     "per": 2,
+     "ref": 1
+    },
+    {
+     "el": "C",
+     "per": 2,
+     "ref": 1
+    },
+    {
+     "el": "C",
+     "per": 2,
+     "ref": 1
+    },
+    {
+     "el": "C",
+     "per": 2,
+     "ref": 1
+    },
+    {
+     "el": "C",
+     "per": 2,
+     "ref": 1
+    }
+   ],
+   "unmapped_per": [],
+   "unmapped_ref": [],
+   "charges": [],
+   "note": ""
+  },
+  "sig": "formula | CC 1.5a->1.0 | CC 1.5a->1.0 | CC 1.5a->1.0 | CC 1.5a->1.0 | CC 1.5a->1.0 | CC 1.5a->1.0 | CC 1.5a->1.0 | CC 1.5a->1.0 | CC 1.5a->1.0 | CC 1.5a->1.0 | CC 1.5a->1.0 | CC 1.5a->1.0 | CC 1.5a->1.0 | CC 1.5a->1.0 | CC 1.5a->1.0 | CC 1.5a->1.0 | CC 1.5a->1.0 | CC 1.5a->1.0 | CC 1.5a->1.0 | CC 1.5a->1.0 | CC 1.5a->1.0 | CC 1.5a->1.0 | CC 1.5a->1.0 | CC 1.5a->1.0 | CC 1.5a->1.0 | CN 1.5a->1.0 | CN 1.5a->1.0 | CN 1.5a->1.0 | CN 1.5a->2.0 | CH0->1 | CH0->1 | CH0->1 | CH0->1 | CH0->1 | CH0->1 | CH0->1 | CH0->1 | CH0->1 | CH1->2 | CH1->2 | CH1->2 | CH1->2 | CH1->2 | CH1->2 | CH1->2 | CH1->2 | CH1->2 | CH1->2 | CH1->2 | CH1->2 | CH1->2 | CH1->2 | CH1->2 | NH0->1 | NH1->0"
+ },
+ {
+  "tier": "lowres",
+  "bucket": 2,
   "pdb": "8U6M",
   "het": "VW2",
   "name": "",
@@ -8061,38 +7739,6 @@
    "note": ""
   },
   "sig": "graph | CC 1.0->1.5a | CC 1.0->1.5a | CN 1.0->1.5a | CN 2.0->1.5a | CH2->1 | NH0->1"
- },
- {
-  "tier": "lowres",
-  "bucket": 3,
-  "pdb": "5GHV",
-  "het": "X5G",
-  "name": "",
-  "kind": "None",
-  "err": "over-valent O 12 no double to demote",
-  "formula_per": null,
-  "formula_ref": "C27H36N6O2",
-  "per_smiles": null,
-  "ref_smiles": "Cc1cn(-c2ccnc(Nc3cc(C)c(OCCN4CCCC4)c(C)c3)n2)cc1CN1CC(O)C1",
-  "ob_ok": false,
-  "dist_ok": false,
-  "sig": "None"
- },
- {
-  "tier": "lowres",
-  "bucket": 3,
-  "pdb": "1GSF",
-  "het": "EAA",
-  "name": "",
-  "kind": "None",
-  "err": "over-valent C 11 no double to demote",
-  "formula_per": null,
-  "formula_ref": "C13H12Cl2O4",
-  "per_smiles": null,
-  "ref_smiles": "C=C(CC)C(=O)c1ccc(OCC(=O)O)c(Cl)c1Cl",
-  "ob_ok": true,
-  "dist_ok": false,
-  "sig": "None"
  },
  {
   "tier": "lowres",
@@ -8460,15 +8106,106 @@
   "pdb": "7T2X",
   "het": "EMY",
   "name": "",
-  "kind": "None",
-  "err": "over-valent N 0 no double to demote",
-  "formula_per": null,
+  "kind": "formula",
+  "err": null,
+  "formula_per": "C19H18ClN3O2S",
   "formula_ref": "C19H16ClN3O2S",
-  "per_smiles": null,
+  "per_smiles": "OC1=S=C2NC(Cl)=NC(NCc3ccc(O)cc3)C2C1c1ccccc1",
   "ref_smiles": "O=C(Cc1ccccc1)Sc1cc(NCc2ccc(O)cc2)nc(Cl)n1",
   "ob_ok": false,
   "dist_ok": false,
-  "sig": "None"
+  "detail": {
+   "mcs_n": 16,
+   "bond_diffs": [
+    {
+     "els": [
+      "C",
+      "C"
+     ],
+     "per": "1.0",
+     "ref": "1.5a"
+    },
+    {
+     "els": [
+      "C",
+      "N"
+     ],
+     "per": "1.0",
+     "ref": "1.5a"
+    },
+    {
+     "els": [
+      "C",
+      "C"
+     ],
+     "per": "1.0",
+     "ref": "1.5a"
+    },
+    {
+     "els": [
+      "C",
+      "N"
+     ],
+     "per": "1.0",
+     "ref": "1.5a"
+    },
+    {
+     "els": [
+      "C",
+      "N"
+     ],
+     "per": "2.0",
+     "ref": "1.5a"
+    },
+    {
+     "els": [
+      "C",
+      "N"
+     ],
+     "per": "1.0",
+     "ref": "1.5a"
+    }
+   ],
+   "h_diffs": [
+    {
+     "el": "C",
+     "per": 1,
+     "ref": 0
+    },
+    {
+     "el": "N",
+     "per": 1,
+     "ref": 0
+    }
+   ],
+   "unmapped_per": [
+    "CH0",
+    "CH1",
+    "CH1",
+    "CH1",
+    "CH1",
+    "CH1",
+    "CH0",
+    "CH1",
+    "OH1",
+    "SH0"
+   ],
+   "unmapped_ref": [
+    "OH0",
+    "CH0",
+    "CH2",
+    "CH0",
+    "CH1",
+    "CH1",
+    "CH1",
+    "CH1",
+    "CH1",
+    "SH0"
+   ],
+   "charges": [],
+   "note": ""
+  },
+  "sig": "formula | CC 1.5a->1.0 | CC 1.5a->1.0 | CN 1.5a->1.0 | CN 1.5a->1.0 | CN 1.5a->1.0 | CN 1.5a->2.0 | CH0->1 | NH0->1 | +CH0 | +CH0 | +CH1 | +CH1 | +CH1 | +CH1 | +CH1 | +CH1 | +OH1 | +SH0 | -CH0 | -CH0 | -CH1 | -CH1 | -CH1 | -CH1 | -CH1 | -CH2 | -OH0 | -SH0"
  },
  {
   "tier": "lowres",
@@ -8566,97 +8303,17 @@
   "pdb": "9WN1",
   "het": "4BW",
   "name": "",
-  "kind": "formula",
+  "kind": "graph",
   "err": null,
-  "formula_per": "C20H26N10O13P2",
+  "formula_per": "C20H24N10O13P2",
   "formula_ref": "C20H24N10O13P2",
-  "per_smiles": "NC1=NC=NC2C1=NCN2C1OC2COP(=O)(O)OC3C(COP(=O)(O)OC2C1O)OC(n1cnc2c(O)nc(N)nc21)C3O",
+  "per_smiles": "Nc1nc(O)c2ncn(C3OC4COP(=O)(O)OC5C(COP(=O)(O)OC4C3O)OC(n3cnc4c(N)ncnc43)C5O)c2n1",
   "ref_smiles": "Nc1nc2c(ncn2C2OC3COP(=O)(O)OC4C(COP(=O)(O)OC3C2O)OC(n2cnc3c(N)ncnc32)C4O)c(=O)[nH]1",
   "ob_ok": false,
   "dist_ok": false,
   "detail": {
    "mcs_n": 45,
    "bond_diffs": [
-    {
-     "els": [
-      "C",
-      "N"
-     ],
-     "per": "1.0",
-     "ref": "1.5a"
-    },
-    {
-     "els": [
-      "C",
-      "N"
-     ],
-     "per": "1.0",
-     "ref": "1.5a"
-    },
-    {
-     "els": [
-      "C",
-      "N"
-     ],
-     "per": "1.0",
-     "ref": "1.5a"
-    },
-    {
-     "els": [
-      "C",
-      "N"
-     ],
-     "per": "2.0",
-     "ref": "1.5a"
-    },
-    {
-     "els": [
-      "C",
-      "C"
-     ],
-     "per": "1.0",
-     "ref": "1.5a"
-    },
-    {
-     "els": [
-      "C",
-      "C"
-     ],
-     "per": "1.0",
-     "ref": "1.5a"
-    },
-    {
-     "els": [
-      "C",
-      "N"
-     ],
-     "per": "1.0",
-     "ref": "1.5a"
-    },
-    {
-     "els": [
-      "C",
-      "N"
-     ],
-     "per": "2.0",
-     "ref": "1.5a"
-    },
-    {
-     "els": [
-      "C",
-      "N"
-     ],
-     "per": "1.0",
-     "ref": "1.5a"
-    },
-    {
-     "els": [
-      "C",
-      "N"
-     ],
-     "per": "2.0",
-     "ref": "1.5a"
-    },
     {
      "els": [
       "O",
@@ -8684,16 +8341,6 @@
    ],
    "h_diffs": [
     {
-     "el": "C",
-     "per": 2,
-     "ref": 1
-    },
-    {
-     "el": "C",
-     "per": 1,
-     "ref": 0
-    },
-    {
      "el": "N",
      "per": 0,
      "ref": 1
@@ -8719,7 +8366,7 @@
    "charges": [],
    "note": ""
   },
-  "sig": "formula | CC 1.5a->1.0 | CC 1.5a->1.0 | CN 1.5a->1.0 | CN 1.5a->1.0 | CN 1.5a->1.0 | CN 1.5a->1.0 | CN 1.5a->1.0 | CN 1.5a->2.0 | CN 1.5a->2.0 | CN 1.5a->2.0 | CO 2.0->1.0 | OP 1.0->2.0 | OP 2.0->1.0 | CH0->1 | CH1->2 | NH1->0 | OH0->1 | OH0->1 | OH1->0"
+  "sig": "graph | CO 2.0->1.0 | OP 1.0->2.0 | OP 2.0->1.0 | NH1->0 | OH0->1 | OH0->1 | OH1->0"
  },
  {
   "tier": "lowres",
@@ -9348,39 +8995,39 @@
  {
   "tier": "lowres",
   "bucket": 4,
-  "pdb": "2VF5",
-  "het": "GLP",
+  "pdb": "6OP0",
+  "het": "A7A",
   "name": "",
   "kind": "formula",
   "err": null,
-  "formula_per": "C6H16NO8P",
-  "formula_ref": "C6H14NO8P",
-  "per_smiles": "NC1C(O)OC(CO[PH](O)(O)O)C(O)C1O",
-  "ref_smiles": "NC1C(O)OC(COP(=O)(O)O)C(O)C1O",
+  "formula_per": "C26H23N5O",
+  "formula_ref": "C26H25N5O",
+  "per_smiles": "Cc1ccc(C)c(Cn2c(C(=O)c3ccncc3)nc3ccc(-c4cnn(C)c4)cc32)c1",
+  "ref_smiles": "Cc1ccc(C)c(Cn2c(C(O)c3ccncc3)nc3ccc(-c4cnn(C)c4)cc32)c1",
   "ob_ok": true,
   "dist_ok": false,
   "detail": {
-   "mcs_n": 16,
+   "mcs_n": 32,
    "bond_diffs": [
     {
      "els": [
-      "O",
-      "P"
+      "C",
+      "O"
      ],
-     "per": "1.0",
-     "ref": "2.0"
+     "per": "2.0",
+     "ref": "1.0"
     }
    ],
    "h_diffs": [
     {
-     "el": "P",
-     "per": 1,
-     "ref": 0
+     "el": "C",
+     "per": 0,
+     "ref": 1
     },
     {
      "el": "O",
-     "per": 1,
-     "ref": 0
+     "per": 0,
+     "ref": 1
     }
    ],
    "unmapped_per": [],
@@ -9388,7 +9035,7 @@
    "charges": [],
    "note": ""
   },
-  "sig": "formula | OP 2.0->1.0 | OH0->1 | PH0->1"
+  "sig": "formula | CO 1.0->2.0 | CH1->0 | OH1->0"
  },
  {
   "tier": "lowres",
@@ -9530,39 +9177,39 @@
  {
   "tier": "lowres",
   "bucket": 4,
-  "pdb": "2I22",
-  "het": "I22",
+  "pdb": "7OTY",
+  "het": "1IX",
   "name": "",
   "kind": "formula",
   "err": null,
-  "formula_per": "C7H17O10P",
-  "formula_ref": "C7H15O10P",
-  "per_smiles": "O=C(CO)C(O)C(O)C(O)C(O)CO[PH](O)(O)O",
-  "ref_smiles": "O=C(CO)C(O)C(O)C(O)C(O)COP(=O)(O)O",
+  "formula_per": "C24H19ClFN5O3",
+  "formula_ref": "C24H21ClFN5O3",
+  "per_smiles": "COc1ccc(C(=O)c2cc(-c3ncnc4cc(N5CCOCC5)ccc34)c(F)cc2Cl)nn1",
+  "ref_smiles": "COc1ccc(C(O)c2cc(-c3ncnc4cc(N5CCOCC5)ccc34)c(F)cc2Cl)nn1",
   "ob_ok": true,
-  "dist_ok": true,
+  "dist_ok": false,
   "detail": {
-   "mcs_n": 18,
+   "mcs_n": 34,
    "bond_diffs": [
     {
      "els": [
-      "O",
-      "P"
+      "C",
+      "O"
      ],
-     "per": "1.0",
-     "ref": "2.0"
+     "per": "2.0",
+     "ref": "1.0"
     }
    ],
    "h_diffs": [
     {
-     "el": "O",
-     "per": 1,
-     "ref": 0
+     "el": "C",
+     "per": 0,
+     "ref": 1
     },
     {
-     "el": "P",
-     "per": 1,
-     "ref": 0
+     "el": "O",
+     "per": 0,
+     "ref": 1
     }
    ],
    "unmapped_per": [],
@@ -9570,7 +9217,7 @@
    "charges": [],
    "note": ""
   },
-  "sig": "formula | OP 2.0->1.0 | OH0->1 | PH0->1"
+  "sig": "formula | CO 1.0->2.0 | CH1->0 | OH1->0"
  },
  {
   "tier": "lowres",
@@ -10183,7 +9830,7 @@
   "err": null,
   "formula_per": "C18H15N3OS2",
   "formula_ref": "C18H13N3OS2",
-  "per_smiles": "O=C1NC(=NCc2cccs2)[SH]=C1Cc1ccc2ncccc2c1",
+  "per_smiles": "O=C1NC(NCc2cccs2)=S=C1Cc1ccc2ncccc2c1",
   "ref_smiles": "O=C1N=C(NCc2cccs2)SC1=Cc1ccc2ncccc2c1",
   "ob_ok": true,
   "dist_ok": false,
@@ -10217,7 +9864,7 @@
     {
      "els": [
       "C",
-      "N"
+      "S"
      ],
      "per": "2.0",
      "ref": "1.0"
@@ -10233,16 +9880,6 @@
      "el": "N",
      "per": 1,
      "ref": 0
-    },
-    {
-     "el": "S",
-     "per": 1,
-     "ref": 0
-    },
-    {
-     "el": "N",
-     "per": 0,
-     "ref": 1
     }
    ],
    "unmapped_per": [],
@@ -10250,23 +9887,7 @@
    "charges": [],
    "note": ""
   },
-  "sig": "formula | CC 2.0->1.0 | CN 1.0->2.0 | CN 2.0->1.0 | CS 1.0->2.0 | CH1->2 | NH0->1 | NH1->0 | SH0->1"
- },
- {
-  "tier": "lowres",
-  "bucket": 5,
-  "pdb": "5OOB",
-  "het": "MGT",
-  "name": "",
-  "kind": "None",
-  "err": "santize: Can't kekulize mol.  Unkekulized atoms: 22 25 28 29 31 32",
-  "formula_per": null,
-  "formula_ref": "C11H20N5O14P3",
-  "per_smiles": null,
-  "ref_smiles": "CN1CN(C2OC(COP(=O)(O)OP(=O)(O)OP(=O)(O)O)C(O)C2O)c2nc(N)[nH]c(=O)c21",
-  "ob_ok": false,
-  "dist_ok": false,
-  "sig": "None"
+  "sig": "formula | CC 2.0->1.0 | CN 2.0->1.0 | CS 1.0->2.0 | CS 1.0->2.0 | CH1->2 | NH0->1"
  },
  {
   "tier": "lowres",
@@ -10437,17 +10058,50 @@
   "pdb": "5NEV",
   "het": "72L",
   "name": "",
-  "kind": "graph",
+  "kind": "formula",
   "err": null,
-  "formula_per": "C23H18N6O2S",
+  "formula_per": "C23H16N6O2S",
   "formula_ref": "C23H18N6O2S",
-  "per_smiles": "NS(=O)(=O)c1ccc(Nc2nc(-c3cccc(-c4ccccc4)c3)c3nc[nH]c3n2)cc1",
+  "per_smiles": "NS(=O)(=O)c1ccc(Nc2nc3c(c(-c4cccc(-c5ccccc5)c4)n2)N=C=N3)cc1",
   "ref_smiles": "NS(=O)(=O)c1ccc(Nc2nc(-c3cccc(-c4ccccc4)c3)c3[nH]cnc3n2)cc1",
   "ob_ok": false,
   "dist_ok": false,
   "detail": {
    "mcs_n": 32,
-   "bond_diffs": [],
+   "bond_diffs": [
+    {
+     "els": [
+      "C",
+      "N"
+     ],
+     "per": "1.0",
+     "ref": "1.5a"
+    },
+    {
+     "els": [
+      "C",
+      "N"
+     ],
+     "per": "1.0",
+     "ref": "1.5a"
+    },
+    {
+     "els": [
+      "C",
+      "N"
+     ],
+     "per": "2.0",
+     "ref": "1.5a"
+    },
+    {
+     "els": [
+      "C",
+      "N"
+     ],
+     "per": "2.0",
+     "ref": "1.5a"
+    }
+   ],
    "h_diffs": [
     {
      "el": "N",
@@ -10455,9 +10109,9 @@
      "ref": 1
     },
     {
-     "el": "N",
-     "per": 1,
-     "ref": 0
+     "el": "C",
+     "per": 0,
+     "ref": 1
     }
    ],
    "unmapped_per": [],
@@ -10465,47 +10119,7 @@
    "charges": [],
    "note": ""
   },
-  "sig": "graph | NH0->1 | NH1->0"
- },
- {
-  "tier": "lowres",
-  "bucket": 5,
-  "pdb": "7ENE",
-  "het": "J7R",
-  "name": "",
-  "kind": "formula",
-  "err": null,
-  "formula_per": "C24H26BrN5O4",
-  "formula_ref": "C24H25BrN5O4",
-  "per_smiles": "CNC(=O)c1cc(Br)cc(N(O)O)c1NC1CCCCC1NC(=O)c1cncc2ccccc12",
-  "ref_smiles": "CNC(=O)c1cc(Br)cc(N(=O)O)c1NC1CCCCC1NC(=O)c1cncc2ccccc12",
-  "ob_ok": true,
-  "dist_ok": false,
-  "detail": {
-   "mcs_n": 34,
-   "bond_diffs": [
-    {
-     "els": [
-      "N",
-      "O"
-     ],
-     "per": "1.0",
-     "ref": "2.0"
-    }
-   ],
-   "h_diffs": [
-    {
-     "el": "O",
-     "per": 1,
-     "ref": 0
-    }
-   ],
-   "unmapped_per": [],
-   "unmapped_ref": [],
-   "charges": [],
-   "note": ""
-  },
-  "sig": "formula | NO 2.0->1.0 | OH0->1"
+  "sig": "formula | CN 1.5a->1.0 | CN 1.5a->1.0 | CN 1.5a->2.0 | CN 1.5a->2.0 | CH1->0 | NH1->0"
  },
  {
   "tier": "lowres",
@@ -10685,111 +10299,6 @@
    "note": ""
   },
   "sig": "formula | CC 2.0->1.0 | CC 2.0->1.0 | CH1->2 | CH1->2 | CH2->3 | CH2->3"
- },
- {
-  "tier": "lowres",
-  "bucket": 5,
-  "pdb": "3OPD",
-  "het": "E0G",
-  "name": "",
-  "kind": "formula",
-  "err": null,
-  "formula_per": "C23H33F3N4O3",
-  "formula_ref": "C23H27F3N4O3",
-  "per_smiles": "CC1(C)CC(=O)c2c(C(F)(F)F)nn(C3CCC(C(N)=O)C(NC4CCC(O)CC4)C3)c2C1",
-  "ref_smiles": "CC1(C)CC(=O)c2c(C(F)(F)F)nn(-c3ccc(C(N)=O)c(NC4CCC(O)CC4)c3)c2C1",
-  "ob_ok": true,
-  "dist_ok": false,
-  "detail": {
-   "mcs_n": 33,
-   "bond_diffs": [
-    {
-     "els": [
-      "C",
-      "C"
-     ],
-     "per": "1.0",
-     "ref": "1.5a"
-    },
-    {
-     "els": [
-      "C",
-      "C"
-     ],
-     "per": "1.0",
-     "ref": "1.5a"
-    },
-    {
-     "els": [
-      "C",
-      "C"
-     ],
-     "per": "1.0",
-     "ref": "1.5a"
-    },
-    {
-     "els": [
-      "C",
-      "C"
-     ],
-     "per": "1.0",
-     "ref": "1.5a"
-    },
-    {
-     "els": [
-      "C",
-      "C"
-     ],
-     "per": "1.0",
-     "ref": "1.5a"
-    },
-    {
-     "els": [
-      "C",
-      "C"
-     ],
-     "per": "1.0",
-     "ref": "1.5a"
-    }
-   ],
-   "h_diffs": [
-    {
-     "el": "C",
-     "per": 1,
-     "ref": 0
-    },
-    {
-     "el": "C",
-     "per": 2,
-     "ref": 1
-    },
-    {
-     "el": "C",
-     "per": 1,
-     "ref": 0
-    },
-    {
-     "el": "C",
-     "per": 1,
-     "ref": 0
-    },
-    {
-     "el": "C",
-     "per": 2,
-     "ref": 1
-    },
-    {
-     "el": "C",
-     "per": 2,
-     "ref": 1
-    }
-   ],
-   "unmapped_per": [],
-   "unmapped_ref": [],
-   "charges": [],
-   "note": ""
-  },
-  "sig": "formula | CC 1.5a->1.0 | CC 1.5a->1.0 | CC 1.5a->1.0 | CC 1.5a->1.0 | CC 1.5a->1.0 | CC 1.5a->1.0 | CH0->1 | CH0->1 | CH0->1 | CH1->2 | CH1->2 | CH1->2"
  },
  {
   "tier": "lowres",
