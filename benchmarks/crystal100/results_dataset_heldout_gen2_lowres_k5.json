@@ -1,0 +1,40 @@
+{
+ "dataset": "dataset_heldout_gen2_lowres_k5",
+ "dataset_file": "dataset_heldout_gen2_lowres_k5.json",
+ "total": 60,
+ "res_band": "2.5-3.0 A",
+ "methods": {
+  "geometry": {
+   "sanitize": 60,
+   "formula": 41,
+   "graph": 36,
+   "exact": 36,
+   "addh": 60,
+   "recovery": 36
+  },
+  "openbabel": {
+   "sanitize": 56,
+   "formula": 41,
+   "graph": 33,
+   "exact": 33,
+   "addh": 56,
+   "recovery": 33
+  },
+  "distance": {
+   "sanitize": 42,
+   "formula": 4,
+   "graph": 4,
+   "exact": 4,
+   "addh": 42,
+   "recovery": 4
+  },
+  "rdDetermineBonds": {
+   "sanitize": 5,
+   "formula": 0,
+   "graph": 0,
+   "exact": 0,
+   "addh": 5,
+   "recovery": 0
+  }
+ }
+}

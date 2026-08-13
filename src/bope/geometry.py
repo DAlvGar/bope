@@ -20,10 +20,12 @@ import math
 from itertools import combinations
 from typing import Any
 
+
 from bope._deps import Chem, rdGeometry
 from bope.helpers import _planarity_rms, _sym_pair
 from bope.tables import (
     _AROMATIC_ENVELOPE,
+    _AROMATIC_HARD_MAX,
     _AROMATIC_RESCUE_RMS_MAX,
     _RESCUE_RING_BOND_MAX,
     _AROMATIC_SLACK_BOND,
@@ -96,6 +98,50 @@ def perceive_bond_orders_geometric(
     other_ring_atoms: set[int] = set()
     for r2 in rings_info:
         other_ring_atoms.update(r2)
+    # edges shared by two rings: a fusion edge (indole 2,3, the
+    # benzofuran C4-C5).  The double-edge sanity gate below must not
+    # count them - every aromatic 5-ring fused to a benzene shares a
+    # short aromatic edge, and V0X's dihydrobenzofuran ring leans on
+    # exactly that one.
+    edge_ring_count: dict[tuple[int, int], int] = {}
+    for r2 in rings_info:
+        rl2 = list(r2)
+        for k in range(len(rl2)):
+            e = _sym_pair(rl2[k], rl2[(k + 1) % len(rl2)])
+            edge_ring_count[e] = edge_ring_count.get(e, 0) + 1
+    # a SINGLE-ring molecule whose ring is broken in both directions is
+    # refused so the caller can fall back to OpenBabel: an edge beyond the
+    # envelope + per-bond slack AND an edge below the envelope lo - slack
+    # together mean the ring does not hold together in these coordinates
+    # (the ETKDG thiazole embed refines S-C to 1.90 A and C-N to 1.16 A -
+    # a fragment, not a 5-membered aromatic).  Real data never shows the
+    # combination: low resolution stretches rings, but never also
+    # compresses an edge below ~1.25 A (planar rings across the crystal
+    # datasets carry over-long edges at 2.5-3.0 A resolution - porphyrins,
+    # nucleotides - with no under-short partner, and the length rule keeps
+    # those rings out of the aromatic set without poisoning the molecule).
+    # Rejecting the broken ring from candidacy alone is not enough: the
+    # length rule would rebuild it as a valid-looking ring in the output
+    # mol (stamping the 1.16 A C-N as a ring-internal triple), silently
+    # beating the OpenBabel fallback the corpus reserves for exactly these
+    # S-heterocycle embeds.
+    broken_ring = False
+    if len(rings_info) == 1:
+        rl0 = list(next(iter(rings_info)))
+        if len(rl0) >= 5 and _planarity_rms([coords[i] for i in rl0]) <= 0.12:
+            over_hit = under_hit = False
+            for k in range(len(rl0)):
+                i, j = rl0[k], rl0[(k + 1) % len(rl0)]
+                d = blen[_sym_pair(i, j)]
+                lo, hi = _AROMATIC_ENVELOPE.get(
+                    _sym_pair(elements[i], elements[j]), (1.27, 1.50)
+                )
+                if d > hi + _AROMATIC_SLACK_BOND:
+                    over_hit = True
+                if d < lo - _AROMATIC_SLACK_SHORT:
+                    under_hit = True
+            if over_hit and under_hit:
+                broken_ring = True
     for ring in rings_info:
         rl = list(ring)
         if len(rl) < 5:
@@ -141,21 +187,37 @@ def perceive_bond_orders_geometric(
                     dmax = _BOND_ORDER_TABLE.get(pair, (None, None))[1]
                     if dmax is None or dlen > dmax:
                         continue
+                    # an exocyclic C=N at 1.34-1.37 A is aniline-type, not an
+                    # imine: the N's lone pair conjugates into the ring and
+                    # the bond is a single (3QTX X43's 2-aminothiazole N at
+                    # 1.353 A).  A genuine exo imine refines to 1.28-1.32 A,
+                    # so an N exo needs the tight bound; the ring-internal
+                    # C=N of a diene (the 8TO5 azadiene at 1.360) keeps the
+                    # generous 1.37 because this gate never sees it.
+                    if elements[j] == "N" and dlen > 1.33:
+                        continue
                     vmax = _MAX_VALENCE.get(elements[j])
-                    if vmax is not None:
-                        val = 2.0  # this bond as a double
-                        for k in graph_nbrs_all.get(j, ()):
-                            if k == a:
-                                continue
-                            dk = blen[_sym_pair(j, k)]
-                            pk = _sym_pair(elements[j], elements[k])
-                            if pk in _TRIPLE_BOND_TABLE and dk <= _TRIPLE_BOND_TABLE[pk]:
-                                val += 3.0
-                            else:
-                                dkmax = _BOND_ORDER_TABLE.get(pk, (None, None))[1]
-                                val += 2.0 if dkmax is not None and dk <= dkmax else 1.0
-                        if val > vmax:
-                            continue  # demotable - leave it to the demotion pass
+                    # S and P exo bonds never block: the valence test is
+                    # vacuous for them (vmax 6/5 absorbs any double), and
+                    # a thioether C-S refines to 1.68-1.76 A inside the
+                    # C=S cutoff - 7FOY W5C's 1.687 A C-S blocked a
+                    # textbook planar triazole.  Leave S/P exo bonds to
+                    # the length rule and the demotion pass.
+                    if vmax is None or elements[j] in ("S", "P"):
+                        continue
+                    val = 2.0  # this bond as a double
+                    for k in graph_nbrs_all.get(j, ()):
+                        if k == a:
+                            continue
+                        dk = blen[_sym_pair(j, k)]
+                        pk = _sym_pair(elements[j], elements[k])
+                        if pk in _TRIPLE_BOND_TABLE and dk <= _TRIPLE_BOND_TABLE[pk]:
+                            val += 3.0
+                        else:
+                            dkmax = _BOND_ORDER_TABLE.get(pk, (None, None))[1]
+                            val += 2.0 if dkmax is not None and dk <= dkmax else 1.0
+                    if val > vmax:
+                        continue  # demotable - leave it to the demotion pass
                     blocked = True
                     break
                 if blocked:
@@ -181,6 +243,23 @@ def perceive_bond_orders_geometric(
                 excess += over
         if not ok or excess > _AROMATIC_SLACK_RING:
             continue
+        # a ring edge longer than any real aromatic bond of its pair is not
+        # aromatic: the envelope's slack exists for low-res benzenes (C-C
+        # elongated to ~1.52), but must not admit an sp3 ring riding one
+        # "good" edge (5KYA 6Y4's pyrrolidine passes every gate with C-N
+        # 1.471/1.488 and 6 pi - the longest aromatic C-N in the tuning set
+        # is 1XQS AMP's 1.450).  C-C and C-O are deliberately uncapped
+        # (07L's coumarin lactone ring C-O refines to 1.462).
+        for k in range(len(rl)):
+            i, j = rl[k], rl[(k + 1) % len(rl)]
+            hard = _AROMATIC_HARD_MAX.get(
+                _sym_pair(elements[i], elements[j])
+            )
+            if hard is not None and blen[_sym_pair(i, j)] >= hard:
+                ok = False
+                break
+        if not ok:
+            continue
         # a ring whose lengths need slack is a low-resolution aromatic
         # candidate: demand better planarity than the generous 0.12, or a
         # saturated ether ring (1T3R/017 THF: C-O/C-C at 1.40-1.51, rms
@@ -189,8 +268,64 @@ def perceive_bond_orders_geometric(
         # (each at most +0.022, within the per-bond cap).
         if excess > 0.0 and rms > 0.08:
             continue
+        # a 5-ring whose pi count leans on an O/S lone pair (furan /
+        # thiophene-type 2 pi) must carry at least one genuine
+        # double-length edge not incident to it: V0X's
+        # 2,3-dihydrobenzofuran 5-ring scores O 2pi + 4C = 6pi and
+        # passes Huckel, but every C-C edge is a 1.47-1.52 A single -
+        # there is no conjugation for the count to reward, and marking
+        # the ring aromatic strips real hydrogens (BT5's saturated
+        # THF-fused ring is the same signature).  Pure-carbon and
+        # pyridine-type rings pass unchecked: low-resolution benzenes
+        # refine to uniform 1.45-1.52 A edges.  6-rings are exempt (a
+        # saturated 6-ring needs 4n+2 only with two heteroatoms, and
+        # the coumarin pyranone at 1.416 A C=C must survive).
+        if len(rl) == 5 and any(elements[b] in ("O", "S") for b in rl):
+            short_ok = False
+            for k in range(len(rl)):
+                i, j = rl[k], rl[(k + 1) % len(rl)]
+                pair = _sym_pair(elements[i], elements[j])
+                if elements[i] == "O" or elements[j] == "O":
+                    # an aryl C-O is short even in a saturated ring
+                    # (phenol / aryl ether refines to 1.31-1.44), so O
+                    # edges prove nothing about conjugation
+                    continue
+                if elements[i] == "S" or elements[j] == "S":
+                    # a thiophene-type C-S is genuinely short (1.58-1.76
+                    # across the dataset; 4L9Q 9TP's thiophene at 2.6 A
+                    # refines its C-C edges to 1.46-1.55 - too long for
+                    # the C-C test below - but its C-S stays at
+                    # 1.64-1.66), while a thioether ring C-S refines to
+                    # 1.78+ (8J7D BTI's tetrahydrothiophene 1.81, 3UDI
+                    # PNM's 1.84 - all of them non-planar anyway).  A
+                    # short C-S edge is real conjugation evidence.
+                    dmax = _BOND_ORDER_TABLE.get(pair, (None, None))[1]
+                    if (dmax is not None
+                            and blen[_sym_pair(i, j)] <= dmax + _AROMATIC_SLACK_SHORT):
+                        short_ok = True
+                        break
+                    continue
+                # fusion edge: shared with another ring, it proves nothing
+                # about this ring's own conjugation (V0X's
+                # dihydrobenzofuran borrows the benzene's 1.356 A C4-C5)
+                if edge_ring_count.get(_sym_pair(i, j), 0) > 1:
+                    continue
+                dmax = _BOND_ORDER_TABLE.get(pair, (None, None))[1]
+                if (dmax is not None
+                        and blen[_sym_pair(i, j)] <= dmax + _AROMATIC_SLACK_BOND):
+                    short_ok = True
+                    break
+            if not short_ok:
+                continue
         ring_excess[tuple(rl)] = excess
         cand_rings.append(rl)
+
+    if broken_ring:
+        return None, ("broken ring: the molecule's only ring has an edge "
+                      "beyond the aromatic envelope plus slack and an edge "
+                      "below it - the ring does not hold together in these "
+                      "coordinates, refusing the molecule so the caller "
+                      "can fall back to OpenBabel")
 
     cand_atoms = set()
     for rl in cand_rings:
@@ -279,6 +414,45 @@ def perceive_bond_orders_geometric(
                 # NAD/NAP/NDP score 7 pi, fail Huckel and come out
                 # saturated (+6 H in the formula).
                 if max((len(rl) for rl in cand_rings if a in rl), default=0) <= 5:
+                    # 5-ring with an exo substituent: the N is sp2 with
+                    # three sigma bonds, so its lone pair sits in the
+                    # ring p orbital: 2 pi (pyrrole-type: N-methylpyrrole,
+                    # N-alkyl imidazole / triazole, the N-glycosides of
+                    # nucleosides).  A neutral 5-ring N contributes 1 pi
+                    # only when the exo bond is itself a double - an
+                    # imine N=X, detected by the length rule.  The old
+                    # discriminator (any other heteroatom in the ring,
+                    # no N-N bond) mislabeled 7-methylguanine N7-CH3 and
+                    # triazole N1-R: at 1 pi the N must double-bond and
+                    # either strangles the ring (no kekule: 7FOY W5C,
+                    # 5MUY MGT) or turns a 7-pi neutral ring aromatic
+                    # (an N-alkyl thiazole whose neutral form has no
+                    # conjugation to reward).
+                    for e in exo_nbrs[a]:
+                        # an exo carbon that is itself ring-bound is an
+                        # N-aryl (5KYA 6Y4's pyrazole N-phenyl at 1.327 A
+                        # sits inside the imine window but is a plain
+                        # single bond): the aryl ring's own candidate
+                        # status decides it.  A genuine exo imine carbon
+                        # is never in a candidate ring.
+                        if elements[e] == "C" and any(
+                            e in rl for rl in cand_rings
+                        ):
+                            continue
+                        pair = _sym_pair(elements[a], elements[e])
+                        dmax = _BOND_ORDER_TABLE.get(pair, (None, None))[1]
+                        if dmax is None:
+                            continue
+                        # an exocyclic C=N at 1.34-1.37 A is an N-aryl or
+                        # N-alkyl aniline-type single (5AEP QUP's pyrrole
+                        # N-aryl at 1.36-1.37 A), not an imine: a genuine
+                        # exo imine refines to 1.28-1.32 A, so a C exo
+                        # needs the tight bound (non-C exo N=O / N=S keep
+                        # the table cutoff).
+                        if elements[e] == "C" and blen[_sym_pair(a, e)] > 1.33:
+                            continue
+                        if blen[_sym_pair(a, e)] <= dmax:
+                            return 1  # exo imine: the p pair is spent
                     return 2
                 if any(carbonyl_c(j, _CRYSTAL_CARBONYL) for j in ring_nbrs[a]):
                     return 2
@@ -465,17 +639,30 @@ def perceive_bond_orders_geometric(
 
         def score(mask: int) -> tuple[int, int, int]:
             """(aromatic rings, per-ring aromatic rings, amide-H count).
-            The total counts rings aromatic per-ring OR via any passing fused
-            subset (isoalloxazine's pyrazine is 7 pi per-ring and its uracil
-            5, yet the {uracil,pyrazine} union is 10 and the tricycle 14 -
-            both 4n+2); the per-ring count breaks ties toward the mask that
-            needs no system rescue (purine's N7-H tautomer over the
-            pyrimidine-N1-H tautomer, which is aromatic only via the
-            system); the amide-H count then breaks flavin-type ties: the
-            pyrrole-H prefers the N with the most carbonyl ring neighbours
-            (flavin N3 between the two C=O's, matching the ccd, over N1)."""
+            The total counts rings aromatic per-ring OR via any passing
+            fused subset (isoalloxazine's pyrazine is 7 pi per-ring and
+            its uracil 5, yet the {uracil,pyrazine} union is 10 and the
+            tricycle 14 - both 4n+2).  A mask whose rings are ALL
+            rescue-only (no ring stands alone on its own Huckel count)
+            scores 0: the rescue is then an accident of the mask
+            enumeration - 7-methylguanine's pyridine tautomer puts the
+            6-ring at 5 pi and the {5-ring,6-ring} union lands on 10,
+            marking the 7-pi imidazole aromatic and making the mol
+            unkekulizable, where the N1-H tautomer stands alone at 6 pi
+            and the imidazole stays non-aromatic, exactly as the ccd
+            draws it.  The flavin's rescue is never lost: its uracil /
+            pyrazine pair is rescued alongside the per-ring benzene, so
+            the mask with the N3-H tautomer (uracil 5 pi, pyrazine 7 pi,
+            3 rings) beats the both-H mask (uracil 6 pi per-ring but the
+            pyrazine dropped, 2 rings) on the total itself.  The
+            per-ring count then breaks ties toward the mask that needs
+            no system rescue (purine's N7-H tautomer over the
+            pyrimidine-N1-H tautomer), and the amide-H count breaks
+            flavin-type ties: the pyrrole-H prefers the N with the most
+            carbonyl ring neighbours (flavin N3 between the two C=O's,
+            matching the ccd, over N1)."""
             arom, per_ring = arom_for(mask)
-            ok = len(arom)
+            ok = len(arom) if per_ring else 0
             per_ring_n = len(per_ring)
             amide_h = 0
             for a in flex_n:
@@ -502,16 +689,29 @@ def perceive_bond_orders_geometric(
             for k in range(len(rl)):
                 i, j = rl[k], rl[(k + 1) % len(rl)]
                 arom_bonds.add(_sym_pair(i, j))
-        def assemble(exo_force_all: bool) -> tuple[Any | None, str | None]:
+        def assemble(
+            exo_force_all: bool,
+            arom_rings_arg: list[list[int]] | None = None,
+            arom_atoms_arg: set[int] | None = None,
+            arom_bonds_arg: set[tuple[int, int]] | None = None,
+        ) -> tuple[Any | None, str | None]:
             """Build the mol with bond orders.  exo_force_all=False: only degree-1
             N/S exo to an aromatic atom (NH2 / amino-pyridine) is forced single;
             substituted N/S (C=N imines, N-aryl triazoles) stay on the length rule
-            so a triazine C=N survives.  exo_force_all=True: every N/S exo to an
-            aromatic atom is single (aniline fallback - fixes kekulization when the
-            length rule puts a double on a benzene-ring carbon)."""
+            so a triazine C=N survives.  exo_force_all=True: every exo bond of an
+            aromatic atom is single, N/S and C-C alike (the aniline fallback,
+            generalised - fixes kekulization when the length rule puts a double
+            on the direct exo bond of a ring atom: 7RS8 7EI's phenol ring carbons
+            hold 1.348 / 1.353 A aryl-alkenyl singles inside the 1.38 C=C cutoff,
+            and such a double leaves the ring atom no pi for its ring double).
+            Passing empty aromatic sets builds a pure length-rule molecule (the
+            final never-return-None fallback)."""
+            a_rings = arom_rings if arom_rings_arg is None else arom_rings_arg
+            a_atoms = arom_atoms if arom_atoms_arg is None else arom_atoms_arg
+            a_bonds = arom_bonds if arom_bonds_arg is None else arom_bonds_arg
             m = Chem.RWMol(rw)  # type: ignore[attr-defined]
             for i, j in graph:
-                if _sym_pair(i, j) in arom_bonds:
+                if _sym_pair(i, j) in a_bonds:
                     m.AddBond(i, j, Chem.BondType.AROMATIC)  # type: ignore[attr-defined]
                 else:
                     d = blen[_sym_pair(i, j)]
@@ -520,7 +720,7 @@ def perceive_bond_orders_geometric(
                         # nitrile / alkyne: unmistakably short, checked first so an
                         # N/S exo triple on an aromatic ring (benzonitrile) survives
                         m.AddBond(i, j, Chem.BondType.TRIPLE)  # type: ignore[attr-defined]
-                    elif (i in arom_atoms) != (j in arom_atoms):
+                    elif (i in a_atoms) != (j in a_atoms):
                         # exactly one aromatic endpoint.  A non-aromatic atom
                         # bonded to two or more aromatic atoms is a macrocycle
                         # bridge (the porphyrin methine carbons of HEM/HEC/
@@ -532,32 +732,34 @@ def perceive_bond_orders_geometric(
                         # cannot take its ring double and the kekulization
                         # dies.  A genuine exo double substituent (vinyl,
                         # carbonyl, imine) has exactly one aromatic neighbour.
-                        narm = i if i not in arom_atoms else j
+                        narm = i if i not in a_atoms else j
                         arom_nbrs = sum(
                             1 for a, b in graph
-                            if (a == narm and b in arom_atoms)
-                            or (b == narm and a in arom_atoms)
+                            if (a == narm and b in a_atoms)
+                            or (b == narm and a in a_atoms)
                         )
                         if arom_nbrs >= 2:
                             m.AddBond(i, j, Chem.BondType.SINGLE)  # type: ignore[attr-defined]
+                        elif exo_force_all:
+                            # pass 2: no double on the direct exo bond of an
+                            # aromatic atom - the ring atom's pi belongs to the
+                            # ring (7RS8 7EI, 5KYA 6Y4's alkene-bearing rings).
+                            m.AddBond(i, j, Chem.BondType.SINGLE)  # type: ignore[attr-defined]
                         elif elements[i] in ("N", "S") or elements[j] in ("N", "S"):
-                            if exo_force_all:
+                            ns = i if elements[i] in ("N", "S") else j
+                            deg_ns = sum(1 for a, b in graph if a == ns or b == ns)
+                            if deg_ns == 1:
+                                # aniline / amino-pyridine NH2: single, always
                                 m.AddBond(i, j, Chem.BondType.SINGLE)  # type: ignore[attr-defined]
+                            elif pair in _BOND_ORDER_TABLE:
+                                _, dmax = _BOND_ORDER_TABLE[pair]
+                                m.AddBond(
+                                    i, j,
+                                    Chem.BondType.DOUBLE if (dmax is not None and d <= dmax)
+                                    else Chem.BondType.SINGLE,
+                                )  # type: ignore[attr-defined]
                             else:
-                                ns = i if elements[i] in ("N", "S") else j
-                                deg_ns = sum(1 for a, b in graph if a == ns or b == ns)
-                                if deg_ns == 1:
-                                    # aniline / amino-pyridine NH2: single, always
-                                    m.AddBond(i, j, Chem.BondType.SINGLE)  # type: ignore[attr-defined]
-                                elif pair in _BOND_ORDER_TABLE:
-                                    _, dmax = _BOND_ORDER_TABLE[pair]
-                                    m.AddBond(
-                                        i, j,
-                                        Chem.BondType.DOUBLE if (dmax is not None and d <= dmax)
-                                        else Chem.BondType.SINGLE,
-                                    )  # type: ignore[attr-defined]
-                                else:
-                                    m.AddBond(i, j, Chem.BondType.SINGLE)  # type: ignore[attr-defined]
+                                m.AddBond(i, j, Chem.BondType.SINGLE)  # type: ignore[attr-defined]
                         elif pair in _BOND_ORDER_TABLE:
                             # exo C-C / C-O / C-S substituent (methyl, vinyl,
                             # carbonyl) of a single aromatic neighbour: on the
@@ -573,7 +775,7 @@ def perceive_bond_orders_geometric(
                             )  # type: ignore[attr-defined]
                         else:
                             m.AddBond(i, j, Chem.BondType.SINGLE)  # type: ignore[attr-defined]
-                    elif i in arom_atoms:
+                    elif i in a_atoms:
                         # both endpoints aromatic but the bond is not a ring
                         # edge: an inter-ring linkage (N-aryl, S-aryl,
                         # biphenyl, a fused-ring junction).  These are
@@ -596,15 +798,20 @@ def perceive_bond_orders_geometric(
 
             # --- fixup pass: corrections the pure length rule gets wrong ---------
             # (1) carbonyl rescue: non-aromatic C with a terminal O single bond and
-            #     at least one N neighbor -> C=O.  Crystal carbonyls often refine
-            #     to 1.34-1.36 A (caffeine C2/C6 in 3RFM); aromatic ring C's are
-            #     excluded, and internal O's (ether/alcohol C-O) stay single.
+            #     at least one N neighbor, or two aromatic neighbors (a diaryl /
+            #     aryl-heteroaryl ketone bridge - 3QTX X43's C(=O) at 1.358 A
+            #     between the thiazole and the phenyl, whose ring bonds the
+            #     macrocycle-bridge rule singles) -> C=O.  Crystal carbonyls often
+            #     refine to 1.34-1.36 A (caffeine C2/C6 in 3RFM); aromatic ring
+            #     C's are excluded, and internal O's (ether/alcohol C-O) stay
+            #     single - the porphyrin methine bridge carries no O and is
+            #     untouched.
             # (2) amidine/imine: non-aromatic C with exactly 2 N single neighbors
             #     and no O/S neighbor: the shorter C-N becomes double (delocalized
             #     amidines measure 1.31-1.33 for BOTH bonds; neutral benzamidine
             #     needs one).
             for i in range(n):
-                if elements[i] != "C" or i in arom_atoms:
+                if elements[i] != "C" or i in a_atoms:
                     continue
                 nbrs = []
                 for a, b in graph:
@@ -614,14 +821,31 @@ def perceive_bond_orders_geometric(
                         nbrs.append(a)
                 n_nbrs = [j for j in nbrs if elements[j] == "N"]
                 o_nbrs = [j for j in nbrs if elements[j] == "O"]
-                if o_nbrs and n_nbrs:
+                n_arom = sum(1 for j in nbrs if j in a_atoms)
+                if o_nbrs and (n_nbrs or n_arom >= 2):
                     for o in o_nbrs:
                         deg_o = sum(1 for a, b in graph if a == o or b == o)
                         if deg_o == 1 and blen[_sym_pair(i, o)] <= 1.40:
                             bo = m.GetBondBetweenAtoms(i, o)  # type: ignore[attr-defined]
                             if bo.GetBondType() == Chem.BondType.SINGLE:  # type: ignore[attr-defined]
                                 bo.SetBondType(Chem.BondType.DOUBLE)  # type: ignore[attr-defined]
-                elif len(n_nbrs) == 2 and not any(
+                # ester/acyl O: a C-O double can never land on a bridged O
+                # (an O with a second heavy neighbour - ester, lactone, acyl
+                # phosphate).  The O's valence 2 is already spent on its two
+                # sigma bonds; when a crystal refines the ester C-O shorter
+                # than the C=O (BT5/1WQW measures 1.247 vs 1.272), the
+                # length rule doubles the wrong bond, the bridged O goes
+                # over-valent, and the demotion pass destroys the carbonyl
+                # (pass-1 output OC(O) instead of OC(=O)).  Force bridged
+                # C-O single; the rescue above and the length rule keep the
+                # terminal O double.
+                for o in o_nbrs:
+                    deg_o = sum(1 for a, b in graph if a == o or b == o)
+                    if deg_o > 1:
+                        bo = m.GetBondBetweenAtoms(i, o)  # type: ignore[attr-defined]
+                        if bo.GetBondType() != Chem.BondType.SINGLE:  # type: ignore[attr-defined]
+                            bo.SetBondType(Chem.BondType.SINGLE)  # type: ignore[attr-defined]
+                if len(n_nbrs) == 2 and not any(
                     elements[j] in ("O", "S") for j in nbrs
                 ):
                     d1, d2 = blen[_sym_pair(i, n_nbrs[0])], blen[_sym_pair(i, n_nbrs[1])]
@@ -635,8 +859,164 @@ def perceive_bond_orders_geometric(
                         if bo.GetBondType() == Chem.BondType.SINGLE:  # type: ignore[attr-defined]
                             bo.SetBondType(Chem.BondType.DOUBLE)  # type: ignore[attr-defined]
 
+            # (3) nitro: N with two terminal O's at N-O <= 1.45 A (short
+            #     nitro refines to 1.18-1.22, delocalised nitro to
+            #     1.36-1.43, 3B67 B67 rides 1.420/1.420 and 6SUH LVE
+            #     1.364/1.428) is the charge-separated [N+](=O)[O-] of
+            #     the CCD record.  N vmax 3 cannot hold two N=O, so the
+            #     length rule alone reads a single plus an O-H (6SUH LVE,
+            #     4EK8 16K at 1.214) and the demotion pass destroys even
+            #     textbook-length nitro; the +1 charge exempts the N from
+            #     the demotion pass and reproduces the CCD form exactly
+            #     (the benchmark neutralises before comparing).  The only
+            #     neutral mislabel the gate guards against is N(OH)2
+            #     (two N-O hydroxylamine singles at 1.40-1.47), which
+            #     does not occur in crystal ligands.
+            for i in range(n):
+                if elements[i] != "N" or i in a_atoms:
+                    continue
+                nbrs_i = [b for a, b in graph if a == i] + \
+                    [a for a, b in graph if b == i]
+                o_nbrs = [j for j in nbrs_i if elements[j] == "O" and deg[j] == 1]
+                if (
+                    len(o_nbrs) == 2
+                    and len(nbrs_i) >= 3
+                    and all(blen[_sym_pair(i, o)] <= 1.45 for o in o_nbrs)
+                ):
+                    # a nitro N holds no double but its two N=O: the length
+                    # rule may already have doubled a non-O bond (the
+                    # nitro-aryl C-N of 2YOH WMJ refines to 1.346, inside
+                    # the 1.37 imine cutoff), which would stack on the
+                    # N=O to explicit valence 5 and crash sanitize.
+                    for b in m.GetAtomWithIdx(i).GetBonds():  # type: ignore[attr-defined]
+                        if b.GetBondType() not in (  # type: ignore[attr-defined]
+                            Chem.BondType.SINGLE, Chem.BondType.AROMATIC  # type: ignore[attr-defined]
+                        ):
+                            b.SetBondType(Chem.BondType.SINGLE)  # type: ignore[attr-defined]
+                    tgt = min(o_nbrs, key=lambda o: blen[_sym_pair(i, o)])
+                    for o in o_nbrs:
+                        m.GetBondBetweenAtoms(i, o).SetBondType(  # type: ignore[attr-defined]
+                            Chem.BondType.DOUBLE if o == tgt  # type: ignore[attr-defined]
+                            else Chem.BondType.SINGLE  # type: ignore[attr-defined]
+                        )
+                    m.GetAtomWithIdx(i).SetFormalCharge(1)  # type: ignore[attr-defined]
+                    # the -1 rides the SINGLE-bonded O: the double O would
+                    # carry 2 valence + 1 charge = 3 and crash sanitize
+                    for o in o_nbrs:
+                        m.GetAtomWithIdx(o).SetFormalCharge(  # type: ignore[attr-defined]
+                            -1 if o != tgt else 0
+                        )
+
+            # (4) phosphate P=O: P with 2+ terminal O's and no P=O double
+            #     yet.  Crystal phosphate P-O refines to 1.55-1.70 A
+            #     (1TPB PGH 1.701, 2VF5 GLP 1.591, 2I22 I22 1.604),
+            #     above the 1.55 P=O cutoff, so the length rule leaves
+            #     every P-O single and P falls back to P-H; forcing the
+            #     shortest P-O to double puts P at exactly valence 5, no
+            #     charge needed.
+            for i in range(n):
+                if elements[i] != "P" or i in a_atoms:
+                    continue
+                nbrs_p = [b for a, b in graph if a == i] + \
+                    [a for a, b in graph if b == i]
+                o_nbrs = [j for j in nbrs_p if elements[j] == "O" and deg[j] == 1]
+                if len(o_nbrs) >= 2 and not any(
+                    m.GetBondBetweenAtoms(i, o).GetBondType()  # type: ignore[attr-defined]
+                    == Chem.BondType.DOUBLE  # type: ignore[attr-defined]
+                    for o in o_nbrs
+                ):
+                    tgt = min(o_nbrs, key=lambda o: blen[_sym_pair(i, o)])
+                    m.GetBondBetweenAtoms(i, tgt).SetBondType(  # type: ignore[attr-defined]
+                        Chem.BondType.DOUBLE  # type: ignore[attr-defined]
+                    )
+
+            # (5) sulfonamide S-N: an S with two terminal O's and an N
+            #     neighbor is the sulfonyl of a sulfonamide R-S(=O)(=O)-NH2:
+            #     both terminal O's take the double (crystal S=O refines to
+            #     1.44-1.64 A, above the 1.55 cutoff - 3QTX X43's O at 1.639)
+            #     and the S-N stays single (sulfonamide S-N measures
+            #     1.56-1.63 A, inside the (N,S) double cutoff 1.70, so the
+            #     length rule misorders the pair).  A genuine S=N double
+            #     occurs only in sulfoximines / sulfonimidamides, which carry
+            #     a single S=O - never two terminal O's.
+            for i in range(n):
+                if elements[i] != "S" or i in a_atoms:
+                    continue
+                nbrs_s = [b for a, b in graph if a == i] + \
+                    [a for a, b in graph if b == i]
+                o_term = sorted(
+                    (j for j in nbrs_s if elements[j] == "O" and deg[j] == 1),
+                    key=lambda o: blen[_sym_pair(i, o)],
+                )
+                if len(o_term) < 2 or not any(elements[j] == "N" for j in nbrs_s):
+                    continue
+                for o in o_term:
+                    m.GetBondBetweenAtoms(i, o).SetBondType(  # type: ignore[attr-defined]
+                        Chem.BondType.DOUBLE  # type: ignore[attr-defined]
+                    )
+                for j in nbrs_s:
+                    if elements[j] == "N":
+                        m.GetBondBetweenAtoms(i, j).SetBondType(  # type: ignore[attr-defined]
+                            Chem.BondType.SINGLE  # type: ignore[attr-defined]
+                        )
+
+            # (6) phantom-edge removal: an atom over-valent with only single
+            #     bonds (plus nothing reducible - no double, no triple, not
+            #     the quaternary-N case the demotion pass charges) carries a
+            #     spurious graph edge.  The bond graph's 0.40-A tolerance
+            #     admits 1.69-1.78 A C-O edges (4L9Q 9TP O38-C39, 5GHV X5G
+            #     O12-C10) that would make O trivalent and crash sanitize;
+            #     the phantom is always the longest bond on the atom, so
+            #     drop it.  Aromatic atoms are excluded - their exo singles
+            #     are load-bearing (the pyridinium charge and pyrrole-N-H
+            #     logic below runs on them), and their over-valence is
+            #     handled by the aromatic rules.
+            while True:
+                dropped = False
+                for i in range(n):
+                    if i in a_atoms:
+                        continue
+                    vmax = _MAX_VALENCE.get(elements[i])
+                    if vmax is None:
+                        continue
+                    atom = m.GetAtomWithIdx(i)  # type: ignore[attr-defined]
+                    if atom.GetFormalCharge() != 0:  # type: ignore[attr-defined]
+                        continue
+                    val = 0.0
+                    singles = []
+                    has_multi = False
+                    for b in atom.GetBonds():  # type: ignore[attr-defined]
+                        bt = b.GetBondType()
+                        if bt == Chem.BondType.SINGLE:
+                            val += 1.0
+                            singles.append(b)
+                        elif bt == Chem.BondType.AROMATIC:
+                            val += 1.5
+                        else:
+                            has_multi = True
+                            val += b.GetBondTypeAsDouble()
+                    if val <= vmax or has_multi or not singles:
+                        continue
+                    # quaternary ammonium: leave to the demotion pass,
+                    # which knows the charge is the resolution
+                    if elements[i] == "N" and len(singles) == 4 and val == 4:
+                        continue
+                    longest = max(
+                        singles,
+                        key=lambda b: blen[  # type: ignore[arg-type]
+                            _sym_pair(b.GetBeginAtomIdx(),  # type: ignore[attr-defined]
+                                      b.GetEndAtomIdx())  # type: ignore[attr-defined]
+                        ],
+                    )
+                    m.RemoveBond(longest.GetBeginAtomIdx(),  # type: ignore[attr-defined]
+                                 longest.GetEndAtomIdx())  # type: ignore[attr-defined]
+                    dropped = True
+                    break
+                if not dropped:
+                    break
+
             # aromatic atoms: flags + pyrrole-N explicit H
-            for a in arom_atoms:
+            for a in a_atoms:
                 at = m.GetAtomWithIdx(a)  # type: ignore[attr-defined]
                 at.SetIsAromatic(True)  # type: ignore[attr-defined]
                 at.SetHybridization(Chem.HybridizationType.SP2)  # type: ignore[attr-defined]
@@ -654,7 +1034,7 @@ def perceive_bond_orders_geometric(
             # the nicotinamide N of NAD/NAP/NDP (and any N-alkyl pyridinium).
             # N-alkyl 5-ring pyrroles (2 pi) and pyridone/amide N's (2 pi) stay
             # neutral - the same tests as the pi-count's pyridinium branch.
-            for a in arom_atoms:
+            for a in a_atoms:
                 if (
                     elements[a] == "N"
                     and ring_sigma[a] == 2
@@ -703,19 +1083,19 @@ def perceive_bond_orders_geometric(
                         ]
                         if len(db) == 1:
                             nbr = db[0].GetOtherAtom(a)
+                            # exclude the double itself by endpoints - RDKit
+                            # wraps the same C++ bond in a fresh Python
+                            # object per GetBonds() call, so `is not` fails
+                            # and the double would be counted as a single.
+                            dbl_ends = (
+                                db[0].GetBeginAtomIdx(), db[0].GetEndAtomIdx()
+                            )
+                            cn_singles = [
+                                b for b in a.GetBonds()
+                                if (b.GetBeginAtomIdx(), b.GetEndAtomIdx()) != dbl_ends
+                                and (b.GetEndAtomIdx(), b.GetBeginAtomIdx()) != dbl_ends
+                            ]
                             if nbr.GetSymbol() == "N" and not nbr.GetIsAromatic():
-                                # exclude the double itself by endpoints - RDKit
-                                # wraps the same C++ bond in a fresh Python
-                                # object per GetBonds() call, so `is not` fails
-                                # and the double would be counted as a single.
-                                dbl_ends = (
-                                    db[0].GetBeginAtomIdx(), db[0].GetEndAtomIdx()
-                                )
-                                cn_singles = [
-                                    b for b in a.GetBonds()
-                                    if (b.GetBeginAtomIdx(), b.GetEndAtomIdx()) != dbl_ends
-                                    and (b.GetEndAtomIdx(), b.GetBeginAtomIdx()) != dbl_ends
-                                ]
                                 if (
                                     len(cn_singles) >= 2
                                     and all(
@@ -739,6 +1119,41 @@ def perceive_bond_orders_geometric(
                                     ).SetBondType(Chem.BondType.SINGLE)  # type: ignore[attr-defined]
                                     changed = True
                                     break
+                            elif (nbr.GetSymbol() == "C"
+                                  and not nbr.GetIsAromatic()
+                                  # the C=C analog: a noisy C-C single refined
+                                  # short (4L9Q 9TP's lactone CH2-C2 at 1.286 A
+                                  # vs the 1.52 A true single) lands inside the
+                                  # 1.38 double cutoff and gives an
+                                  # exactly-valent sp3-looking carbon a spurious
+                                  # C=C.  A real alkene carbon never carries two
+                                  # saturated carbon singles AND a double
+                                  # partner with a non-C single (that partner is
+                                  # an enol-ether/ester carbon); tetrasubstituted
+                                  # alkenes have all-carbon partners and survive.
+                                  and any(
+                                      b.GetBondType() == Chem.BondType.SINGLE  # type: ignore[attr-defined]
+                                      and b.GetOtherAtom(nbr).GetSymbol() != "C"
+                                      and not b.GetOtherAtom(nbr).GetIsAromatic()
+                                      for b in nbr.GetBonds()
+                                  )
+                                  and len(cn_singles) >= 2
+                                  and all(
+                                      b.GetBondType() == Chem.BondType.SINGLE  # type: ignore[attr-defined]
+                                      and b.GetOtherAtom(a).GetSymbol() == "C"
+                                      and not b.GetOtherAtom(a).GetIsAromatic()
+                                      and all(
+                                          bb.GetBondType() == Chem.BondType.SINGLE  # type: ignore[attr-defined]
+                                          for bb in b.GetOtherAtom(a).GetBonds()
+                                      )
+                                      for b in cn_singles
+                                  )
+                            ):
+                                mol.GetBondBetweenAtoms(  # type: ignore[attr-defined]
+                                    db[0].GetBeginAtomIdx(), db[0].GetEndAtomIdx()
+                                ).SetBondType(Chem.BondType.SINGLE)  # type: ignore[attr-defined]
+                                changed = True
+                                break
                     if val > vmax:
                         db = [
                             b for b in a.GetBonds()
@@ -765,12 +1180,61 @@ def perceive_bond_orders_geometric(
                                 a.SetFormalCharge(1)
                                 changed = True
                                 break
-                            return None, f"over-valent {a.GetSymbol()} {a.GetIdx()} no double to demote"
-                        longest = max(
-                            db, key=lambda b: blen[
-                                _sym_pair(b.GetBeginAtomIdx(), b.GetEndAtomIdx())
+                            # no double to demote: a spurious nitrile /
+                            # alkyne triple can be reduced stepwise (the
+                            # 7FOZ WD0 / 2QES ADE class: an N or C with a
+                            # phantom triple).  With nothing reducible the
+                            # atom stays over-valent and sanitize decides;
+                            # attempt()'s slack-ring and length-rule
+                            # fallbacks give the molecule every chance
+                            # before a final failure is reported.
+                            tb = [
+                                b for b in a.GetBonds()
+                                if b.GetBondType() == Chem.BondType.TRIPLE
                             ]
-                        )
+                            if tb:
+                                tlong = max(
+                                    tb, key=lambda b: blen[
+                                        _sym_pair(b.GetBeginAtomIdx(),
+                                                  b.GetEndAtomIdx())
+                                    ]
+                                )
+                                mol.GetBondBetweenAtoms(  # type: ignore[attr-defined]
+                                    tlong.GetBeginAtomIdx(),
+                                    tlong.GetEndAtomIdx()
+                                ).SetBondType(Chem.BondType.DOUBLE)  # type: ignore[attr-defined]
+                                changed = True
+                                break
+                            continue
+                        # prefer demoting a C=N double over a C=C double
+                        # when the C=N is at amide-plausible length: amide
+                        # / aniline C-N singles refine to 1.31-1.37 A
+                        # inside the C=N cutoff, while a C-C single never
+                        # refines below ~1.45 - the C=C is the stronger
+                        # double signal (8JZ7 FI7: C=N 1.327 vs C=C
+                        # 1.361; keeping the C=N and demoting the C=C
+                        # put a double at 1.327 A that cannot be).
+                        cn = [
+                            b for b in db
+                            if {elements[b.GetBeginAtomIdx()],
+                                elements[b.GetEndAtomIdx()]} == {"C", "N"}
+                            and blen[_sym_pair(b.GetBeginAtomIdx(),
+                                               b.GetEndAtomIdx())] >= 1.30
+                        ]
+                        if cn and len(db) > 1:
+                            longest = max(
+                                cn, key=lambda b: blen[
+                                    _sym_pair(b.GetBeginAtomIdx(),
+                                              b.GetEndAtomIdx())
+                                ]
+                            )
+                        else:
+                            longest = max(
+                                db, key=lambda b: blen[
+                                    _sym_pair(b.GetBeginAtomIdx(),
+                                              b.GetEndAtomIdx())
+                                ]
+                            )
                         mol.GetBondBetweenAtoms(  # type: ignore[attr-defined]
                             longest.GetBeginAtomIdx(), longest.GetEndAtomIdx()
                         ).SetBondType(Chem.BondType.SINGLE)  # type: ignore[attr-defined]
@@ -784,10 +1248,21 @@ def perceive_bond_orders_geometric(
 
         # pass 1: keep length-rule doubles on substituted N/S (imines, triazine
         # C=N).  If RDKit cannot kekulize (a length double on a benzene-ring
-        # carbon, aniline-type), pass 2 forces every N/S exo single.
+        # carbon, aniline-type), pass 2 forces every N/S exo single.  Pass 3
+        # drops the aromatic set entirely (pure length-rule molecule, demotion
+        # pass still applied) so perception never returns None on valid input:
+        # a kekulization failure is a wrong aromatic call, not a reason to
+        # report no molecule at all.
         mol, err = assemble(exo_force_all=False)
         if mol is None:
             mol, err = assemble(exo_force_all=True)
+        if mol is None:
+            mol, err = assemble(
+                exo_force_all=False,
+                arom_rings_arg=[],
+                arom_atoms_arg=set(),
+                arom_bonds_arg=set(),
+            )
         if mol is None:
             return None, err
         return mol, None

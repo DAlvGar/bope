@@ -1,0 +1,18 @@
+{
+ "dataset": "dataset_heldout_gen2_main_k5",
+ "dataset_file": "dataset_heldout_gen2_main_k5.json",
+ "total": 60,
+ "res_band": "0.9-2.0 A",
+ "methods": {
+  "yuelbond": {
+   "sanitize": 32,
+   "formula": 25,
+   "graph": 22,
+   "exact": 21,
+   "addh": 60,
+   "recovery": 22
+  }
+ },
+ "out_of_vocab": 0,
+ "checkpoint_sha256": "0bdca52eebc2"
+}

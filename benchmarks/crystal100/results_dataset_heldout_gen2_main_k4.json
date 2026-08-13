@@ -1,0 +1,40 @@
+{
+ "dataset": "dataset_heldout_gen2_main_k4",
+ "dataset_file": "dataset_heldout_gen2_main_k4.json",
+ "total": 60,
+ "res_band": "1.0-2.0 A",
+ "methods": {
+  "geometry": {
+   "sanitize": 60,
+   "formula": 47,
+   "graph": 44,
+   "exact": 43,
+   "addh": 60,
+   "recovery": 44
+  },
+  "openbabel": {
+   "sanitize": 57,
+   "formula": 42,
+   "graph": 34,
+   "exact": 34,
+   "addh": 57,
+   "recovery": 34
+  },
+  "distance": {
+   "sanitize": 39,
+   "formula": 6,
+   "graph": 5,
+   "exact": 5,
+   "addh": 39,
+   "recovery": 5
+  },
+  "rdDetermineBonds": {
+   "sanitize": 5,
+   "formula": 0,
+   "graph": 0,
+   "exact": 0,
+   "addh": 5,
+   "recovery": 0
+  }
+ }
+}

@@ -1,0 +1,40 @@
+{
+ "dataset": "dataset_res250-300",
+ "dataset_file": "dataset_res250-300.json",
+ "total": 101,
+ "res_band": "2.5-3.0 A",
+ "methods": {
+  "geometry": {
+   "sanitize": 101,
+   "formula": 85,
+   "graph": 74,
+   "exact": 71,
+   "addh": 101,
+   "recovery": 74
+  },
+  "openbabel": {
+   "sanitize": 98,
+   "formula": 79,
+   "graph": 63,
+   "exact": 61,
+   "addh": 98,
+   "recovery": 63
+  },
+  "distance": {
+   "sanitize": 53,
+   "formula": 11,
+   "graph": 11,
+   "exact": 11,
+   "addh": 53,
+   "recovery": 11
+  },
+  "rdDetermineBonds": {
+   "sanitize": 8,
+   "formula": 0,
+   "graph": 0,
+   "exact": 0,
+   "addh": 8,
+   "recovery": 0
+  }
+ }
+}
