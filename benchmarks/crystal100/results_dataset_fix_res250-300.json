@@ -6,11 +6,11 @@
  "methods": {
   "geometry": {
    "sanitize": 101,
-   "formula": 83,
-   "graph": 72,
-   "exact": 69,
+   "formula": 85,
+   "graph": 74,
+   "exact": 71,
    "addh": 101,
-   "recovery": 72
+   "recovery": 74
   },
   "openbabel": {
    "sanitize": 98,
