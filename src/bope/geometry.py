@@ -4,9 +4,9 @@ In-house perception used when no CCD template applies: planar rings whose
 bonds fall in aromatic bond-length envelopes are scored by a Hückel (4n+2)
 electron-count judge over per-atom pi assignments; the winning mask sets
 aromatic bonds and pyrrole-type N-H's, and the remaining bonds get orders
-from length thresholds with chemistry fixups (amidines, carbonyls,
-exocyclic N/S).  Over-valent non-aromatic atoms are demoted before
-sanitization.
+from length thresholds with chemistry fixups (carbonyls, amidines,
+nitro, phosphate P=O, sulfonamides).  Over-valent non-aromatic atoms
+are demoted before sanitization.
 
 Validated to reproduce the exact molecular formulas of the 16
 eval-dataset crystal ligands, including N-rich fused heteroaromatics

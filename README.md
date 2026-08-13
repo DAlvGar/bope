@@ -15,19 +15,30 @@ mol, strategy = perceive_bond_orders(atoms, resname="CFF")
 # strategy -> "ccd-template" | "geometry" | "openbabel" | "distance" | ""
 ```
 
-This is the bond-order perception of the
-[3D-PLI-Agent](https://github.com/DAlvGar/3D-PLI-Agent) project, extracted
-as a standalone, dependency-light package.
+## How it works
+
+`perceive_bond_orders` tries four strategies in order - from most to
+least trustworthy - and returns the first one that succeeds.  The
+`strategy` string in the return value tells you which tier produced the
+molecule.
+
+| # | strategy | what it does | when it's used |
+|---|---|---|---|
+| 1 | `ccd-template` | Fetch the authoritative bond orders / tautomer / protonation for the HET code from the [RCSB CCD](https://www.rcsb.org/) and stamp them onto the crystal graph | known HET code + network access (cached per code) |
+| 2 | `geometry` | In-house geometric perception: planar rings in aromatic bond-length envelopes scored by a Hückel 4n+2 electron-count judge over per-atom pi assignments; length-threshold orders with chemistry fixups (carbonyls, amidines, nitro, phosphate P=O, sulfonamides); valence demotion before sanitization | unknown HET, offline, or template mismatch |
+| 3 | `openbabel` | Atom list serialised to PDB and read back through OpenBabel `PerceiveBondOrders` | simple / charged / protonated groups |
+| 4 | `distance` | Covalent-radius connectivity, then `Chem.SanitizeMol` upgrades orders where the topology allows | last resort - bare topology |
 
 ## Install
 
 ```bash
 pip install bope
-# or from source:
-uv sync --dev --extra openbabel   # tests + OpenBabel strategy
+# or from source, with the optional OpenBabel extra (strategy tier 3 +
+# the tests and benchmarks that compare against OpenBabel):
+uv sync --dev --extra openbabel
 ```
 
-Core dependencies are RDKit and numpy only.  The OpenBabel strategy is
+Core dependencies are RDKit and numpy only.  The `openbabel` strategy is
 optional (`pip install bope[openbabel]`); without it the pipeline skips
 from geometry perception straight to the distance fallback.
 
@@ -42,16 +53,6 @@ from geometry perception straight to the distance fallback.
   Chemical Component Dictionary template is tried first.
 - **charge** - accepted for API compatibility; no current strategy
   consumes it (the perception is coordinate-driven).
-
-The strategy string tells you how trustworthy the orders are.  Four
-strategies are attempted in order:
-
-| # | strategy | what it does | when it's used |
-|---|---|---|---|
-| 1 | `ccd-template` | Fetch the authoritative bond orders / tautomer / protonation for the HET code from the [RCSB CCD](https://www.rcsb.org/) and stamp them onto the crystal graph | known HET code + network access (cached per code) |
-| 2 | `geometry` | In-house geometric perception: planar rings in aromatic bond-length envelopes scored by a Hückel 4n+2 electron-count judge over per-atom pi assignments; length-threshold orders with chemistry fixups (amidines, carbonyls, exocyclic N/S); valence demotion before sanitization | unknown HET, offline, or template mismatch |
-| 3 | `openbabel` | Atom list serialised to PDB and read back through OpenBabel `PerceiveBondOrders` | simple / charged / protonated groups |
-| 4 | `distance` | Covalent-radius connectivity, then `Chem.SanitizeMol` upgrades orders where the topology allows | last resort - bare topology |
 
 Stereochemistry is a separate, opt-in call - the bond-order API stays
 pure, and stereo never alters the perceived graph:
