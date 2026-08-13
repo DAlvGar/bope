@@ -7,8 +7,9 @@ heldout_failures_inspect.txt (read by hand for the major clusters when
 the report was written).  The tags are rule-based with manual
 verification of representative clusters; the tally feeds
 heldout_failures_analysis.md.  A few entries have multiple causes (e.g.
-3QTX X43 is both nitro and N-substituted thiazole; 3U4H C8R is both
-aromatic-envelope and phosphate) - the rules assign the first match.
+7FOZ WD0 is both a false-positive-aromatic ring and a documented data
+limitation; 1BPE DTP is a formula-junk entry whose root cause is
+triphosphate charge emission) - the rules assign the first match.
 
 Run from benchmarks/crystal100:
 
