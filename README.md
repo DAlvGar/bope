@@ -22,7 +22,7 @@ as a standalone, dependency-light package.
 ## Install
 
 ```bash
-pip install bope            # once published to PyPI
+pip install bope
 # or from source:
 uv sync --dev --extra openbabel   # tests + OpenBabel strategy
 ```
@@ -292,6 +292,8 @@ bope/
 │   ├── geometry.py    # in-house geometric perception (Hückel judge)
 │   ├── openbabel.py   # OpenBabel PerceiveBondOrders fallback
 │   ├── distance.py    # covalent-radius distance baseline
+│   ├── helpers.py     # shared plumbing: distance graph, plane RMS,
+│   │                  # RWMol construction
 │   ├── stereo.py      # perceive_stereochemistry: R/S + E/Z from 3-D
 │   ├── tables.py      # length thresholds, valences, Hückel sets
 │   ├── corpus.py      # validation corpus + measured exclusions
