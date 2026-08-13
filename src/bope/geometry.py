@@ -61,26 +61,23 @@ class _GeometricPerceiver:
     def perceive(self) -> tuple[Any | None, str | None]:
         """Perceive bond orders for the molecule.
 
-        Stage-1 form: the complete former function body, nested closures
-        intact, reading the constructor inputs through one alias line.
+        Runs the pipeline: candidate-ring filter over the GetSymmSSSR
+        rings, then the Huckel-judge attempt with its three-pass
         """
         elements, coords, graph = self.elements, self.coords, self.graph
-        def rdk_el(el: str) -> str:
-            return el.capitalize() if len(el) == 2 else el
-
         n = len(elements)
         rw = Chem.RWMol()  # type: ignore[attr-defined]
         for el in elements:
-            rw.AddAtom(Chem.Atom(rdk_el(el)))  # type: ignore[attr-defined]
+            rw.AddAtom(Chem.Atom(self._rdk_el(el)))  # type: ignore[attr-defined]
         conf = Chem.Conformer(n)  # type: ignore[attr-defined]
         for i, (x, y, z) in enumerate(coords):
             conf.SetAtomPosition(i, rdGeometry.Point3D(float(x), float(y), float(z)))
         rw.AddConformer(conf)
 
-        blen: dict[tuple[int, int], float] = {}
+        self.blen: dict[tuple[int, int], float] = {}
         for i, j in graph:
             p1, p2 = coords[i], coords[j]
-            blen[_sym_pair(i, j)] = math.sqrt(
+            self.blen[_sym_pair(i, j)] = math.sqrt(
                 (p1[0] - p2[0]) ** 2 + (p1[1] - p2[1]) ** 2 + (p1[2] - p2[2]) ** 2
             )
 
@@ -95,7 +92,7 @@ class _GeometricPerceiver:
             graph_nbrs_all.setdefault(a, []).append(b)
             graph_nbrs_all.setdefault(b, []).append(a)
 
-        cand_rings: list[list[int]] = []
+        self.cand_rings: list[list[int]] = []
         ring_excess: dict[tuple[int, ...], float] = {}
         # atoms shared with other rings: a bond from a ring atom to one of these
         # is a fusion bond or an N-aryl bond of the ring system, never an exo
@@ -140,7 +137,7 @@ class _GeometricPerceiver:
                 over_hit = under_hit = False
                 for k in range(len(rl0)):
                     i, j = rl0[k], rl0[(k + 1) % len(rl0)]
-                    d = blen[_sym_pair(i, j)]
+                    d = self.blen[_sym_pair(i, j)]
                     lo, hi = _AROMATIC_ENVELOPE.get(
                         _sym_pair(elements[i], elements[j]), (1.27, 1.50)
                     )
@@ -187,7 +184,7 @@ class _GeometricPerceiver:
                     for j in graph_nbrs_all.get(a, ()):
                         if j in rset or j in other_ring_atoms:
                             continue
-                        dlen = blen[_sym_pair(a, j)]
+                        dlen = self.blen[_sym_pair(a, j)]
                         pair = _sym_pair(elements[a], elements[j])
                         if pair in _TRIPLE_BOND_TABLE and dlen <= _TRIPLE_BOND_TABLE[pair]:
                             continue  # a nitrile / alkyne substituent is a
@@ -217,7 +214,7 @@ class _GeometricPerceiver:
                         for k in graph_nbrs_all.get(j, ()):
                             if k == a:
                                 continue
-                            dk = blen[_sym_pair(j, k)]
+                            dk = self.blen[_sym_pair(j, k)]
                             pk = _sym_pair(elements[j], elements[k])
                             if pk in _TRIPLE_BOND_TABLE and dk <= _TRIPLE_BOND_TABLE[pk]:
                                 val += 3.0
@@ -236,7 +233,7 @@ class _GeometricPerceiver:
             excess = 0.0
             for k in range(len(rl)):
                 i, j = rl[k], rl[(k + 1) % len(rl)]
-                d = blen[_sym_pair(i, j)]
+                d = self.blen[_sym_pair(i, j)]
                 lo, hi = _AROMATIC_ENVELOPE.get(
                     _sym_pair(elements[i], elements[j]), (1.27, 1.50)
                 )
@@ -263,7 +260,7 @@ class _GeometricPerceiver:
                 hard = _AROMATIC_HARD_MAX.get(
                     _sym_pair(elements[i], elements[j])
                 )
-                if hard is not None and blen[_sym_pair(i, j)] >= hard:
+                if hard is not None and self.blen[_sym_pair(i, j)] >= hard:
                     ok = False
                     break
             if not ok:
@@ -309,7 +306,7 @@ class _GeometricPerceiver:
                         # short C-S edge is real conjugation evidence.
                         dmax = _BOND_ORDER_TABLE.get(pair, (None, None))[1]
                         if (dmax is not None
-                                and blen[_sym_pair(i, j)] <= dmax + _AROMATIC_SLACK_SHORT):
+                                and self.blen[_sym_pair(i, j)] <= dmax + _AROMATIC_SLACK_SHORT):
                             short_ok = True
                             break
                         continue
@@ -320,13 +317,13 @@ class _GeometricPerceiver:
                         continue
                     dmax = _BOND_ORDER_TABLE.get(pair, (None, None))[1]
                     if (dmax is not None
-                            and blen[_sym_pair(i, j)] <= dmax + _AROMATIC_SLACK_BOND):
+                            and self.blen[_sym_pair(i, j)] <= dmax + _AROMATIC_SLACK_BOND):
                         short_ok = True
                         break
                 if not short_ok:
                     continue
             ring_excess[tuple(rl)] = excess
-            cand_rings.append(rl)
+            self.cand_rings.append(rl)
 
         if broken_ring:
             return None, ("broken ring: the molecule's only ring has an edge "
@@ -336,176 +333,52 @@ class _GeometricPerceiver:
                           "can fall back to OpenBabel")
 
         cand_atoms = set()
-        for rl in cand_rings:
+        for rl in self.cand_rings:
             cand_atoms.update(rl)
 
         # ring sigma from candidate-ring EDGES only: an exo substituent that is
         # itself a candidate ring (triazolyl-phenyl) must not inflate an atom's
         # ring sigma - the N-C(phenyl) bond is NOT part of the triazole
         ring_edges: set[tuple[int, int]] = set()
-        for rl in cand_rings:
+        for rl in self.cand_rings:
             for k in range(len(rl)):
                 i, j = rl[k], rl[(k + 1) % len(rl)]
                 ring_edges.add(_sym_pair(i, j))
-        ring_sigma: dict[int, int] = {a: 0 for a in cand_atoms}
+        self.ring_sigma: dict[int, int] = {a: 0 for a in cand_atoms}
         for i, j in graph:
             if _sym_pair(i, j) in ring_edges:
-                ring_sigma[i] += 1
-                ring_sigma[j] += 1
-
-        def exo_sigma(a: int) -> int:
-            return sum(1 for i, j in graph if a in (i, j)) - ring_sigma[a]
+                self.ring_sigma[i] += 1
+                self.ring_sigma[j] += 1
 
         # total heavy-atom degree of every atom, and the exo neighbours of each
         # candidate atom (any graph neighbour not joined via a candidate ring
         # edge).  Used by the pi count for ring carbons bearing a
         # directly-attached terminal O (carbonyl): their p orbital is in the C=O
         # pi bond.
-        deg: dict[int, int] = {}
+        self.deg: dict[int, int] = {}
         for a, b in graph:
-            deg[a] = deg.get(a, 0) + 1
-            deg[b] = deg.get(b, 0) + 1
-        exo_nbrs: dict[int, list[int]] = {a: [] for a in cand_atoms}
-        ring_nbrs: dict[int, list[int]] = {a: [] for a in cand_atoms}
-        graph_nbrs: dict[int, list[int]] = {a: [] for a in range(n)}
+            self.deg[a] = self.deg.get(a, 0) + 1
+            self.deg[b] = self.deg.get(b, 0) + 1
+        self.exo_nbrs: dict[int, list[int]] = {a: [] for a in cand_atoms}
+        self.ring_nbrs: dict[int, list[int]] = {a: [] for a in cand_atoms}
+        self.graph_nbrs: dict[int, list[int]] = {a: [] for a in range(n)}
         for a, b in graph:
-            graph_nbrs[a].append(b)
-            graph_nbrs[b].append(a)
+            self.graph_nbrs[a].append(b)
+            self.graph_nbrs[b].append(a)
             if _sym_pair(a, b) in ring_edges:
-                ring_nbrs[a].append(b)
-                ring_nbrs[b].append(a)
+                self.ring_nbrs[a].append(b)
+                self.ring_nbrs[b].append(a)
                 continue
-            if a in exo_nbrs:
-                exo_nbrs[a].append(b)
-            if b in exo_nbrs:
-                exo_nbrs[b].append(a)
-
-        def carbonyl_c(c: int, dmax: float | None = None) -> bool:
-            """True for a C with a directly-attached terminal O at C=O length.
-            The default bound is the strict 1.30 (length-rule double cutoff):
-            its p orbital sits in the C=O pi bond, so such a ring carbon
-            contributes 0 pi.  The N-pyridone/amide discriminator passes the
-            generous crystal-carbonyl bound (1.40) - a caffeine C=O refines to
-            1.34-1.36 A and its N-methyl is amide-type regardless."""
-            if elements[c] != "C":
-                return False
-            if dmax is None:
-                dmax = _BOND_ORDER_TABLE[("C", "O")][1]
-            for n in graph_nbrs[c]:
-                if elements[n] == "O" and deg[n] == 1 and blen[_sym_pair(c, n)] <= dmax:
-                    return True
-            return False
-
-        def pi_of(a: int, h_choice: bool) -> int | None:
-            """pi electrons contributed by candidate atom *a*."""
-            el = elements[a]
-            if el == "C":
-                # a ring carbon with a directly-attached terminal O at C=O
-                # distance (<= 1.30, the length-rule double cutoff) has its p
-                # orbital in the C=O pi bond and contributes 0 pi to the ring.
-                # An O attached through another atom (aryl ketones), an O-H /
-                # O-R substituent, or a long C-O (phenol/enol) leaves 1 pi.
-                # Without this, uracil-type rings score 8 pi with pyrrole N-H
-                # (not Huckel) and 6 pi with the wrong pyridine-type N-H - the
-                # correct 6-pi count needs the 2 carbonyl carbons at 0 and
-                # both N's at 2.
-                return 0 if carbonyl_c(a) else 1
-            if el == "N":
-                rs, exo = ring_sigma[a], exo_sigma(a)
-                if rs == 2 and exo == 1:
-                    # 5-ring: N-methyl/aryl-pyrrole, lone pair in the ring
-                    # plane-free p orbital: 2 pi.  6-ring with a plain N-alkyl:
-                    # pyridinium, the alkyl consumes the lone pair: 1 pi.  An
-                    # N-alkyl 6-ring N bonded to (or exo to) a carbonyl is
-                    # pyridone/amide-type: lone pair delocalised, 2 pi.
-                    # Without the 6-ring rule the nicotinamide rings of
-                    # NAD/NAP/NDP score 7 pi, fail Huckel and come out
-                    # saturated (+6 H in the formula).
-                    if max((len(rl) for rl in cand_rings if a in rl), default=0) <= 5:
-                        # 5-ring with an exo substituent: the N is sp2 with
-                        # three sigma bonds, so its lone pair sits in the
-                        # ring p orbital: 2 pi (pyrrole-type: N-methylpyrrole,
-                        # N-alkyl imidazole / triazole, the N-glycosides of
-                        # nucleosides).  A neutral 5-ring N contributes 1 pi
-                        # only when the exo bond is itself a double - an
-                        # imine N=X, detected by the length rule.  The old
-                        # discriminator (any other heteroatom in the ring,
-                        # no N-N bond) mislabeled 7-methylguanine N7-CH3 and
-                        # triazole N1-R: at 1 pi the N must double-bond and
-                        # either strangles the ring (no kekule: 7FOY W5C,
-                        # 5MUY MGT) or turns a 7-pi neutral ring aromatic
-                        # (an N-alkyl thiazole whose neutral form has no
-                        # conjugation to reward).
-                        for e in exo_nbrs[a]:
-                            # an exo carbon that is itself ring-bound is an
-                            # N-aryl (5KYA 6Y4's pyrazole N-phenyl at 1.327 A
-                            # sits inside the imine window but is a plain
-                            # single bond): the aryl ring's own candidate
-                            # status decides it.  A genuine exo imine carbon
-                            # is never in a candidate ring.
-                            if elements[e] == "C" and any(
-                                e in rl for rl in cand_rings
-                            ):
-                                continue
-                            pair = _sym_pair(elements[a], elements[e])
-                            dmax = _BOND_ORDER_TABLE.get(pair, (None, None))[1]
-                            if dmax is None:
-                                continue
-                            # an exocyclic C=N at 1.34-1.37 A is an N-aryl or
-                            # N-alkyl aniline-type single (5AEP QUP's pyrrole
-                            # N-aryl at 1.36-1.37 A), not an imine: a genuine
-                            # exo imine refines to 1.28-1.32 A, so a C exo
-                            # needs the tight bound (non-C exo N=O / N=S keep
-                            # the table cutoff).
-                            if elements[e] == "C" and blen[_sym_pair(a, e)] > 1.33:
-                                continue
-                            if blen[_sym_pair(a, e)] <= dmax:
-                                return 1  # exo imine: the p pair is spent
-                        return 2
-                    if any(carbonyl_c(j, _CRYSTAL_CARBONYL) for j in ring_nbrs[a]):
-                        return 2
-                    if any(carbonyl_c(e, _CRYSTAL_CARBONYL) for e in exo_nbrs[a]):
-                        return 2
-                    # An N-alkyl 6-ring N is pyridinium only in a pyridine-like
-                    # ring (exactly one N).  A ring holding a second N is either
-                    # a saturated lactam/amine (1D1: the sibling N is amide-type
-                    # with a heavy exo substituent, so the alkyl N has no p
-                    # orbital - None) or a fused N-heteroaromatic where the alkyl
-                    # N is a neutral pyrrole-type N with its lone pair in the
-                    # ring p orbital (flavin N10 in FMN/RS3/FAD: all sibling N's
-                    # are pyridine-type with no exo - 2 pi; the fused system
-                    # supplies the pi the per-ring count lacks).  The amide-type
-                    # sibling is the discriminator: pyridine-type N's carry no
-                    # heavy exo substituent.
-                    for rl in cand_rings:
-                        if a in rl and len(rl) > 5:
-                            others = [b for b in rl if elements[b] == "N" and b != a]
-                            if not others:
-                                return 1  # exactly one N: plain pyridinium
-                            if any(exo_sigma(b) > 0 for b in others):
-                                return None  # amide-type sibling: saturated amine
-                            return 2  # pyridine-type siblings: pyrrole-like N
-                    return 1
-                if rs == 3 and exo == 0:
-                    # fusion N shared by two rings (triazolo-triazine bridgehead,
-                    # etc.): 3 ring sigma, no H - RDKit gives it Two electrons
-                    # (countAtomElec: dv 3, degree 3, nlp 2 -> 2).  The old 1-pi
-                    # assignment made RNL/QUP/9KI triazoles score 5-7, failing
-                    # Huckel and gaining +1 H in the formula; 2 pi makes the
-                    # triazole itself Huckel (6) and unblocks kekulization.
-                    return 2
-                if rs == 2 and exo == 0:
-                    return 2 if h_choice else 1  # pyrrole(1H) vs pyridine(0H)
-                return None
-            if el in ("O", "S"):
-                return 2 if ring_sigma[a] == 2 else None
-            return None
+            if a in self.exo_nbrs:
+                self.exo_nbrs[a].append(b)
+            if b in self.exo_nbrs:
+                self.exo_nbrs[b].append(a)
 
         def attempt(cand_rings: list[list[int]]) -> tuple[Any | None, str | None]:
             # flexible N's: 2 ring sigma, no exo (pyrrole-vs-pyridine tautomer bit)
             flex_n = [
                 a for a in sorted(cand_atoms)
-                if elements[a] == "N" and ring_sigma[a] == 2 and exo_sigma(a) == 0
+                if elements[a] == "N" and self.ring_sigma[a] == 2 and self._exo_sigma(a) == 0
             ]
             flex_idx = {a: i for i, a in enumerate(flex_n)}
 
@@ -530,7 +403,7 @@ class _GeometricPerceiver:
                 sys_rings.setdefault(s, []).append(i)
 
             def pi_val(a: int, mask: int) -> int | None:
-                return pi_of(a, (mask >> flex_idx[a]) & 1 if a in flex_idx else 0)
+                return self._pi_of(a, (mask >> flex_idx[a]) & 1 if a in flex_idx else 0)
 
             def huckel_subset(mask: int, rings: list[int]) -> bool:
                 """Exact RDKit fused-ring rule (applyHuckelToFused): the union of
@@ -614,17 +487,17 @@ class _GeometricPerceiver:
                         rl = cand_rings[ri]
                         for k in range(len(rl)):
                             i, j = rl[k], rl[(k + 1) % len(rl)]
-                            if blen[_sym_pair(i, j)] <= _RESCUE_RING_BOND_MAX:
+                            if self.blen[_sym_pair(i, j)] <= _RESCUE_RING_BOND_MAX:
                                 continue
-                            if (elements[i] == "C" and carbonyl_c(i)) or (
-                                    elements[j] == "C" and carbonyl_c(j)):
+                            if (elements[i] == "C" and self._carbonyl_c(i)) or (
+                                    elements[j] == "C" and self._carbonyl_c(j)):
                                 continue
                             return False
                     rset = set(cand_rings[ri])
                     for a in cand_rings[ri]:
-                        if elements[a] != "C" or not carbonyl_c(a):
+                        if elements[a] != "C" or not self._carbonyl_c(a):
                             continue
-                        rnbrs = [b for b in graph_nbrs[a] if b in rset]
+                        rnbrs = [b for b in self.graph_nbrs[a] if b in rset]
                         if len(rnbrs) == 2 and all(elements[b] == "C" for b in rnbrs):
                             return False
                     return True
@@ -676,8 +549,8 @@ class _GeometricPerceiver:
                 for a in flex_n:
                     if (mask >> flex_idx[a]) & 1:
                         amide_h += sum(
-                            1 for j in ring_nbrs[a]
-                            if carbonyl_c(j, _CRYSTAL_CARBONYL)
+                            1 for j in self.ring_nbrs[a]
+                            if self._carbonyl_c(j, _CRYSTAL_CARBONYL)
                         )
                 return ok, per_ring_n, amide_h
 
@@ -721,7 +594,7 @@ class _GeometricPerceiver:
                     if _sym_pair(i, j) in a_bonds:
                         m.AddBond(i, j, Chem.BondType.AROMATIC)  # type: ignore[attr-defined]
                     else:
-                        d = blen[_sym_pair(i, j)]
+                        d = self.blen[_sym_pair(i, j)]
                         pair = _sym_pair(elements[i], elements[j])
                         if pair in _TRIPLE_BOND_TABLE and d <= _TRIPLE_BOND_TABLE[pair]:
                             # nitrile / alkyne: unmistakably short, checked first so an
@@ -832,7 +705,7 @@ class _GeometricPerceiver:
                     if o_nbrs and (n_nbrs or n_arom >= 2):
                         for o in o_nbrs:
                             deg_o = sum(1 for a, b in graph if a == o or b == o)
-                            if deg_o == 1 and blen[_sym_pair(i, o)] <= 1.40:
+                            if deg_o == 1 and self.blen[_sym_pair(i, o)] <= 1.40:
                                 bo = m.GetBondBetweenAtoms(i, o)  # type: ignore[attr-defined]
                                 if bo.GetBondType() == Chem.BondType.SINGLE:  # type: ignore[attr-defined]
                                     bo.SetBondType(Chem.BondType.DOUBLE)  # type: ignore[attr-defined]
@@ -855,7 +728,7 @@ class _GeometricPerceiver:
                     if len(n_nbrs) == 2 and not any(
                         elements[j] in ("O", "S") for j in nbrs
                     ):
-                        d1, d2 = blen[_sym_pair(i, n_nbrs[0])], blen[_sym_pair(i, n_nbrs[1])]
+                        d1, d2 = self.blen[_sym_pair(i, n_nbrs[0])], self.blen[_sym_pair(i, n_nbrs[1])]
                         # 1.40 (not 1.36): delocalized amidines / imines measure
                         # 1.31-1.36 (ETKDG +0.03 bias, plus noise), while a genuine
                         # C-N single pair sits at 1.45+ - the 0.05 gap keeps the
@@ -884,11 +757,11 @@ class _GeometricPerceiver:
                         continue
                     nbrs_i = [b for a, b in graph if a == i] + \
                         [a for a, b in graph if b == i]
-                    o_nbrs = [j for j in nbrs_i if elements[j] == "O" and deg[j] == 1]
+                    o_nbrs = [j for j in nbrs_i if elements[j] == "O" and self.deg[j] == 1]
                     if (
                         len(o_nbrs) == 2
                         and len(nbrs_i) >= 3
-                        and all(blen[_sym_pair(i, o)] <= 1.45 for o in o_nbrs)
+                        and all(self.blen[_sym_pair(i, o)] <= 1.45 for o in o_nbrs)
                     ):
                         # a nitro N holds no double but its two N=O: the length
                         # rule may already have doubled a non-O bond (the
@@ -900,7 +773,7 @@ class _GeometricPerceiver:
                                 Chem.BondType.SINGLE, Chem.BondType.AROMATIC  # type: ignore[attr-defined]
                             ):
                                 b.SetBondType(Chem.BondType.SINGLE)  # type: ignore[attr-defined]
-                        tgt = min(o_nbrs, key=lambda o: blen[_sym_pair(i, o)])
+                        tgt = min(o_nbrs, key=lambda o: self.blen[_sym_pair(i, o)])
                         for o in o_nbrs:
                             m.GetBondBetweenAtoms(i, o).SetBondType(  # type: ignore[attr-defined]
                                 Chem.BondType.DOUBLE if o == tgt  # type: ignore[attr-defined]
@@ -926,13 +799,13 @@ class _GeometricPerceiver:
                         continue
                     nbrs_p = [b for a, b in graph if a == i] + \
                         [a for a, b in graph if b == i]
-                    o_nbrs = [j for j in nbrs_p if elements[j] == "O" and deg[j] == 1]
+                    o_nbrs = [j for j in nbrs_p if elements[j] == "O" and self.deg[j] == 1]
                     if len(o_nbrs) >= 2 and not any(
                         m.GetBondBetweenAtoms(i, o).GetBondType()  # type: ignore[attr-defined]
                         == Chem.BondType.DOUBLE  # type: ignore[attr-defined]
                         for o in o_nbrs
                     ):
-                        tgt = min(o_nbrs, key=lambda o: blen[_sym_pair(i, o)])
+                        tgt = min(o_nbrs, key=lambda o: self.blen[_sym_pair(i, o)])
                         m.GetBondBetweenAtoms(i, tgt).SetBondType(  # type: ignore[attr-defined]
                             Chem.BondType.DOUBLE  # type: ignore[attr-defined]
                         )
@@ -952,8 +825,8 @@ class _GeometricPerceiver:
                     nbrs_s = [b for a, b in graph if a == i] + \
                         [a for a, b in graph if b == i]
                     o_term = sorted(
-                        (j for j in nbrs_s if elements[j] == "O" and deg[j] == 1),
-                        key=lambda o: blen[_sym_pair(i, o)],
+                        (j for j in nbrs_s if elements[j] == "O" and self.deg[j] == 1),
+                        key=lambda o: self.blen[_sym_pair(i, o)],
                     )
                     if len(o_term) < 2 or not any(elements[j] == "N" for j in nbrs_s):
                         continue
@@ -1010,7 +883,7 @@ class _GeometricPerceiver:
                             continue
                         longest = max(
                             singles,
-                            key=lambda b: blen[  # type: ignore[arg-type]
+                            key=lambda b: self.blen[  # type: ignore[arg-type]
                                 _sym_pair(b.GetBeginAtomIdx(),  # type: ignore[attr-defined]
                                           b.GetEndAtomIdx())  # type: ignore[attr-defined]
                             ],
@@ -1028,7 +901,7 @@ class _GeometricPerceiver:
                     at.SetIsAromatic(True)  # type: ignore[attr-defined]
                     at.SetHybridization(Chem.HybridizationType.SP2)  # type: ignore[attr-defined]
                     if (
-                        elements[a] == "N" and ring_sigma[a] == 2 and exo_sigma(a) == 0
+                        elements[a] == "N" and self.ring_sigma[a] == 2 and self._exo_sigma(a) == 0
                         and ((best_mask >> flex_idx[a]) & 1)
                     ):
                         at.SetNoImplicit(True)  # type: ignore[attr-defined]
@@ -1044,15 +917,15 @@ class _GeometricPerceiver:
                 for a in a_atoms:
                     if (
                         elements[a] == "N"
-                        and ring_sigma[a] == 2
-                        and exo_sigma(a) == 1
+                        and self.ring_sigma[a] == 2
+                        and self._exo_sigma(a) == 1
                         and max((len(rl) for rl in cand_rings if a in rl), default=0) > 5
                         and all(
                             sum(1 for b in rl if elements[b] == "N") == 1
                             for rl in cand_rings if a in rl and len(rl) > 5
                         )
-                        and not any(carbonyl_c(j, _CRYSTAL_CARBONYL) for j in ring_nbrs[a])
-                        and not any(carbonyl_c(e, _CRYSTAL_CARBONYL) for e in exo_nbrs[a])
+                        and not any(self._carbonyl_c(j, _CRYSTAL_CARBONYL) for j in self.ring_nbrs[a])
+                        and not any(self._carbonyl_c(e, _CRYSTAL_CARBONYL) for e in self.exo_nbrs[a])
                     ):
                         m.GetAtomWithIdx(a).SetFormalCharge(1)  # type: ignore[attr-defined]
 
@@ -1201,7 +1074,7 @@ class _GeometricPerceiver:
                                 ]
                                 if tb:
                                     tlong = max(
-                                        tb, key=lambda b: blen[
+                                        tb, key=lambda b: self.blen[
                                             _sym_pair(b.GetBeginAtomIdx(),
                                                       b.GetEndAtomIdx())
                                         ]
@@ -1225,19 +1098,19 @@ class _GeometricPerceiver:
                                 b for b in db
                                 if {elements[b.GetBeginAtomIdx()],
                                     elements[b.GetEndAtomIdx()]} == {"C", "N"}
-                                and blen[_sym_pair(b.GetBeginAtomIdx(),
+                                and self.blen[_sym_pair(b.GetBeginAtomIdx(),
                                                    b.GetEndAtomIdx())] >= 1.30
                             ]
                             if cn and len(db) > 1:
                                 longest = max(
-                                    cn, key=lambda b: blen[
+                                    cn, key=lambda b: self.blen[
                                         _sym_pair(b.GetBeginAtomIdx(),
                                                   b.GetEndAtomIdx())
                                     ]
                                 )
                             else:
                                 longest = max(
-                                    db, key=lambda b: blen[
+                                    db, key=lambda b: self.blen[
                                         _sym_pair(b.GetBeginAtomIdx(),
                                                   b.GetEndAtomIdx())
                                     ]
@@ -1280,13 +1153,143 @@ class _GeometricPerceiver:
         # the odd one out - drop slack rings at or below the drop line and
         # retry once.  True low-resolution aromatics (07L +0.041, NDP +0.012)
         # sit well above it.
-        mol, err = attempt(cand_rings)
+        mol, err = attempt(self.cand_rings)
         if mol is None:
-            drop = [rl for rl in cand_rings
+            drop = [rl for rl in self.cand_rings
                     if 0.0 < ring_excess.get(tuple(rl), 0.0) <= _AROMATIC_SLACK_DROP]
             if drop:
-                mol, err = attempt([rl for rl in cand_rings if rl not in drop])
+                mol, err = attempt([rl for rl in self.cand_rings if rl not in drop])
         return mol, err
+
+    def _rdk_el(self, el: str) -> str:
+        return el.capitalize() if len(el) == 2 else el
+
+    def _exo_sigma(self, a: int) -> int:
+        return sum(1 for i, j in self.graph if a in (i, j)) - self.ring_sigma[a]
+
+    def _carbonyl_c(self, c: int, dmax: float | None = None) -> bool:
+        """True for a C with a directly-attached terminal O at C=O length.
+        The default bound is the strict 1.30 (length-rule double cutoff):
+        its p orbital sits in the C=O pi bond, so such a ring carbon
+        contributes 0 pi.  The N-pyridone/amide discriminator passes the
+        generous crystal-carbonyl bound (1.40) - a caffeine C=O refines to
+        1.34-1.36 A and its N-methyl is amide-type regardless."""
+        if self.elements[c] != "C":
+            return False
+        if dmax is None:
+            dmax = _BOND_ORDER_TABLE[("C", "O")][1]
+        for n in self.graph_nbrs[c]:
+            if self.elements[n] == "O" and self.deg[n] == 1 and self.blen[_sym_pair(c, n)] <= dmax:
+                return True
+        return False
+
+    def _pi_of(self, a: int, h_choice: bool) -> int | None:
+        """pi electrons contributed by candidate atom *a*."""
+        el = self.elements[a]
+        if el == "C":
+            # a ring carbon with a directly-attached terminal O at C=O
+            # distance (<= 1.30, the length-rule double cutoff) has its p
+            # orbital in the C=O pi bond and contributes 0 pi to the ring.
+            # An O attached through another atom (aryl ketones), an O-H /
+            # O-R substituent, or a long C-O (phenol/enol) leaves 1 pi.
+            # Without this, uracil-type rings score 8 pi with pyrrole N-H
+            # (not Huckel) and 6 pi with the wrong pyridine-type N-H - the
+            # correct 6-pi count needs the 2 carbonyl carbons at 0 and
+            # both N's at 2.
+            return 0 if self._carbonyl_c(a) else 1
+        if el == "N":
+            rs, exo = self.ring_sigma[a], self._exo_sigma(a)
+            if rs == 2 and exo == 1:
+                # 5-ring: N-methyl/aryl-pyrrole, lone pair in the ring
+                # plane-free p orbital: 2 pi.  6-ring with a plain N-alkyl:
+                # pyridinium, the alkyl consumes the lone pair: 1 pi.  An
+                # N-alkyl 6-ring N bonded to (or exo to) a carbonyl is
+                # pyridone/amide-type: lone pair delocalised, 2 pi.
+                # Without the 6-ring rule the nicotinamide rings of
+                # NAD/NAP/NDP score 7 pi, fail Huckel and come out
+                # saturated (+6 H in the formula).
+                # NOTE: reads self.cand_rings - the FULL candidate list, never the
+                # attempt's filtered subset: the pi count is defined over all rings.
+                if max((len(rl) for rl in self.cand_rings if a in rl), default=0) <= 5:
+                    # 5-ring with an exo substituent: the N is sp2 with
+                    # three sigma bonds, so its lone pair sits in the
+                    # ring p orbital: 2 pi (pyrrole-type: N-methylpyrrole,
+                    # N-alkyl imidazole / triazole, the N-glycosides of
+                    # nucleosides).  A neutral 5-ring N contributes 1 pi
+                    # only when the exo bond is itself a double - an
+                    # imine N=X, detected by the length rule.  The old
+                    # discriminator (any other heteroatom in the ring,
+                    # no N-N bond) mislabeled 7-methylguanine N7-CH3 and
+                    # triazole N1-R: at 1 pi the N must double-bond and
+                    # either strangles the ring (no kekule: 7FOY W5C,
+                    # 5MUY MGT) or turns a 7-pi neutral ring aromatic
+                    # (an N-alkyl thiazole whose neutral form has no
+                    # conjugation to reward).
+                    for e in self.exo_nbrs[a]:
+                        # an exo carbon that is itself ring-bound is an
+                        # N-aryl (5KYA 6Y4's pyrazole N-phenyl at 1.327 A
+                        # sits inside the imine window but is a plain
+                        # single bond): the aryl ring's own candidate
+                        # status decides it.  A genuine exo imine carbon
+                        # is never in a candidate ring.
+                        if self.elements[e] == "C" and any(
+                            e in rl for rl in self.cand_rings
+                        ):
+                            continue
+                        pair = _sym_pair(self.elements[a], self.elements[e])
+                        dmax = _BOND_ORDER_TABLE.get(pair, (None, None))[1]
+                        if dmax is None:
+                            continue
+                        # an exocyclic C=N at 1.34-1.37 A is an N-aryl or
+                        # N-alkyl aniline-type single (5AEP QUP's pyrrole
+                        # N-aryl at 1.36-1.37 A), not an imine: a genuine
+                        # exo imine refines to 1.28-1.32 A, so a C exo
+                        # needs the tight bound (non-C exo N=O / N=S keep
+                        # the table cutoff).
+                        if self.elements[e] == "C" and self.blen[_sym_pair(a, e)] > 1.33:
+                            continue
+                        if self.blen[_sym_pair(a, e)] <= dmax:
+                            return 1  # exo imine: the p pair is spent
+                    return 2
+                if any(self._carbonyl_c(j, _CRYSTAL_CARBONYL) for j in self.ring_nbrs[a]):
+                    return 2
+                if any(self._carbonyl_c(e, _CRYSTAL_CARBONYL) for e in self.exo_nbrs[a]):
+                    return 2
+                # An N-alkyl 6-ring N is pyridinium only in a pyridine-like
+                # ring (exactly one N).  A ring holding a second N is either
+                # a saturated lactam/amine (1D1: the sibling N is amide-type
+                # with a heavy exo substituent, so the alkyl N has no p
+                # orbital - None) or a fused N-heteroaromatic where the alkyl
+                # N is a neutral pyrrole-type N with its lone pair in the
+                # ring p orbital (flavin N10 in FMN/RS3/FAD: all sibling N's
+                # are pyridine-type with no exo - 2 pi; the fused system
+                # supplies the pi the per-ring count lacks).  The amide-type
+                # sibling is the discriminator: pyridine-type N's carry no
+                # heavy exo substituent.
+                for rl in self.cand_rings:
+                    if a in rl and len(rl) > 5:
+                        others = [b for b in rl if self.elements[b] == "N" and b != a]
+                        if not others:
+                            return 1  # exactly one N: plain pyridinium
+                        if any(self._exo_sigma(b) > 0 for b in others):
+                            return None  # amide-type sibling: saturated amine
+                        return 2  # pyridine-type siblings: pyrrole-like N
+                return 1
+            if rs == 3 and exo == 0:
+                # fusion N shared by two rings (triazolo-triazine bridgehead,
+                # etc.): 3 ring sigma, no H - RDKit gives it Two electrons
+                # (countAtomElec: dv 3, degree 3, nlp 2 -> 2).  The old 1-pi
+                # assignment made RNL/QUP/9KI triazoles score 5-7, failing
+                # Huckel and gaining +1 H in the formula; 2 pi makes the
+                # triazole itself Huckel (6) and unblocks kekulization.
+                return 2
+            if rs == 2 and exo == 0:
+                return 2 if h_choice else 1  # pyrrole(1H) vs pyridine(0H)
+            return None
+        if el in ("O", "S"):
+            return 2 if self.ring_sigma[a] == 2 else None
+        return None
+
 
 def perceive_bond_orders_geometric(
     elements: list[str],
@@ -1307,3 +1310,4 @@ def perceive_bond_orders_geometric(
     """
 
     return _GeometricPerceiver(elements, coords, graph).perceive()
+
