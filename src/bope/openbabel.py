@@ -12,7 +12,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from bope._deps import Chem, _ob, _OPENBABEL_AVAILABLE, _RDKIT_AVAILABLE
+from bope._deps import _OPENBABEL_AVAILABLE, _RDKIT_AVAILABLE, Chem, _ob
 
 
 def _atoms_to_pdb_text(

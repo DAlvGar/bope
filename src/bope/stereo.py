@@ -28,7 +28,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from bope._deps import Chem, _RDKIT_AVAILABLE
+from bope._deps import _RDKIT_AVAILABLE, Chem
 
 
 def perceive_stereochemistry(mol: Any | None) -> Any | None:

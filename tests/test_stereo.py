@@ -31,12 +31,12 @@ pytestmark = pytest.mark.skipif(
 
 try:
     from rdkit import Chem
-    from rdkit.Chem import AllChem, rdMolDescriptors
+    from rdkit.Chem import AllChem, rdMolDescriptors  # noqa: F401 - availability check
 except ImportError:  # pragma: no cover - guarded by pytestmark above
     Chem = None  # type: ignore[assignment]
 
 
-def _embed(smi: str) -> "Chem.Mol":
+def _embed(smi: str) -> Chem.Mol:
     """ETKDG embed with Hs (randomSeed=42) - same harness as the bond-order
     tests, so the geometries are the ones already validated there."""
     mol = Chem.AddHs(Chem.MolFromSmiles(smi))  # type: ignore[attr-defined]
@@ -44,7 +44,7 @@ def _embed(smi: str) -> "Chem.Mol":
     return mol
 
 
-def _heavy_atoms(molH: "Chem.Mol") -> list[tuple[str, tuple[float, float, float]]]:
+def _heavy_atoms(molH: Chem.Mol) -> list[tuple[str, tuple[float, float, float]]]:
     """(element, xyz) tuples for the heavy atoms, in mol order."""
     conf = molH.GetConformer()
     return [
@@ -54,7 +54,7 @@ def _heavy_atoms(molH: "Chem.Mol") -> list[tuple[str, tuple[float, float, float]
     ]
 
 
-def _chiral_labels(mol: "Chem.Mol") -> dict[str, str]:
+def _chiral_labels(mol: Chem.Mol) -> dict[str, str]:
     """{R/S label: count} for the declared tetrahedral centers."""
     out: dict[str, str] = {}
     for idx, label in Chem.FindMolChiralCenters(  # type: ignore[attr-defined]
@@ -64,7 +64,7 @@ def _chiral_labels(mol: "Chem.Mol") -> dict[str, str]:
     return out
 
 
-def _stereo_bonds(mol: "Chem.Mol") -> dict[tuple[int, int], str]:
+def _stereo_bonds(mol: Chem.Mol) -> dict[tuple[int, int], str]:
     """{(begin, end): STEREOE/STEREOZ} for the labeled double bonds."""
     return {
         (b.GetBeginAtomIdx(), b.GetEndAtomIdx()): str(b.GetStereo())

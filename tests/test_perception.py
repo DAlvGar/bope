@@ -28,6 +28,7 @@ before re-enabling the strict assertions.
 
 from __future__ import annotations
 
+import importlib
 import json
 import os
 import sys
@@ -62,12 +63,11 @@ except ImportError:  # pragma: no cover - guarded by pytestmark above
 #: {pdb_id: {het: [ [ [element, [x, y, z]], ... ], ... ]}} - one list per
 #: residue, preserving the multi-residue cases (1IEP x2, 3PBL x2,
 #: 5HVP ACE x1 + STA x2).
-_FIXTURES = json.load(
-    open(
-        os.path.join(os.path.dirname(__file__), "fixtures", "crystal_ligands.json"),
-        encoding="utf-8",
-    )
-)
+with open(
+    os.path.join(os.path.dirname(__file__), "fixtures", "crystal_ligands.json"),
+    encoding="utf-8",
+) as _fixtures_fh:
+    _FIXTURES = json.load(_fixtures_fh)
 
 
 def _crystal_residue_atoms(pdb_id: str, het: str) -> list[list[tuple[str, tuple]]]:
@@ -90,10 +90,10 @@ _TAUTOMERS: dict[str, str] = {
 # Harness: SMILES -> ETKDG (seed 42) -> noise -> perceive -> exact checks
 # ---------------------------------------------------------------------------
 
-_EMBED_CACHE: dict[str, "Chem.Mol"] = {}
+_EMBED_CACHE: dict[str, Chem.Mol] = {}
 
 
-def _embed(smi: str) -> "Chem.Mol":
+def _embed(smi: str) -> Chem.Mol:
     """ETKDG embed with Hs (randomSeed=42), cached per SMILES."""
     if smi not in _EMBED_CACHE:
         mol = Chem.AddHs(Chem.MolFromSmiles(smi))  # type: ignore[attr-defined]
@@ -103,7 +103,7 @@ def _embed(smi: str) -> "Chem.Mol":
 
 
 def _noisy_atoms(
-    molH: "Chem.Mol", bond_sigma: float, seed: int = 42
+    molH: Chem.Mol, bond_sigma: float, seed: int = 42
 ) -> list[tuple[str, tuple[float, float, float]]]:
     """Heavy-atom (element, xyz) tuples with isotropic Gaussian noise.
 
@@ -125,7 +125,7 @@ def _noisy_atoms(
     return atoms
 
 
-def _bond_graph(mol: "Chem.Mol") -> frozenset:
+def _bond_graph(mol: Chem.Mol) -> frozenset:
     """Exact bond graph: (low-idx, high-idx, order) triples."""
     return frozenset(
         (
@@ -137,11 +137,11 @@ def _bond_graph(mol: "Chem.Mol") -> frozenset:
     )
 
 
-def _formula(mol: "Chem.Mol") -> str:
+def _formula(mol: Chem.Mol) -> str:
     return rdMolDescriptors.CalcMolFormula(mol)  # type: ignore[attr-defined]
 
 
-def _addh_ok(mol: "Chem.Mol") -> bool:
+def _addh_ok(mol: Chem.Mol) -> bool:
     """AddHs must not raise - the over-valent-atom failure mode."""
     try:
         Chem.AddHs(mol)  # type: ignore[attr-defined]
@@ -152,7 +152,7 @@ def _addh_ok(mol: "Chem.Mol") -> bool:
 
 def _recover(
     smi: str, bond_sigma: float
-) -> tuple["Chem.Mol | None", str, bool, bool, bool]:
+) -> tuple[Chem.Mol | None, str, bool, bool, bool]:
     """Embed -> noise -> perceive, returning (mol, strategy, graph_ok,
     formula_ok, addh_ok) against the reference."""
     molH = _embed(smi)
@@ -200,7 +200,7 @@ def test_synthetic_recovery_at_zero_noise():
     strict = _strict_names(0.0)
     assert len(strict) >= 100  # issue #40: "~100+ molecules"
     for name, smi in strict:
-        mol, strategy, gok, fok, hok = _recover(smi, 0.0)
+        _mol, strategy, gok, fok, hok = _recover(smi, 0.0)
         assert gok and fok and hok, (
             f"{name}: graph={gok} formula={fok} addh={hok} strategy={strategy}"
         )
@@ -217,7 +217,7 @@ def test_synthetic_recovery_at_03_noise():
     strict = _strict_names(0.03)
     assert len(strict) >= 100
     for name, smi in strict:
-        mol, strategy, gok, fok, hok = _recover(smi, 0.03)
+        _mol, strategy, gok, fok, hok = _recover(smi, 0.03)
         assert gok and fok and hok, (
             f"{name}: graph={gok} formula={fok} addh={hok} strategy={strategy}"
         )
@@ -230,7 +230,7 @@ def test_recovered_molecules_never_use_distance_baseline():
     moved everything to OpenBabel would hide behind the exactness check)."""
     counts: dict[str, int] = {}
     for name, smi in _strict_names(0.0):
-        mol, strategy, gok, fok, hok = _recover(smi, 0.0)
+        _mol, strategy, gok, fok, hok = _recover(smi, 0.0)
         if not (gok and fok and hok):
             continue  # covered by test_synthetic_recovery_at_zero_noise
         counts[strategy] = counts.get(strategy, 0) + 1
@@ -265,7 +265,7 @@ def test_quaternary_nitrogen_recovers_exactly():
     single bonds and no double to demote - the geometry path's valence
     demotion pass assigns the +1 formal charge, which makes the perceived
     mol match the reference exactly (graph AND formula)."""
-    mol, strategy, gok, fok, hok = _recover("C[N+](C)(C)C", 0.0)
+    _mol, strategy, gok, fok, hok = _recover("C[N+](C)(C)C", 0.0)
     assert strategy == "geometry"
     assert gok and fok and hok
 
@@ -374,14 +374,11 @@ def test_crystal_ligands_real_coordinates_geometry_path():
 # the deposited crystal coordinates, frozen in the fixture; the ref SMILES
 # is the CCD canonical descriptor from the held-out dataset entry.
 
-_HELDOUT_FIXTURES = json.load(
-    open(
-        os.path.join(
-            os.path.dirname(__file__), "fixtures", "heldout_regression.json"
-        ),
-        encoding="utf-8",
-    )
-)
+with open(
+    os.path.join(os.path.dirname(__file__), "fixtures", "heldout_regression.json"),
+    encoding="utf-8",
+) as _heldout_fh:
+    _HELDOUT_FIXTURES = json.load(_heldout_fh)
 
 #: (pdb, het) targets whose deposited coordinates defeat the geometry tier.
 #: 5MUY MGT: ribose refined with a C=C(O) enol and C-C at 1.296 A.  7FOZ
@@ -449,7 +446,7 @@ def test_heldout_regression_targets_recover_exactly():
     C=C demotion (4L9Q 9TP), the nitro double-stacking crash (2YOH WMJ),
     and the hard-max ring rejections (7RS8 7EI, 2QG0 A94, 1WQW BT5)."""
     checked = 0
-    for key, d in _HELDOUT_FIXTURES.items():
+    for key in _HELDOUT_FIXTURES:
         if key in _HELDOUT_LIMITATIONS:
             continue
         mol, strategy, ref = _heldout_perceive(key)
@@ -475,7 +472,7 @@ def test_heldout_documented_limitations_degrade_gracefully():
         assert mol is not None, f"{key}: perceived as None ({strategy})"
         assert strategy == "geometry", f"{key}: strategy {strategy}"
         assert _addh_ok(mol), f"{key}: AddHs failed (over-valent?)"
-        formula, graph, exact, addh = _heldout_metrics(mol, ref)
+        _formula, graph, _exact, _addh = _heldout_metrics(mol, ref)
         assert not graph, (
             f"{key}: now recovers exactly - move out of _HELDOUT_LIMITATIONS"
         )
@@ -614,3 +611,64 @@ def test_single_atom_and_empty_input():
     mol, strategy = perception.perceive_bond_orders([])
     assert mol is None
     assert strategy == ""
+
+
+def test_import_without_openbabel_degrades_gracefully():
+    """The package must import and work when the optional openbabel extra is
+    not installed: strategy modules import the dependency names at module
+    level, so a missing optional dependency must not break the import chain
+    (regression: `from bope._deps import _ob` raised ImportError and killed
+    the whole package)."""
+    saved = {name: sys.modules.pop(name) for name in list(sys.modules)
+             if name == "bope" or name.startswith("bope.")}
+    saved_ob = sys.modules.get("openbabel")
+    try:
+        sys.modules["openbabel"] = None  # simulate missing package
+        fresh = importlib.import_module("bope")
+        assert fresh._OPENBABEL_AVAILABLE is False
+        mol, strategy = fresh.perceive_bond_orders(
+            [("C", (0.0, 0.0, 0.0)), ("C", (1.4, 0.0, 0.0))]
+        )
+        assert mol is not None
+        assert strategy == "geometry"
+    finally:
+        sys.modules.update(saved)
+        if saved_ob is None:
+            sys.modules.pop("openbabel", None)
+        else:
+            sys.modules["openbabel"] = saved_ob
+
+
+def test_distance_strategy_direct():
+    """The distance fallback, called directly: bare topology from covalent
+    radii with double-bond radii distinguishing C=C from C-C."""
+    from bope.distance import perceive_bond_orders_distance
+
+    # Ethene: 1.33 A is inside the double-bond envelope (2*0.67 + 0.03).
+    mol = perceive_bond_orders_distance(
+        ["C", "C"], [(0.0, 0.0, 0.0), (1.33, 0.0, 0.0)]
+    )
+    assert mol is not None
+    assert mol.GetBondBetweenAtoms(0, 1).GetBondType() == Chem.BondType.DOUBLE
+    assert _addh_ok(mol)
+    # Ethane: 1.54 A is beyond the double-bond envelope, inside the single.
+    mol = perceive_bond_orders_distance(
+        ["C", "C"], [(0.0, 0.0, 0.0), (1.54, 0.0, 0.0)]
+    )
+    assert mol is not None
+    assert mol.GetBondBetweenAtoms(0, 1).GetBondType() == Chem.BondType.SINGLE
+    assert _addh_ok(mol)
+
+
+def test_ccd_template_mismatch_falls_through():
+    """An unparsable cached CCD SMILES (or a graph that cannot match the
+    crystal) must fall through to geometry, never raise or hang."""
+    atoms = _noisy_atoms(_embed(_TAUTOMERS["caffeine"]), 0.0)
+    perception._CCD_CACHE["ZZZ"] = "not-a-smiles"  # MolFromSmiles -> None
+    try:
+        mol, strategy = perception.perceive_bond_orders(atoms, resname="ZZZ")
+        assert strategy == "geometry"
+        assert mol is not None
+        assert _formula(mol) == "C8H10N4O2"
+    finally:
+        del perception._CCD_CACHE["ZZZ"]

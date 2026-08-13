@@ -13,6 +13,11 @@ try:
 
     _RDKIT_AVAILABLE = True
 except ImportError:  # pragma: no cover
+    # Names must stay bound: strategy modules import them at module level,
+    # and a missing optional dependency must not break the package import.
+    Chem = None  # type: ignore[assignment]
+    AllChem = None  # type: ignore[assignment]
+    rdGeometry = None  # type: ignore[assignment]
     _RDKIT_AVAILABLE = False
 
 try:
@@ -20,4 +25,5 @@ try:
 
     _OPENBABEL_AVAILABLE = True
 except ImportError:  # pragma: no cover
+    _ob = None  # type: ignore[assignment]
     _OPENBABEL_AVAILABLE = False

@@ -94,12 +94,23 @@ from __future__ import annotations
 
 from typing import Any
 
-from bope import ccd, distance, geometry, helpers, openbabel, stereo, tables
+# Submodules and flags are re-exported intentionally: `bope.geometry`,
+# `bope._OPENBABEL_AVAILABLE` and `bope._CCD_CACHE` are part of the
+# documented module surface (tests and the 3D-PLI-Agent bridge use them).
+from bope import (  # noqa: F401
+    ccd,
+    distance,
+    geometry,
+    helpers,
+    openbabel,
+    stereo,
+    tables,
+)
 from bope._deps import (
-    _OPENBABEL_AVAILABLE,
+    _OPENBABEL_AVAILABLE,  # noqa: F401
     _RDKIT_AVAILABLE,
 )
-from bope.ccd import _CCD_CACHE
+from bope.ccd import _CCD_CACHE  # noqa: F401
 from bope.distance import perceive_bond_orders_distance
 from bope.geometry import perceive_bond_orders_geometric
 from bope.helpers import _build_rwmol, _distance_bond_graph
@@ -108,6 +119,12 @@ from bope.stereo import perceive_stereochemistry
 
 #: Strategy name for "no atoms" / "RDKit unavailable" / "everything failed".
 NO_STRATEGY = ""
+
+__all__ = [
+    "NO_STRATEGY",
+    "perceive_bond_orders",
+    "perceive_stereochemistry",
+]
 
 
 def perceive_bond_orders(

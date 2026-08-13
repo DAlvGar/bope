@@ -20,14 +20,12 @@ import math
 from itertools import combinations
 from typing import Any
 
-
 from bope._deps import Chem, rdGeometry
 from bope.helpers import _planarity_rms, _sym_pair
 from bope.tables import (
     _AROMATIC_ENVELOPE,
     _AROMATIC_HARD_MAX,
     _AROMATIC_RESCUE_RMS_MAX,
-    _RESCUE_RING_BOND_MAX,
     _AROMATIC_SLACK_BOND,
     _AROMATIC_SLACK_DROP,
     _AROMATIC_SLACK_RING,
@@ -36,6 +34,7 @@ from bope.tables import (
     _CRYSTAL_CARBONYL,
     _HUCKEL,
     _MAX_VALENCE,
+    _RESCUE_RING_BOND_MAX,
     _TRIPLE_BOND_TABLE,
 )
 
@@ -706,7 +705,6 @@ def perceive_bond_orders_geometric(
             and such a double leaves the ring atom no pi for its ring double).
             Passing empty aromatic sets builds a pure length-rule molecule (the
             final never-return-None fallback)."""
-            a_rings = arom_rings if arom_rings_arg is None else arom_rings_arg
             a_atoms = arom_atoms if arom_atoms_arg is None else arom_atoms_arg
             a_bonds = arom_bonds if arom_bonds_arg is None else arom_bonds_arg
             m = Chem.RWMol(rw)  # type: ignore[attr-defined]

@@ -37,7 +37,7 @@ def _fetch_ccd_smiles(het_code: str) -> str | None:
     if het in _CCD_CACHE:
         return _CCD_CACHE[het]
     try:
-        with urllib.request.urlopen(  # noqa: S310 - https only
+        with urllib.request.urlopen(
             _CCD_API.format(het), timeout=_CCD_TIMEOUT
         ) as resp:
             data = json.load(resp)

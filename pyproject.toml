@@ -8,7 +8,7 @@ version = "0.1.0"
 description = "Bond-order perception for 3-D ligand coordinates: plain (element, xyz) atoms in, RDKit molecule with bond orders out."
 readme = "README.md"
 requires-python = ">=3.11"
-license = { text = "MIT" }
+license = "MIT"
 authors = [{ name = "Daniel Alvarez" }]
 keywords = [
     "chemistry",
@@ -36,15 +36,27 @@ dependencies = [
     "rdkit>=2025.9.6,<2026",
 ]
 
+[project.urls]
+Repository = "https://github.com/DAlvGar/bope"
+Documentation = "https://github.com/DAlvGar/bope#readme"
+
 [project.optional-dependencies]
 # OpenBabel strategy (3rd of 4 in the pipeline); without it the pipeline
 # skips straight from geometry to the distance fallback.
 openbabel = ["openbabel-wheel>=3.1"]
 # Test suite + benchmark harness.
-dev = ["pytest>=8.0"]
+dev = ["pytest>=8.0", "ruff>=0.9"]
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/bope"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+
+[tool.ruff]
+target-version = "py311"
+# Intentional re-exports and availability probes carry inline noqa (see
+# src/bope/__init__.py and the tests' rdMolDescriptors import).  BLE001 is
+# enabled so the codebase's documented broad excepts ("a failed perception
+# is a metric, not an error") stay annotated, not silent.
+lint.select = ["E4", "E7", "E9", "F", "I", "UP", "SIM", "PERF", "RUF", "BLE001"]
