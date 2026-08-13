@@ -19,16 +19,12 @@ import json
 import os
 import sys
 
-HERE = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, HERE)
-sys.path.insert(0, os.path.join(HERE, "..", "..", "src"))
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(
+    0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "src")
+)
 
-from rdkit import Chem, RDLogger
-from rdkit.Chem import rdFMCS, rdMolDescriptors
-
-RDLogger.DisableLog("rdApp.*")
-
-from benchmark import (  # noqa: E402
+from benchmark import (
     _metrics,
     _neutral,
     load_dataset,
@@ -36,6 +32,12 @@ from benchmark import (  # noqa: E402
     run_geometry,
     run_openbabel,
 )
+from rdkit import Chem, RDLogger
+from rdkit.Chem import rdFMCS, rdMolDescriptors
+
+RDLogger.DisableLog("rdApp.*")
+
+HERE = os.path.dirname(os.path.abspath(__file__))
 
 TIERS = ("main", "lowres")
 BUCKETS = 5
@@ -116,18 +118,20 @@ def signature(d: dict) -> str:
     parts = [d["kind"]]
     detail = d.get("detail") or {}
     if "bond_diffs" in detail:
-        for bd in sorted(detail["bond_diffs"], key=lambda b: (tuple(b["els"]),
-                                                              b["ref"], b["per"])):
-            parts.append(f"{''.join(bd['els'])} {bd['ref']}->{bd['per']}")
+        parts.extend(
+            f"{''.join(bd['els'])} {bd['ref']}->{bd['per']}"
+            for bd in sorted(detail["bond_diffs"],
+                             key=lambda b: (tuple(b["els"]), b["ref"], b["per"]))
+        )
     if "h_diffs" in detail:
-        for hd in sorted(detail["h_diffs"], key=lambda h: (h["el"], h["ref"])):
-            parts.append(f"{hd['el']}H{hd['ref']}->{hd['per']}")
+        parts.extend(
+            f"{hd['el']}H{hd['ref']}->{hd['per']}"
+            for hd in sorted(detail["h_diffs"], key=lambda h: (h["el"], h["ref"]))
+        )
     if "unmapped_per" in detail:
-        for u in sorted(detail["unmapped_per"]):
-            parts.append(f"+{u}")
+        parts.extend(f"+{u}" for u in sorted(detail["unmapped_per"]))
     if "unmapped_ref" in detail:
-        for u in sorted(detail["unmapped_ref"]):
-            parts.append(f"-{u}")
+        parts.extend(f"-{u}" for u in sorted(detail["unmapped_ref"]))
     return " | ".join(parts)
 
 

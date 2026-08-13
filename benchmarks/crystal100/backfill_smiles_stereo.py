@@ -20,9 +20,8 @@ from __future__ import annotations
 import json
 import os
 import time
-import urllib.request
 
-from fetch_dataset import CCD_URL, get  # noqa: F401 - reuse retry/url
+from fetch_dataset import CCD_URL, get
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 
@@ -32,7 +31,8 @@ def main() -> None:
         if not (name.startswith("dataset") and name.endswith(".json")):
             continue
         path = os.path.join(HERE, name)
-        ds = json.load(open(path, encoding="utf-8"))
+        with open(path, encoding="utf-8") as fh:
+            ds = json.load(fh)
         missing = [d for d in ds if "smiles_stereo" not in d]
         if not missing:
             print(f"{name}: all {len(ds)} entries already carry smiles_stereo")

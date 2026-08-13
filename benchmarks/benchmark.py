@@ -48,22 +48,20 @@ import numpy as np
 from rdkit import Chem, RDLogger
 from rdkit.Chem import AllChem, rdDetermineBonds, rdMolDescriptors
 
-RDLogger.DisableLog("rdApp.*")
-
 import bope as perception
 from bope import corpus
-from bope._deps import _ob, _RDKIT_AVAILABLE
+from bope._deps import _RDKIT_AVAILABLE, _ob
 from bope.helpers import _build_rwmol
+
+RDLogger.DisableLog("rdApp.*")
 
 # OpenBabel's failed-kekulization warnings (the N-rich-ring corruption this
 # benchmark measures) flood stderr on every corrupted molecule; silence the
 # log here - failures are recorded in the tables, not the terminal.  Level 0
 # is obErrorLevel::None (some bindings expose the enum, some don't, but the
 # integer is stable across OpenBabel versions).
-try:
+with contextlib.suppress(Exception):  # API drift across OpenBabel versions
     _ob.obErrorLog.SetOutputLevel(0)  # type: ignore[attr-defined]
-except Exception:  # noqa: BLE001 - API drift across OpenBabel versions
-    pass
 
 NOISE_LEVELS = [0.0, 0.03, 0.07, 0.14, 0.28, 0.5]
 SEED = 42
@@ -72,12 +70,11 @@ METHODS = ["bope", "openbabel", "rdDetermineBonds", "distance"]
 HERE = os.path.dirname(os.path.abspath(__file__))
 # Crystal-ligand atom fixtures (same file the test suite uses):
 # {pdb_id: {het: [ [ [element, [x, y, z]], ... ], ... ]}}
-FIXTURES = json.load(
-    open(
-        os.path.join(HERE, "..", "tests", "fixtures", "crystal_ligands.json"),
-        encoding="utf-8",
-    )
-)
+with open(
+    os.path.join(HERE, "..", "tests", "fixtures", "crystal_ligands.json"),
+    encoding="utf-8",
+) as fixtures_fh:
+    FIXTURES = json.load(fixtures_fh)
 
 # ---------------------------------------------------------------------------
 # Harness (identical to tests/test_perception.py)
@@ -281,10 +278,10 @@ def sweep_crystal():
                     mol = perceive(elements, coords, m)
                     if mol is None:
                         continue
-                    try:
+                    # Sanitize is not the metric here; formula needs it only
+                    # to kekulize
+                    with contextlib.suppress(Exception):
                         Chem.SanitizeMol(mol)
-                    except Exception:  # noqa: BLE001 - sanitize is not the
-                        pass  # metric here; formula needs it only to kekulize
                     results[m][0] += formula(mol) in want
                     results[m][1] += addh_ok(mol)
     return results, total

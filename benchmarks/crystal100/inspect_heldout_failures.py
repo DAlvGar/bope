@@ -20,16 +20,18 @@ import math
 import os
 import sys
 
-HERE = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, HERE)
-sys.path.insert(0, os.path.join(HERE, "..", "..", "src"))
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(
+    0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "src")
+)
 
+from benchmark import load_dataset, run_geometry
 from rdkit import Chem, RDLogger
 from rdkit.Chem import rdFMCS
 
 RDLogger.DisableLog("rdApp.*")
 
-from benchmark import load_dataset, run_geometry  # noqa: E402
+HERE = os.path.dirname(os.path.abspath(__file__))
 
 TIERS = ("main", "lowres")
 
@@ -128,8 +130,9 @@ def inspect(entry, per, ref):
 
 
 def main() -> None:
-    recs = json.load(open(os.path.join(HERE, "heldout_failures.json"),
-                          encoding="utf-8"))
+    with open(os.path.join(HERE, "heldout_failures.json"),
+              encoding="utf-8") as fh:
+        recs = json.load(fh)
     from collections import Counter
     clusters = Counter(r["sig"] for r in recs)
     out = []

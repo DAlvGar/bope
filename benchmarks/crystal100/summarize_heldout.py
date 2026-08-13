@@ -50,7 +50,7 @@ sys.path.insert(
 )
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-from benchmark import _env_info  # noqa: E402
+from benchmark import _env_info
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 

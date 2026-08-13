@@ -85,12 +85,12 @@ sys.path.insert(
 from rdkit import Chem, RDLogger
 from rdkit.Chem import rdDetermineBonds, rdMolDescriptors
 
-RDLogger.DisableLog("rdApp.*")
-
 import bope as perception
 from bope._deps import _ob
 from bope.geometry import perceive_bond_orders_geometric
 from bope.helpers import _build_rwmol, _distance_bond_graph
+
+RDLogger.DisableLog("rdApp.*")
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 
@@ -147,10 +147,8 @@ def load_dataset(name: str) -> list[dict]:
 
 # OpenBabel's failed-kekulization warnings on N-rich rings flood stderr;
 # failures are recorded in the tables, not the terminal.
-try:
+with contextlib.suppress(Exception):  # API drift across OpenBabel versions
     _ob.obErrorLog.SetOutputLevel(0)  # type: ignore[attr-defined]
-except Exception:  # noqa: BLE001 - API drift across OpenBabel versions
-    pass
 
 
 @contextlib.contextmanager
@@ -168,7 +166,7 @@ def _silence_stderr():
         os.close(devnull)
 
 
-def _neutral(mol: "Chem.Mol") -> "Chem.Mol":
+def _neutral(mol: Chem.Mol) -> Chem.Mol:
     """Copy with all formal charges zeroed (no change to the graph).
 
     Implicit hydrogens are recomputed for the neutral form: a carboxylate
@@ -188,7 +186,7 @@ def _neutral(mol: "Chem.Mol") -> "Chem.Mol":
     return m
 
 
-def _metrics(mol: "Chem.Mol | None", ref: "Chem.Mol"):
+def _metrics(mol: Chem.Mol | None, ref: Chem.Mol):
     """(sanitize, formula, graph, exact, addh) for one perceived mol."""
     if mol is None:
         return False, False, False, False, False

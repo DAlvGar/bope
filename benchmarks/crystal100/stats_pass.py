@@ -28,7 +28,7 @@ import sys
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "..", "src"))
 
-from benchmark import _env_info  # noqa: E402
+from benchmark import _env_info
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 Z = 1.959964  # 97.5% normal quantile
@@ -213,7 +213,7 @@ def main() -> None:
         mean, std, lo, hi = t_ci(cov)
         wlo, whi = wilson(sum(b["stereo_entries"] for b in stereo),
                           sum(b["total"] for b in stereo))
-        add(f"| pooled | Wilson 95% CI | bucket mean +/- std | t-CI (df=4) |")
+        add("| pooled | Wilson 95% CI | bucket mean +/- std | t-CI (df=4) |")
         add("|---|---|---|---|")
         add(f"| {sum(b['stereo_entries'] for b in stereo)}/"
             f"{sum(b['total'] for b in stereo)} ({mean:.1f}%) | {fmt(wlo, whi)} | "
@@ -246,10 +246,11 @@ def main() -> None:
         add("")
 
     # Tuning vs held-out gap (bond recovery)
-    tuning = {
-        "main": json.load(open(os.path.join(HERE, "results.json"))),
-        "lowres": json.load(open(os.path.join(HERE, "results_dataset_res250-300.json"))),
-    }
+    tuning = {}
+    for tier, name in (("main", "results.json"),
+                       ("lowres", "results_dataset_res250-300.json")):
+        with open(os.path.join(HERE, name), encoding="utf-8") as fh:
+            tuning[tier] = json.load(fh)
     add("## Tuning vs held-out gap (bond recovery)")
     add("")
     add("| tier | method | tuning | held-out | gap | 95% CI (normal approx) |")

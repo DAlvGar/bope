@@ -48,7 +48,6 @@ import urllib.request
 from concurrent.futures import ThreadPoolExecutor
 
 # Runs with the package installed (`uv sync`) - rdkit is a core dependency.
-
 from rdkit import Chem, RDLogger
 from rdkit.Chem import rdMolDescriptors
 
@@ -101,7 +100,7 @@ def get(url: str, retries: int = 3, timeout: float = 30.0) -> bytes:
     last = None
     for attempt in range(retries):
         try:
-            with urllib.request.urlopen(url, timeout=timeout) as resp:  # noqa: S310
+            with urllib.request.urlopen(url, timeout=timeout) as resp:
                 return resp.read()
         except (urllib.error.URLError, TimeoutError, OSError) as exc:
             last = exc
@@ -136,7 +135,7 @@ def search_entries(min_res: float, max_res: float) -> list[str]:
             SEARCH_URL, data=json.dumps(query).encode(), method="POST",
             headers={"Content-Type": "application/json"},
         )
-        with urllib.request.urlopen(req, timeout=60) as resp:  # noqa: S310
+        with urllib.request.urlopen(req, timeout=60) as resp:
             return json.load(resp)
 
     first = page(0)
@@ -303,7 +302,8 @@ class Context:
         self.skipped: dict[str, int] = {}
         self.lock = threading.Lock()
         if os.path.exists(out_json):
-            self.dataset = json.load(open(out_json, encoding="utf-8"))
+            with open(out_json, encoding="utf-8") as fh:
+                self.dataset = json.load(fh)
             self.processed = {d["pdb"] for d in self.dataset}
             print(f"resume: {len(self.dataset)} entries already collected")
         if os.path.exists(PROCESSED):

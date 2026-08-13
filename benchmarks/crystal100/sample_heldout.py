@@ -49,8 +49,15 @@ from rdkit.Chem import rdMolDescriptors
 RDLogger.DisableLog("rdApp.*")
 
 from fetch_dataset import (  # noqa: E402
-    BLACKLIST, CCD_URL, PDB_URL, get, extract_residues, het_codes,
-    nonpolymer_het, resolution_of, search_entries,
+    BLACKLIST,
+    CCD_URL,
+    PDB_URL,
+    extract_residues,
+    get,
+    het_codes,
+    nonpolymer_het,
+    resolution_of,
+    search_entries,
 )
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -71,7 +78,9 @@ def dataset_exclusions(files: list[str]) -> tuple[set[str], set[str]]:
         path = os.path.join(HERE, name)
         if not os.path.exists(path):
             raise SystemExit(f"exclusion dataset not found: {path}")
-        for entry in json.load(open(path, encoding="utf-8")):
+        with open(path, encoding="utf-8") as fh:
+            entries = json.load(fh)
+        for entry in entries:
             pdbs.add(entry["pdb"])
             hets.add(entry["het"])
     return pdbs, hets

@@ -23,8 +23,9 @@ from collections import Counter, defaultdict
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 
-recs = json.load(open(os.path.join(HERE, "heldout_failures.json"),
-                      encoding="utf-8"))
+with open(os.path.join(HERE, "heldout_failures.json"),
+          encoding="utf-8") as fh:
+    recs = json.load(fh)
 
 # --- mechanism rules, checked in order ------------------------------
 MECHANISMS: list[tuple[str, list[str]]] = [

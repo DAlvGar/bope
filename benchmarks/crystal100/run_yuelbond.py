@@ -42,9 +42,8 @@ import sys
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "src"))
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-import numpy as np  # noqa: E402
-
-from benchmark import _env_info, _metrics, load_dataset  # noqa: E402
+import numpy as np
+from benchmark import _env_info, _metrics, load_dataset
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 TIERS = ("main", "lowres")
@@ -80,13 +79,18 @@ def main() -> None:
     sys.path.insert(0, yb_dir)
 
     # Heavy imports after path setup; RDKit logs are noise at this volume.
-    import torch  # noqa: E402
-    from rdkit import Chem, RDLogger  # noqa: E402
+    import torch
+    from rdkit import Chem, RDLogger
+    from yuel_bond import create_molecule_from_predictions
 
-    from src.datasets import BondDataset, collate, get_dataloader, atom_one_hot  # noqa: E402
-    from src.lightning import YuelBond  # noqa: E402
-    from src import const  # noqa: E402
-    from yuel_bond import create_molecule_from_predictions  # noqa: E402
+    from src import const
+    from src.datasets import (
+        BondDataset,
+        atom_one_hot,
+        collate,
+        get_dataloader,
+    )
+    from src.lightning import YuelBond
 
     RDLogger.DisableLog("rdApp.*")
 
