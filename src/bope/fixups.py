@@ -17,6 +17,47 @@ The engine is constructed once per perception from the static graph
 data and applied per assembly pass with that pass's perceived
 aromatic-atom set, so a rulebook run reflects the assembly pass that
 produced the molecule.
+
+Anatomy of a rule
+-----------------
+
+A rule is a trigger and an action:
+
+- **trigger** - the center element (with optional aromaticity and a
+  minimum-degree floor), the named neighbor groups (element /
+  aromatic / terminal filters with ``min`` / ``max`` / ``exact`` count
+  bounds), and the gate predicates: required groups (``require``),
+  fallback triggers (``require_or`` - at least one group per clause),
+  forbidden neighbor elements (``exclude_nbrs``), measured-length caps
+  with gate semantics (``max_len`` - the rule is skipped if any member
+  exceeds the cutoff), and molecule-state guards (``no_double_to`` -
+  skipped if a double bond to the group already exists).
+- **action** - bond-order and charge assignments applied in order:
+  ``make_single`` bonds, ``make_double`` bonds (``shortest:`` or
+  ``all:`` of one group, with ``action_len`` as a filter - members
+  beyond the cutoff are left untouched, unlike the gate semantics of
+  ``max_len``), then ``charges``.  ``only_if_single`` keeps
+  ``make_double`` from upgrading an existing double.
+
+The nitro rule below is a full worked example: an N center with at
+least 3 graph neighbours and exactly 2 terminal O's, both within
+1.45 A (gate), gets the shortest N-O doubled, every other non-single
+non-aromatic center bond singled, and the charge-separated
+``[N+](=O)[O-]`` form applied.
+
+Adding a functional group
+-------------------------
+
+1. Write one :data:`FIXUP_RULES` entry (order is load-bearing - a
+   later rule sees the earlier ones' edits), with a ``note`` carrying
+   the crystal citations behind the thresholds.
+2. Add a focused test in ``tests/test_fixups.py`` using the
+   ``_make_mol`` / ``_make_engine`` harness: build the smallest
+   molecule that exercises the trigger, assert the resulting bonds /
+   charges and the fired-rule names, and check the gate misses (the
+   near-miss geometry that must NOT fire).
+3. Re-run the full suite and the benchmark; the parity targets in
+   ``benchmarks/results.md`` pin the rulebook against the corpus.
 """
 
 from __future__ import annotations
