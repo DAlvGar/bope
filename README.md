@@ -29,6 +29,59 @@ molecule.
 | 3 | `openbabel` | Atom list serialised to PDB and read back through OpenBabel `PerceiveBondOrders` | simple / charged / protonated groups |
 | 4 | `distance` | Covalent-radius connectivity, then `Chem.SanitizeMol` upgrades orders where the topology allows | last resort - bare topology |
 
+### Extending the geometry fixup rulebook
+
+The geometry tier's functional-group corrections (carbonyl rescue +
+ester-O protection, amidine, nitro, phosphate P=O, sulfonamide) live in
+`src/bope/fixups.py` as declarative `FixupRule` data evaluated by the
+generic `FixupEngine` - adding a functional group is one rule entry
+plus a test, no new code path.
+
+A rule is a trigger and an action:
+
+- **Trigger** - the center element (with optional aromaticity and
+  minimum degree), named neighbor groups (`NbrGroup`: element /
+  aromatic / terminal filters with `min` / `max` / `exact` count
+  bounds), and gate predicates: required groups (`require`), fallback
+  triggers (`require_or`), forbidden neighbor elements
+  (`exclude_nbrs`), measured-length caps with gate semantics
+  (`max_len` - the whole rule is skipped if any member exceeds the
+  cutoff), molecule-state guards (`no_double_to`).
+- **Action** - applied in order: `make_single`, then `make_double`
+  (`shortest:` or `all:` of one group, with `action_len` as a filter -
+  members beyond the cutoff are left untouched, unlike the gate
+  semantics of `max_len`), then formal `charges`.  `only_if_single`
+  keeps `make_double` from upgrading an existing double.
+
+Worked example - the nitro rule:
+
+```python
+FixupRule(
+    name="nitro",
+    center="N",                      # trigger: an N with ...
+    min_degree=3,                    # ... at least 3 graph neighbours
+    groups=(NbrGroup("term_o", "O", terminal=True, exact=2),),
+    require=("term_o",),             # ... exactly 2 terminal O's,
+    max_len={"term_o": 1.45},        # both within 1.45 A (gate)
+    make_double="shortest:term_o",   # the shorter N-O goes double
+    make_single=("term_o_others", "non_single_non_arom"),
+    charges=(("center", 1), ("term_o_others", -1)),
+    note="crystal citations + threshold reasoning",  # keep it
+)
+```
+
+Rules run in order, each on the molecule as the previous rule left it -
+order is load-bearing.  Every rule carries a `note` with the crystal
+citations behind its thresholds; keep them, they are the scientific
+record.  Add a focused test in `tests/test_fixups.py` with the
+`_make_mol` / `_make_engine` harness: build the smallest molecule that
+exercises the trigger, assert the resulting bonds / charges and the
+fired-rule names, and pin the near-miss that must NOT fire.  Then
+re-run the full suite and `benchmarks/benchmark.py` - the committed
+parity targets in `benchmarks/results.md` verify the rulebook against
+the corpus.  Full field reference: the `FixupRule` / `NbrGroup`
+docstrings in `src/bope/fixups.py`.
+
 ## Install
 
 ```bash

@@ -21,6 +21,7 @@ from itertools import combinations
 from typing import Any
 
 from bope._deps import Chem, rdGeometry
+from bope.fixups import FixupEngine
 from bope.helpers import _planarity_rms, _sym_pair
 from bope.tables import (
     _AROMATIC_ENVELOPE,
@@ -383,6 +384,12 @@ class _GeometricPerceiver:
                 self.exo_nbrs[a].append(b)
             if b in self.exo_nbrs:
                 self.exo_nbrs[b].append(a)
+
+        # functional-group fixup engine (the carbonyl / amidine / nitro /
+        # phosphate / sulfonamide rulebook, see bope.fixups): constructed
+        # once from the static graph data, applied per assembly pass with
+        # that pass's aromatic set.
+        self._fixup_engine = FixupEngine(self.elements, self.graph, self.deg, self.blen)
 
         # pass 1/2 failed on the full candidate set: a ring admitted only
         # through noise-level slack (1D1's pyridinone ring at +0.003, fused
@@ -852,11 +859,11 @@ class _GeometricPerceiver:
                     m.AddBond(i, j, Chem.BondType.SINGLE)  # type: ignore[attr-defined]
 
         # --- fixup pass: corrections the pure length rule gets wrong ---------
-        self._fixup_carbonyl(m, a_atoms)
-        self._fixup_amidine(m, a_atoms)
-        self._fixup_nitro(m, a_atoms)
-        self._fixup_phosphate(m, a_atoms)
-        self._fixup_sulfonamide(m, a_atoms)
+        # The functional-group rulebook (carbonyl rescue + ester-O
+        # protection, amidine, nitro, phosphate, sulfonamide) lives in
+        # bope.fixups as data; the engine runs it in order on the molecule
+        # as it stands.
+        self._fixup_engine.apply(m, a_atoms)
         self._remove_phantom_edges(m, a_atoms)
         self._mark_aromatic_pyrrole_h(m, a_atoms)
         self._set_pyridinium(m, a_atoms)
@@ -869,187 +876,8 @@ class _GeometricPerceiver:
             return None, f"santize: {exc}"
         return mol, None
 
-    def _fixup_carbonyl(self, m: Chem.RWMol, a_atoms: set[int]) -> None:  # type: ignore[attr-defined]
-        # (1) carbonyl rescue: non-aromatic C with a terminal O single bond and
-        #     at least one N neighbor, or two aromatic neighbors (a diaryl /
-        #     aryl-heteroaryl ketone bridge - 3QTX X43's C(=O) at 1.358 A
-        #     between the thiazole and the phenyl, whose ring bonds the
-        #     macrocycle-bridge rule singles) -> C=O.  Crystal carbonyls often
-        #     refine to 1.34-1.36 A (caffeine C2/C6 in 3RFM); aromatic ring
-        #     C's are excluded, and internal O's (ether/alcohol C-O) stay
-        #     single - the porphyrin methine bridge carries no O and is
-        #     untouched.
-        for i in range(self.n):
-            if self.elements[i] != "C" or i in a_atoms:
-                continue
-            nbrs = []
-            for a, b in self.graph:
-                if a == i:
-                    nbrs.append(b)
-                elif b == i:
-                    nbrs.append(a)
-            n_nbrs = [j for j in nbrs if self.elements[j] == "N"]
-            o_nbrs = [j for j in nbrs if self.elements[j] == "O"]
-            n_arom = sum(1 for j in nbrs if j in a_atoms)
-            if o_nbrs and (n_nbrs or n_arom >= 2):
-                for o in o_nbrs:
-                    deg_o = sum(1 for a, b in self.graph if a == o or b == o)
-                    if deg_o == 1 and self.blen[_sym_pair(i, o)] <= 1.40:
-                        bo = m.GetBondBetweenAtoms(i, o)  # type: ignore[attr-defined]
-                        if bo.GetBondType() == Chem.BondType.SINGLE:  # type: ignore[attr-defined]
-                            bo.SetBondType(Chem.BondType.DOUBLE)  # type: ignore[attr-defined]
-            # ester/acyl O: a C-O double can never land on a bridged O
-            # (an O with a second heavy neighbour - ester, lactone, acyl
-            # phosphate).  The O's valence 2 is already spent on its two
-            # sigma bonds; when a crystal refines the ester C-O shorter
-            # than the C=O (BT5/1WQW measures 1.247 vs 1.272), the
-            # length rule doubles the wrong bond, the bridged O goes
-            # over-valent, and the demotion pass destroys the carbonyl
-            # (pass-1 output OC(O) instead of OC(=O)).  Force bridged
-            # C-O single; the rescue above and the length rule keep the
-            # terminal O double.
-            for o in o_nbrs:
-                deg_o = sum(1 for a, b in self.graph if a == o or b == o)
-                if deg_o > 1:
-                    bo = m.GetBondBetweenAtoms(i, o)  # type: ignore[attr-defined]
-                    if bo.GetBondType() != Chem.BondType.SINGLE:  # type: ignore[attr-defined]
-                        bo.SetBondType(Chem.BondType.SINGLE)  # type: ignore[attr-defined]
-
-    def _fixup_amidine(self, m: Chem.RWMol, a_atoms: set[int]) -> None:  # type: ignore[attr-defined]
-        # (2) amidine/imine: non-aromatic C with exactly 2 N single neighbors
-        #     and no O/S neighbor: the shorter C-N becomes double (delocalized
-        #     amidines measure 1.31-1.33 for BOTH bonds; neutral benzamidine
-        #     needs one).
-        for i in range(self.n):
-            if self.elements[i] != "C" or i in a_atoms:
-                continue
-            nbrs = []
-            for a, b in self.graph:
-                if a == i:
-                    nbrs.append(b)
-                elif b == i:
-                    nbrs.append(a)
-            n_nbrs = [j for j in nbrs if self.elements[j] == "N"]
-            if len(n_nbrs) == 2 and not any(
-                self.elements[j] in ("O", "S") for j in nbrs
-            ):
-                d1, d2 = self.blen[_sym_pair(i, n_nbrs[0])], self.blen[_sym_pair(i, n_nbrs[1])]
-                # 1.40 (not 1.36): delocalized amidines / imines measure
-                # 1.31-1.36 (ETKDG +0.03 bias, plus noise), while a genuine
-                # C-N single pair sits at 1.45+ - the 0.05 gap keeps the
-                # raised threshold safe.
-                if max(d1, d2) <= 1.40:
-                    tgt = n_nbrs[0] if d1 <= d2 else n_nbrs[1]
-                    bo = m.GetBondBetweenAtoms(i, tgt)  # type: ignore[attr-defined]
-                    if bo.GetBondType() == Chem.BondType.SINGLE:  # type: ignore[attr-defined]
-                        bo.SetBondType(Chem.BondType.DOUBLE)  # type: ignore[attr-defined]
-
-    def _fixup_nitro(self, m: Chem.RWMol, a_atoms: set[int]) -> None:  # type: ignore[attr-defined]
-        # (3) nitro: N with two terminal O's at N-O <= 1.45 A (short
-        #     nitro refines to 1.18-1.22, delocalised nitro to
-        #     1.36-1.43, 3B67 B67 rides 1.420/1.420 and 6SUH LVE
-        #     1.364/1.428) is the charge-separated [N+](=O)[O-] of
-        #     the CCD record.  N vmax 3 cannot hold two N=O, so the
-        #     length rule alone reads a single plus an O-H (6SUH LVE,
-        #     4EK8 16K at 1.214) and the demotion pass destroys even
-        #     textbook-length nitro; the +1 charge exempts the N from
-        #     the demotion pass and reproduces the CCD form exactly
-        #     (the benchmark neutralises before comparing).  The only
-        #     neutral mislabel the gate guards against is N(OH)2
-        #     (two N-O hydroxylamine singles at 1.40-1.47), which
-        #     does not occur in crystal ligands.
-        for i in range(self.n):
-            if self.elements[i] != "N" or i in a_atoms:
-                continue
-            nbrs_i = [b for a, b in self.graph if a == i] + \
-                [a for a, b in self.graph if b == i]
-            o_nbrs = [j for j in nbrs_i if self.elements[j] == "O" and self.deg[j] == 1]
-            if (
-                len(o_nbrs) == 2
-                and len(nbrs_i) >= 3
-                and all(self.blen[_sym_pair(i, o)] <= 1.45 for o in o_nbrs)
-            ):
-                # a nitro N holds no double but its two N=O: the length
-                # rule may already have doubled a non-O bond (the
-                # nitro-aryl C-N of 2YOH WMJ refines to 1.346, inside
-                # the 1.37 imine cutoff), which would stack on the
-                # N=O to explicit valence 5 and crash sanitize.
-                for b in m.GetAtomWithIdx(i).GetBonds():  # type: ignore[attr-defined]
-                    if b.GetBondType() not in (  # type: ignore[attr-defined]
-                        Chem.BondType.SINGLE, Chem.BondType.AROMATIC  # type: ignore[attr-defined]
-                    ):
-                        b.SetBondType(Chem.BondType.SINGLE)  # type: ignore[attr-defined]
-                tgt = min(o_nbrs, key=lambda o: self.blen[_sym_pair(i, o)])
-                for o in o_nbrs:
-                    m.GetBondBetweenAtoms(i, o).SetBondType(  # type: ignore[attr-defined]
-                        Chem.BondType.DOUBLE if o == tgt  # type: ignore[attr-defined]
-                        else Chem.BondType.SINGLE  # type: ignore[attr-defined]
-                    )
-                m.GetAtomWithIdx(i).SetFormalCharge(1)  # type: ignore[attr-defined]
-                # the -1 rides the SINGLE-bonded O: the double O would
-                # carry 2 valence + 1 charge = 3 and crash sanitize
-                for o in o_nbrs:
-                    m.GetAtomWithIdx(o).SetFormalCharge(  # type: ignore[attr-defined]
-                        -1 if o != tgt else 0
-                    )
-
-    def _fixup_phosphate(self, m: Chem.RWMol, a_atoms: set[int]) -> None:  # type: ignore[attr-defined]
-        # (4) phosphate P=O: P with 2+ terminal O's and no P=O double
-        #     yet.  Crystal phosphate P-O refines to 1.55-1.70 A
-        #     (1TPB PGH 1.701, 2VF5 GLP 1.591, 2I22 I22 1.604),
-        #     above the 1.55 P=O cutoff, so the length rule leaves
-        #     every P-O single and P falls back to P-H; forcing the
-        #     shortest P-O to double puts P at exactly valence 5, no
-        #     charge needed.
-        for i in range(self.n):
-            if self.elements[i] != "P" or i in a_atoms:
-                continue
-            nbrs_p = [b for a, b in self.graph if a == i] + \
-                [a for a, b in self.graph if b == i]
-            o_nbrs = [j for j in nbrs_p if self.elements[j] == "O" and self.deg[j] == 1]
-            if len(o_nbrs) >= 2 and not any(
-                m.GetBondBetweenAtoms(i, o).GetBondType()  # type: ignore[attr-defined]
-                == Chem.BondType.DOUBLE  # type: ignore[attr-defined]
-                for o in o_nbrs
-            ):
-                tgt = min(o_nbrs, key=lambda o: self.blen[_sym_pair(i, o)])
-                m.GetBondBetweenAtoms(i, tgt).SetBondType(  # type: ignore[attr-defined]
-                    Chem.BondType.DOUBLE  # type: ignore[attr-defined]
-                )
-
-    def _fixup_sulfonamide(self, m: Chem.RWMol, a_atoms: set[int]) -> None:  # type: ignore[attr-defined]
-        # (5) sulfonamide S-N: an S with two terminal O's and an N
-        #     neighbor is the sulfonyl of a sulfonamide R-S(=O)(=O)-NH2:
-        #     both terminal O's take the double (crystal S=O refines to
-        #     1.44-1.64 A, above the 1.55 cutoff - 3QTX X43's O at 1.639)
-        #     and the S-N stays single (sulfonamide S-N measures
-        #     1.56-1.63 A, inside the (N,S) double cutoff 1.70, so the
-        #     length rule misorders the pair).  A genuine S=N double
-        #     occurs only in sulfoximines / sulfonimidamides, which carry
-        #     a single S=O - never two terminal O's.
-        for i in range(self.n):
-            if self.elements[i] != "S" or i in a_atoms:
-                continue
-            nbrs_s = [b for a, b in self.graph if a == i] + \
-                [a for a, b in self.graph if b == i]
-            o_term = sorted(
-                (j for j in nbrs_s if self.elements[j] == "O" and self.deg[j] == 1),
-                key=lambda o: self.blen[_sym_pair(i, o)],
-            )
-            if len(o_term) < 2 or not any(self.elements[j] == "N" for j in nbrs_s):
-                continue
-            for o in o_term:
-                m.GetBondBetweenAtoms(i, o).SetBondType(  # type: ignore[attr-defined]
-                    Chem.BondType.DOUBLE  # type: ignore[attr-defined]
-                )
-            for j in nbrs_s:
-                if self.elements[j] == "N":
-                    m.GetBondBetweenAtoms(i, j).SetBondType(  # type: ignore[attr-defined]
-                        Chem.BondType.SINGLE  # type: ignore[attr-defined]
-                    )
-
     def _remove_phantom_edges(self, m: Chem.RWMol, a_atoms: set[int]) -> None:  # type: ignore[attr-defined]
-        # (6) phantom-edge removal: an atom over-valent with only single
+        # phantom-edge removal: an atom over-valent with only single
         #     bonds (plus nothing reducible - no double, no triple, not
         #     the quaternary-N case the demotion pass charges) carries a
         #     spurious graph edge.  The bond graph's 0.40-A tolerance
